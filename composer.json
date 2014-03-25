@@ -1,0 +1,49 @@
+{
+	"name" : "mathielen/import-engine",
+	"type" : "library",
+	"description" : "Full-blown importer stack for importing almost any data into your application",
+	"keywords" : [
+		"data",
+		"import",
+		"importer",
+		"csv",
+		"excel",
+		"doctrine",
+		"mapping"
+	],
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Markus Thielen",
+			"email" : "markus@logicx.de"
+	}],
+	"require" : {
+		"php" : ">=5.3.0"
+	},
+	"require" : {
+		"ddeboer/data-import" : ">=0.12.1"
+	},
+	"require-dev" : {
+		"symfony/finder" : "*",
+		"symfony/http-foundation" : "*",
+		"jms/serializer" : "*",
+		
+		"ext-iconv" : "*",
+		"ext-mbstring" : "*",
+		"ext-sqlite3" : "*",
+		"symfony/property-access" : "*",
+		"phpoffice/phpexcel" : "*",
+		"doctrine/dbal" : "*",
+		"doctrine/orm" : "*",
+		"symfony/console" : ">=2.2",
+		"symfony/validator" : "~2.3.0"	
+	},
+	"suggest" : {
+		"ext-iconv" : "For the CharsetValueConverter",
+		"ext-mbstring" : "For the CharsetValueConverter",
+		"symfony/validator" : "to use the ValidatorFilter",
+		"doctrine/dbal" : "If you want to use the DbalReader",
+		"phpoffice/phpexcel" : "If you want to use the ExcelReader",
+		"symfony/console" : "If you want to use the ConsoleProgressWriter",
+		"symfony/property-access" : "If you want to use the ObjectConverter"
+	}
+}

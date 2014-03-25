@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="data-parcels" default="test">
+
+	<!-- testing -->
+	<target name="cs-fix">
+        <echo>Fixing codestyle to symfony2 default</echo>
+		<exec command='php-cs-fixer fix src' passthru="true" />
+		<exec command='php-cs-fixer fix tests' passthru="true" />
+	</target>
+
+	<target name="phpunit">
+        <exec command='phpunit' passthru="true" checkreturn="true" />
+	</target>
+
+	<target name="test" depends="cs-fix,phpunit" />
+
+</project>
