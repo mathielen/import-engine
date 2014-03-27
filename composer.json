@@ -1,6 +1,11 @@
 {
 	"name" : "mathielen/import-engine",
 	"type" : "library",
+	"autoload" : {
+		"psr-0" : {
+			"" : "src/"
+		}
+	},	
 	"description" : "Full-blown importer stack for importing almost any data into your application",
 	"keywords" : [
 		"data",
@@ -15,18 +20,16 @@
 	"authors" : [{
 			"name" : "Markus Thielen",
 			"email" : "markus@logicx.de"
-	}],
+		}
+	],
 	"require" : {
-		"php" : ">=5.3.0"
-	},
-	"require" : {
-		"ddeboer/data-import" : ">=0.12.1"
+		"ddeboer/data-import" : ">=0.12.1",
+		"symfony/event-dispatcher" : "*"
 	},
 	"require-dev" : {
 		"symfony/finder" : "*",
 		"symfony/http-foundation" : "*",
 		"jms/serializer" : "*",
-		
 		"ext-iconv" : "*",
 		"ext-mbstring" : "*",
 		"ext-sqlite3" : "*",
@@ -35,7 +38,7 @@
 		"doctrine/dbal" : "*",
 		"doctrine/orm" : "*",
 		"symfony/console" : ">=2.2",
-		"symfony/validator" : "~2.3.0"	
+		"symfony/validator" : "~2.3.0"
 	},
 	"suggest" : {
 		"ext-iconv" : "For the CharsetValueConverter",

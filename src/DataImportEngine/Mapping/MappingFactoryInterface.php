@@ -6,7 +6,7 @@ interface MappingFactoryInterface
 {
 
     /**
-     * @return Mapping
+     * @return Mappings
      */
     public function factor(ReaderInterface $reader);
 

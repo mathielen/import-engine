@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="data-parcels" default="test">
+<project name="import-engine" default="test">
 
 	<!-- testing -->
 	<target name="cs-fix">

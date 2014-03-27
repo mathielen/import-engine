@@ -2,8 +2,8 @@
 namespace DataImportEngine\Storage;
 
 use DataImportEngine\Writer\ObjectWriter;
-use DataImportEngine\Reader\ObjectReader;
 use DataImportEngine\Storage\Parser\JmsMetadataParser;
+use DataImportEngine\Reader\IteratorReader;
 
 class ObjectStorage extends \SplObjectStorage implements StorageInterface
 {
@@ -34,12 +34,7 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
      */
     public function reader()
     {
-        //if ($this->list) {
-            //return new ObjectReader($this->list);
-        //} else {
-            //$class = $this->class;
-           // return new ObjectReader();
-        //}
+        return new IteratorReader($this);
     }
 
     /**

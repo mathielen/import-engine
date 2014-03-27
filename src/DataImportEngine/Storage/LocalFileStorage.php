@@ -74,7 +74,7 @@ class LocalFileStorage implements StorageInterface
             }
 
         } elseif ($type instanceof ZipType) {
-            $reader = new CompressedStreamReader($this->typeToReader($type->getSubType()));
+//            $reader = new CompressedStreamReader($this->typeToReader($type->getSubType()));
 
         }
 

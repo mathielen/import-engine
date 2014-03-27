@@ -3,7 +3,6 @@ namespace DataImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\ReaderInterface;
 use Ddeboer\DataImport\Writer\WriterInterface;
-use DataImportEngine\Storage\Type\Type;
 
 interface StorageInterface
 {
@@ -20,10 +19,5 @@ interface StorageInterface
 
     public function info();
     public function getFields();
-
-    /**
-     * @return Type
-     */
-    public function getType();
 
 }

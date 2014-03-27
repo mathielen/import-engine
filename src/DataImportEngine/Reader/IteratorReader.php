@@ -3,8 +3,15 @@ namespace DataImportEngine\Reader;
 
 use Ddeboer\DataImport\Reader\ReaderInterface;
 
-class ObjectReader implements ReaderInterface
+class IteratorReader implements ReaderInterface
 {
+
+    private $iterator;
+
+    public function __construct(\Iterator $iterator)
+    {
+        $this->iterator = $iterator;
+    }
 
     /**
      * {@inheritdoc}

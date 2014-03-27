@@ -11,7 +11,7 @@ class DefaultMappingFactory implements MappingFactoryInterface
      */
     public function factor(ReaderInterface $reader)
     {
-        $mapping = new Mapping();
+        $mapping = new Mappings();
 
         foreach ($reader->getFields() as $field) {
             //$mapping->addMapping($field, 'to', 'convert');

@@ -1,19 +1,13 @@
 <?php
 namespace DataImportEngine\Workflow;
 
-use DataImportEngine\Source\SourceFactory;
-use Ddeboer\DataImport\Workflow;
-use Ddeboer\DataImport\Filter\OffsetFilter;
-use Ddeboer\DataImport\Writer\CallbackWriter;
-use DataImportEngine\Mapping\Mapping;
-use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
-use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
 class Test extends \PHPUnit_Framework_TestCase
 {
 
     public function test()
     {
-        $sourceFactory = new SourceFactory();
+
+        /*$sourceFactory = new SourceFactory();
         $localFile = $sourceFactory->factor('local', __DIR__ . '/../../../metadata/testfiles/testmapping.csv');
         $reader = $localFile->reader();
 
@@ -46,7 +40,7 @@ class Test extends \PHPUnit_Framework_TestCase
         }));
         $mapping->apply($workflow);
 
-        $workflow->process();
+        $workflow->process();*/
     }
 
 }

@@ -6,6 +6,8 @@ use DataImportEngine\Mapping\DefaultMappingFactory;
 use DataImportEngine\Mapping\MappingFactoryInterface;
 use DataImportEngine\Storage\StorageInterface;
 use Ddeboer\DataImport\Reader\ReaderInterface;
+use DataImportEngine\Mapping\Converter\Provider\ConverterProviderInterface;
+use DataImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
 
 class Importer
 {
@@ -19,6 +21,11 @@ class Importer
     private $mappingFactory;
 
     /**
+     * @var ConverterProviderInterface
+     */
+    private $mappingConverterProvider;
+
+    /**
      * @return \DataImportEngine\Importer\Importer
      */
     public static function build(StorageInterface $targetStorage)
@@ -30,6 +37,17 @@ class Importer
     {
         $this->targetStorage = $targetStorage;
         $this->setMappingFactory(new DefaultMappingFactory());
+        $this->setMappingConverterProvider(new DefaultConverterProvider());
+    }
+
+    /**
+     * @return \DataImportEngine\Importer\Importer
+     */
+    public function setMappingConverterProvider(ConverterProviderInterface $mappingConverterProvider)
+    {
+        $this->mappingConverterProvider = $mappingConverterProvider;
+
+        return $this;
     }
 
     /**
@@ -78,11 +96,21 @@ class Importer
     }
 
     /**
-     * @return Mapping
+     * @return Mappings
      */
-    public function buildMapping(ReaderInterface $reader)
+    public function buildMappings(ReaderInterface $reader)
     {
         return $this->mappingFactory->factor($reader);
+    }
+
+    public function converters()
+    {
+        return $this->mappingConverterProvider->converters();
+    }
+
+    public function converter($id)
+    {
+        return $this->mappingConverterProvider->converter($id);
     }
 
 }
