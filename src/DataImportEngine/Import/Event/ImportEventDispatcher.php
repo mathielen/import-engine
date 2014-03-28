@@ -1,9 +1,8 @@
 <?php
-namespace DataImportEngine\Eventing;
+namespace DataImportEngine\Import\Event;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Ddeboer\DataImport\Writer\WriterInterface;
-use DataImportEngine\Import\Event\ImportEvent;
 use Ddeboer\DataImport\Filter\CallbackFilter;
 use DataImportEngine\Import\Run\ImportRun;
 

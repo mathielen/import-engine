@@ -8,6 +8,7 @@ use DataImportEngine\Storage\StorageInterface;
 use Ddeboer\DataImport\Reader\ReaderInterface;
 use DataImportEngine\Mapping\Converter\Provider\ConverterProviderInterface;
 use DataImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
+use DataImportEngine\Validation\Validation;
 
 class Importer
 {
@@ -19,6 +20,11 @@ class Importer
      * @var MappingFactoryInterface
      */
     private $mappingFactory;
+
+    /**
+     * @var Validation
+     */
+    private $validation;
 
     /**
      * @var ConverterProviderInterface
@@ -36,6 +42,7 @@ class Importer
     public function __construct(StorageInterface $targetStorage)
     {
         $this->targetStorage = $targetStorage;
+
         $this->setMappingFactory(new DefaultMappingFactory());
         $this->setMappingConverterProvider(new DefaultConverterProvider());
     }
@@ -56,6 +63,16 @@ class Importer
     public function setMappingFactory(MappingFactoryInterface $mappingFactory)
     {
         $this->mappingFactory = $mappingFactory;
+
+        return $this;
+    }
+
+    /**
+     * @return \DataImportEngine\Importer\Importer
+     */
+    public function setValidation(Validation $validation)
+    {
+        $this->validation = $validation;
 
         return $this;
     }
@@ -101,6 +118,14 @@ class Importer
     public function buildMappings(ReaderInterface $reader)
     {
         return $this->mappingFactory->factor($reader);
+    }
+
+    /**
+     * @return Validation
+     */
+    public function validation()
+    {
+        return $this->validation;
     }
 
     public function converters()

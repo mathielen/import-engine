@@ -4,26 +4,38 @@ namespace DataImportEngine\Storage;
 use DataImportEngine\Writer\ObjectWriter;
 use DataImportEngine\Storage\Parser\JmsMetadataParser;
 use DataImportEngine\Reader\IteratorReader;
+use DataImportEngine\Writer\ValidationObjectWriter;
+use DataImportEngine\Writer\ObjectWriter\ObjectFactoryInterface;
+use DataImportEngine\Writer\ObjectWriter\DefaultObjectFactory;
 
 class ObjectStorage extends \SplObjectStorage implements StorageInterface
 {
 
-    private $class;
+    /**
+     * @var ObjectFactoryInterface
+     */
+    private $objectFactory;
 
     /**
      * @var JmsMetadataParser
      */
     private $metadataParser;
 
-    public function __construct($class, JmsMetadataParser $metadataParser)
+    public function __construct($classOrObjectFactory, JmsMetadataParser $metadataParser)
     {
-        $this->class = $class;
+        if (is_object($classOrObjectFactory) && $classOrObjectFactory instanceof ObjectFactoryInterface) {
+            $objectFactory = $classOrObjectFactory;
+        } elseif (is_string($classOrObjectFactory)) {
+            $objectFactory = new DefaultObjectFactory($classOrObjectFactory);
+        }
+
+        $this->objectFactory = $objectFactory;
         $this->metadataParser = $metadataParser;
     }
 
     public function getFields()
     {
-        $fields = $this->metadataParser->parse(array('class' => $this->class, 'groups' => array()));
+        $fields = $this->metadataParser->parse(array('class' => $this->objectFactory->getClassname(), 'groups' => array()));
 
         return $fields;
     }
@@ -43,7 +55,14 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
      */
     public function writer()
     {
-        return new ObjectWriter($this->class);
+        $writer = new ValidationObjectWriter($this->objectFactory);
+
+        $storage = $this;
+        $writer->setObjectHandler(function ($object) use ($storage) {
+            $storage->attach($object);
+        });
+
+        return $writer;
     }
 
     /**

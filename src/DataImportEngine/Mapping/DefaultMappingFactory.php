@@ -19,4 +19,5 @@ class DefaultMappingFactory implements MappingFactoryInterface
 
         return $mapping;
     }
+
 }

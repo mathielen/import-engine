@@ -5,10 +5,10 @@ use DataImportEngine\Import\Import;
 use Ddeboer\DataImport\Workflow;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use DataImportEngine\Import\Event\ImportEvent;
-use DataImportEngine\Eventing\ImportEventDispatcher;
 use Ddeboer\DataImport\Filter\OffsetFilter;
 use Ddeboer\DataImport\Writer\ArrayWriter;
-use Ddeboer\DataImport\Filter\CallbackFilter;
+use DataImportEngine\Import\Event\ImportEventDispatcher;
+use DataImportEngine\Import\Filter\PriorityCallbackFilter;
 
 class ImportRunner
 {
@@ -30,8 +30,12 @@ class ImportRunner
         $workflow = $this->buildPreviewWorkflow($import, $previewResult, $offset);
         $workflow->process();
 
-        //cleanup
-        $previewResult['to'] = $previewResult['to'][0];
+        //cleanup from writer
+        if (count($previewResult['to']) > 0) {
+            $previewResult['to'] = $previewResult['to'][0];
+        } else {
+            $previewResult['to'] = array_fill_keys($import->mappings()->getTargetFields(), null);
+        }
 
         return $previewResult;
     }
@@ -58,10 +62,9 @@ class ImportRunner
         $workflow = new Workflow($import->getSourceStorage()->reader());
 
         //validation
-        $import->validation()->apply($workflow);
-
-        //mapping
-        $import->mappings()->apply($workflow, $import->importer()->converters());
+        $import
+            ->applyValidation($workflow)
+            ->applyMapping($workflow, $import->importer()->converters());
 
         return $workflow;
     }
@@ -71,14 +74,15 @@ class ImportRunner
      */
     private function buildPreviewWorkflow(Import $import, array &$previewResult, $offset = 0)
     {
-        //basics
+        //build basics
         $workflow = $this->buildBaseWorkflow($import);
 
-        $workflow->addFilter(new CallbackFilter(function (array $item) use (&$previewResult) {
+        //callback filter for getting the source-data
+        $workflow->addFilter(new PriorityCallbackFilter(function (array $item) use (&$previewResult) {
             $previewResult["from"] = $item;
 
             return true;
-        }));
+        }, 512)); //before validation
 
         //output
         $workflow->addWriter(new ArrayWriter($previewResult["to"]));
@@ -96,16 +100,17 @@ class ImportRunner
     {
         $importEventDispatcher = new ImportEventDispatcher($this->eventDispatcher, $importRun);
 
-        //basics
+        //build basics
         $workflow = $this->buildBaseWorkflow($import);
 
         //output
         $workflow->addWriter($import->getTargetStorage()->writer());
 
         //event-hook
-        $workflow->addFilter($importEventDispatcher->afterReadFilter());
-        $workflow->addFilterAfterConversion($importEventDispatcher->afterConversionFilter());
-        $workflow->addWriter($importEventDispatcher);
+        $workflow
+            ->addFilter($importEventDispatcher->afterReadFilter())
+            ->addFilterAfterConversion($importEventDispatcher->afterConversionFilter())
+            ->addWriter($importEventDispatcher);
 
         return $workflow;
     }

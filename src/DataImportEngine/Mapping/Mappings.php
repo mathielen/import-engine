@@ -9,6 +9,16 @@ use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 class Mappings extends \ArrayObject
 {
 
+    public function getTargetFields()
+    {
+        $fields = array();
+        foreach ($this as $row) {
+            $fields[] = $row->to;
+        }
+
+        return $fields;
+    }
+
     /**
      * @return \DataImportEngine\Mapping\Mapping
      */

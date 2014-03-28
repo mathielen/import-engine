@@ -6,6 +6,7 @@ use DataImportEngine\Storage\StorageInterface;
 use DataImportEngine\Mapping\Mapping;
 use DataImportEngine\Validation\Validation;
 use DataImportEngine\Mapping\Mappings;
+use Ddeboer\DataImport\Workflow;
 
 class Import
 {
@@ -86,9 +87,12 @@ class Import
         return $this->mappings;
     }
 
+    /**
+     * @return \DataImportEngine\Validation\Validation
+     */
     public function validation()
     {
-        return new Validation();
+        return $this->importer()->validation();
     }
 
     //set and get values to mapping (needs to be magic, as the import is the VO in forms)
@@ -162,6 +166,26 @@ class Import
     public function setSourceStorageTypeId($sourceStorageTypeId)
     {
         $this->sourceStorageTypeId = $sourceStorageTypeId;
+
+        return $this;
+    }
+
+    /**
+     * @return \DataImportEngine\Import\Import
+     */
+    public function applyValidation(Workflow $workflow)
+    {
+        $this->validation() ? $this->validation()->apply($workflow) : null;
+
+        return $this;
+    }
+
+    /**
+     * @return \DataImportEngine\Import\Import
+     */
+    public function applyMapping(Workflow $workflow, array $converters)
+    {
+        $this->mappings()->apply($workflow, $converters);
 
         return $this;
     }
