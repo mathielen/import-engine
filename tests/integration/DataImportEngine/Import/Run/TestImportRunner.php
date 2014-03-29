@@ -26,8 +26,9 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(ImportEvent::FINISH, array($this, 'onFinish'));
 
         $finder = Finder::create()
-            ->in('/var/www/import-engine/tests/metadata/testfiles')
+            ->in(__DIR__ . '/../../../../metadata/testfiles')
             ->name('*');
+
         $lfsp = new LocalFileStorageProvider($finder);
         $lfsp->setStorageFactory(
             new DefaultLocalFileStorageFactory(
@@ -43,23 +44,23 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
 
         $import = Import::build($importer)
             ->setSourceStorageProviderId('myLocalFiles')
-            ->setSourceStorageId('/var/www/import-engine/tests/metadata/testfiles/testmapping.csv');
+            ->setSourceStorageId(__DIR__ . '/../../../../metadata/testfiles/testmapping.csv');
 
         $import->mappings()
             ->add('Anrede', 'salutation', 'upperCase')
-            ->add('name', 'first_name', 'lowerCase');
+            ->add('Name', 'name', 'lowerCase');
 
         $importRunner = new ImportRunner($eventDispatcher);
 
-        /*$expectedResult = array(
+        $expectedResult = array(
             'StrasseHausnr' => 'Mümmelstr 12',
             'Plz' => 42349,
-            'Vorname' => 'Hans',
-            'Nachname' => 'Meiser',
-            'salutation' => 'Herrn'
+            'name' => 'hans meiser',
+            'salutation' => 'MR.'
         );
 
-        $this->assertEquals($expectedResult, $importRunner->preview($import)['to']);*/
+        $previewResult = $importRunner->preview($import, 0);
+        $this->assertEquals($expectedResult, $previewResult['to']);
     }
 
     public function onCompile(ImportEvent $event)

@@ -77,6 +77,6 @@ class ValidatorFilter implements FilterInterface
      */
     public function getPriority()
     {
-        return 256;
+        return 64; //we should not be higher than the offset filter, which is 128
     }
 }

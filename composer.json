@@ -5,7 +5,7 @@
 		"psr-0" : {
 			"" : "src/"
 		}
-	},	
+	},
 	"description" : "Full-blown importer stack for importing almost any data into your application",
 	"keywords" : [
 		"data",
@@ -38,7 +38,8 @@
 		"doctrine/dbal" : "*",
 		"doctrine/orm" : "*",
 		"symfony/console" : ">=2.2",
-		"symfony/validator" : "~2.3.0"
+		"symfony/validator" : "~2.3.0",
+		"fzaninotto/faker": "*"
 	},
 	"suggest" : {
 		"ext-iconv" : "For the CharsetValueConverter",

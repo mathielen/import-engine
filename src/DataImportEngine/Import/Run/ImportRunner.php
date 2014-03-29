@@ -82,7 +82,7 @@ class ImportRunner
             $previewResult["from"] = $item;
 
             return true;
-        }, 512)); //before validation
+        }, 96)); //before validation (64) but after offset (128)
 
         //output
         $workflow->addWriter(new ArrayWriter($previewResult["to"]));

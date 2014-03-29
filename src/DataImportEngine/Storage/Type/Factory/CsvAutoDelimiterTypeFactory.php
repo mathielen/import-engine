@@ -14,12 +14,19 @@ class CsvAutoDelimiterTypeFactory implements TypeFactory
         $options = array();
 
         $file = new \SplFileObject($uri);
-        $specialCharString = preg_replace('/[a-z0-9éâëïüÿçêîôûéäöüß]/iu', '', utf8_encode($file->getCurrentLine()));
+        $delimiter = $this->guessDelimiter(utf8_encode($file->getCurrentLine()));
+
+        return new CsvType($delimiter);
+    }
+
+    public function guessDelimiter($line)
+    {
+        $specialCharString = preg_replace('/[a-z0-9éâëïüÿçêîôûéäöüß "]/iu', '', $line);
         $charStats = count_chars($specialCharString, 1);
         arsort($charStats);
         $delimiter = chr(key($charStats));
 
-        return new CsvType($delimiter);
+        return $delimiter;
     }
 
 }
