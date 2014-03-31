@@ -4,7 +4,6 @@ namespace DataImportEngine\Import\Run;
 use DataImportEngine\Import\Import;
 use Ddeboer\DataImport\Workflow;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use DataImportEngine\Import\Event\ImportEvent;
 use Ddeboer\DataImport\Filter\OffsetFilter;
 use Ddeboer\DataImport\Writer\ArrayWriter;
 use DataImportEngine\Import\Event\ImportEventDispatcher;
@@ -23,6 +22,9 @@ class ImportRunner
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @return array
+     */
     public function preview(Import $import, $offset = 0)
     {
         $previewResult = array('from'=>array(), 'to'=>array());
@@ -43,13 +45,22 @@ class ImportRunner
     /**
      * @return ImportRun
      */
+    public function dryRun(Import $import)
+    {
+        $importRun = new ImportRun();
+
+        $workflow = $this->buildDryRunWorkflow($import);
+        $workflow->process();
+    }
+
+    /**
+     * @return ImportRun
+     */
     public function run(Import $import)
     {
         $importRun = new ImportRun();
 
-        $this->eventDispatcher->dispatch(ImportEvent::COMPILE, new ImportEvent($importRun));
-
-        $workflow = $this->buildWorkflow($import, $importRun);
+        $workflow = $this->buildRunWorkflow($import, $importRun);
         $workflow->process();
     }
 
@@ -87,7 +98,7 @@ class ImportRunner
         //output
         $workflow->addWriter(new ArrayWriter($previewResult["to"]));
 
-        //event-hook
+        //preview offset
         $workflow->addFilter(new OffsetFilter($offset, 1));
 
         return $workflow;
@@ -96,7 +107,26 @@ class ImportRunner
     /**
      * @return \Ddeboer\DataImport\Workflow
      */
-    private function buildWorkflow(Import $import, ImportRun $importRun)
+    private function buildDryRunWorkflow(Import $import, ImportRun $importRun)
+    {
+        $importEventDispatcher = new ImportEventDispatcher($this->eventDispatcher, $importRun);
+
+        //build basics
+        $workflow = $this->buildBaseWorkflow($import);
+
+        //event-hooks
+        $workflow
+            ->addFilter($importEventDispatcher->afterReadFilter())
+            ->addFilterAfterConversion($importEventDispatcher->afterConversionFilter())
+            ->addWriter($importEventDispatcher);
+
+        return $workflow;
+    }
+
+    /**
+     * @return \Ddeboer\DataImport\Workflow
+     */
+    private function buildRunWorkflow(Import $import, ImportRun $importRun)
     {
         $importEventDispatcher = new ImportEventDispatcher($this->eventDispatcher, $importRun);
 
@@ -106,7 +136,7 @@ class ImportRunner
         //output
         $workflow->addWriter($import->getTargetStorage()->writer());
 
-        //event-hook
+        //event-hooks
         $workflow
             ->addFilter($importEventDispatcher->afterReadFilter())
             ->addFilterAfterConversion($importEventDispatcher->afterConversionFilter())

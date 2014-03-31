@@ -29,6 +29,7 @@ class Import
     private $sourceStorageProviderId;
     private $sourceStorageId;
     private $sourceStorageTypeId;
+    private $dryrun;
 
     /**
      * @return \DataImportEngine\Importer\Import
@@ -99,7 +100,12 @@ class Import
     public function __get($property)
     {
         @list ($mappingProperty, $id) = explode('_', $property);
-        $fieldName = $this->getSourceStorage()->getFields()[$id];
+        if (!$id) {
+            return;
+        }
+
+        $fields = $this->getSourceStorage()->getFields();
+        $fieldName = $fields[$id];
 
         $mapping = $this->mappings()->get($fieldName);
         if (!$mapping) {
@@ -112,7 +118,12 @@ class Import
     public function __set($property, $value)
     {
         @list ($mappingProperty, $id) = explode('_', $property);
-        $fieldName = $this->getSourceStorage()->getFields()[$id];
+        if (!$id) {
+            return;
+        }
+
+        $fields = $this->getSourceStorage()->getFields();
+        $fieldName = $fields[$id];
 
         if ($mappingProperty == 'to') {
             $this->mappings()->add($fieldName, $value);
@@ -188,6 +199,16 @@ class Import
         $this->mappings()->apply($workflow, $converters);
 
         return $this;
+    }
+
+    public function setDryrun($dryrun)
+    {
+        $this->dryrun = $dryrun;
+    }
+
+    public function isDryrun()
+    {
+        return $this->dryrun;
     }
 
 }

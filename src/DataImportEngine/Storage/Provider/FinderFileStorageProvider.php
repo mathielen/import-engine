@@ -2,11 +2,10 @@
 namespace DataImportEngine\Storage\Provider;
 
 use Symfony\Component\Finder\Finder;
-use DataImportEngine\Storage\LocalFileStorage;
 use DataImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use DataImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
 
-class LocalFileStorageProvider extends StorageProvider
+class FinderFileStorageProvider extends StorageProvider
 {
 
     /**
@@ -32,7 +31,7 @@ class LocalFileStorageProvider extends StorageProvider
 
     public function __toString()
     {
-        return 'LocalFileStorage';
+        return 'FinderFileStorageProvider';
     }
 
 }

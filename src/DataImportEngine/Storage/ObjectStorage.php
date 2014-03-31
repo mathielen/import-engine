@@ -4,7 +4,6 @@ namespace DataImportEngine\Storage;
 use DataImportEngine\Writer\ObjectWriter;
 use DataImportEngine\Storage\Parser\JmsMetadataParser;
 use DataImportEngine\Reader\IteratorReader;
-use DataImportEngine\Writer\ValidationObjectWriter;
 use DataImportEngine\Writer\ObjectWriter\ObjectFactoryInterface;
 use DataImportEngine\Writer\ObjectWriter\DefaultObjectFactory;
 
@@ -55,7 +54,7 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
      */
     public function writer()
     {
-        $writer = new ValidationObjectWriter($this->objectFactory);
+        $writer = new ObjectWriter($this->objectFactory);
 
         $storage = $this;
         $writer->setObjectHandler(function ($object) use ($storage) {

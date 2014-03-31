@@ -3,7 +3,6 @@ namespace DataImportEngine\Import\Run;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Finder\Finder;
-use DataImportEngine\Storage\Provider\LocalFileStorageProvider;
 use DataImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use DataImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
 use DataImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
@@ -11,6 +10,7 @@ use DataImportEngine\Importer\Importer;
 use DataImportEngine\Import\Import;
 use DataImportEngine\Import\Event\ImportEvent;
 use DataImportEngine\Storage\ArrayStorage;
+use DataImportEngine\Storage\Provider\FinderFileStorageProvider;
 
 class TestImportRunner extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +29,7 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
             ->in(__DIR__ . '/../../../../metadata/testfiles')
             ->name('*');
 
-        $lfsp = new LocalFileStorageProvider($finder);
+        $lfsp = new FinderFileStorageProvider($finder);
         $lfsp->setStorageFactory(
             new DefaultLocalFileStorageFactory(
                 new MimeTypeDiscoverStrategy(array(

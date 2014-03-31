@@ -93,7 +93,7 @@ class Validation
 
     public function getViolations()
     {
-        $violations = array();
+        $violations = array('source'=>array(), 'target'=>array());
         if ($this->sourceValidatorFilter) {
             $violations['source'] = $this->sourceValidatorFilter->getViolations();
         }

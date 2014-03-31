@@ -2,11 +2,10 @@
 namespace DataImportEngine\Writer;
 
 use Ddeboer\DataImport\Writer\WriterInterface;
-use Symfony\Component\Validator\ValidatorInterface;
 use DataImportEngine\Writer\ObjectWriter\ObjectFactoryInterface;
 use DataImportEngine\Writer\ObjectWriter\DefaultObjectFactory;
 
-class ValidationObjectWriter implements WriterInterface
+class ObjectWriter implements WriterInterface
 {
 
     private $line = 1;
@@ -23,11 +22,6 @@ class ValidationObjectWriter implements WriterInterface
      */
     private $objectFactory;
 
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
-
     public function __construct($classOrObjectFactory)
     {
         if (is_object($classOrObjectFactory) && $classOrObjectFactory instanceof ObjectFactoryInterface) {
@@ -37,11 +31,6 @@ class ValidationObjectWriter implements WriterInterface
         }
 
         $this->setObjectFactory($objectFactory);
-    }
-
-    public function setValidator(ValidatorInterface $validator)
-    {
-        $this->validator = $validator;
     }
 
     public function setObjectFactory(ObjectFactoryInterface $objectFactory)
@@ -60,23 +49,6 @@ class ValidationObjectWriter implements WriterInterface
     public function prepare()
     {
         return $this;
-    }
-
-    private function validate($object)
-    {
-        if (!$this->validator) {
-            return;
-        }
-
-        $list = $this->validator->validate($object);
-
-        if (count($list) > 0) {
-            $this->violations[$this->line] = $list;
-        }
-
-        $this->line++;
-
-        return !$this->skipOnViolation || 0 === count($list);
     }
 
     private function convert(array $item)
@@ -108,12 +80,8 @@ class ValidationObjectWriter implements WriterInterface
         //convert
         $object = $this->convert($item);
 
-        //validate
-        if ($this->validate($object)) {
-
-            //write
-            $this->write($object);
-        }
+        //write
+        $this->write($object);
 
         return $this;
     }
