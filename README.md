@@ -16,6 +16,9 @@ Features
 * Storage Abstraction for CSV files, Excel files, databases and more. Providing nice features like automatic delimiter- and mapping-discovering.
 * Storage Provisioning for local files, remote files, uploaded files, database connections and more.
 * A mapping sub-system, for building various mappings for your import: field-field, field-converter-field, field-converter-object and more.
+* Source (read) and Target (write) validation using [Symfony Validation](http://symfony.com/doc/current/book/validation.html)
+* Integrated Eventsystem using [Symfony EventDispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html)
+* Automatic mapping discovery
 * Keeping almost every flexibility that is offered by the Ddeboer Data Import library.
 * Well-tested code. (@TODO)
 
@@ -25,7 +28,6 @@ dry-run (like preview)
 console demo
 faker
 bundle
-readme.md
 
 License
 -------
