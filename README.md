@@ -49,7 +49,7 @@ The general idea of this library is the following:
   * A [Mapping](#mapping), which may contain converters, field-mappings, etc
   * A [Validation](#validation), that may contain validation-rules for data read from the SourceStorage and/or validation-rules for data that will be written to the TargetStorage.
   * [Logging](#logging)
-* An [Import](#import) is a specific definition of the process. It uses the Importer and has the specific informations that is mandatory to process the data.
+* An [Import](#import) is a specific definition of the process. It uses the Importer and has the specific informations that is mandatory for processing the data.
 * The [ImportRunner](#importrunner) is used to process the Import.
 * Every run of an Import is represented by an [ImportRun](#importrun)
 
@@ -74,7 +74,7 @@ $ffsp = new FinderFileStorageProvider($finder);
 ```
 
 #### Automatic CSV Delimiter Discovery
-StorageProviders use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses the MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
+StorageProviders use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
 
 ```php
 use DataImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
@@ -87,12 +87,17 @@ $ffsp->setStorageFactory(
 ```
 This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterTypeFactory to determine the delimiter.
 
+### Storage
+@TODO
+
 ### Validation
 
 #### Source data validation
 ```php
 use DataImportEngine\Validation\Validation;
 use DataImportEngine\Import\Filter\ClassValidatorFilter;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 $validator = ... //Symfony Validator
 
@@ -127,14 +132,12 @@ $validation = Validation::build($validator)
 use DataImportEngine\Importer\Importer;
 
 $ffsp = ...
-$mappingConverterProvider = ...
 $validation = ...
 $targetArray = array();
 
 $importer = Importer::build(new ArrayStorage($targetArray))
   ->addSourceStorageProvider('uploadedFile', new UploadFileStorageProvider('/tmp'))
   ->addSourceStorageProvider('myLocalFiles', $ffsp)
-  ->setMappingConverterProvider($mappingConverterProvider)
   ->setValidation($validation)  
 ;
 ```
@@ -240,17 +243,10 @@ $importRun = $importRunner->run($import);
 ```
 
 ### ImportRun statistics
-@Todo
+@TODO
 
 ### Logging
-@Todo
-
-Todos
-------------
-dry-run (like preview)
-console demo
-faker
-bundle
+@TODO
 
 License
 -------
