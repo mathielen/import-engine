@@ -3,7 +3,7 @@
 <phpunit bootstrap="./tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="mathielen/import-engine">
-            <directory prefix="Test" suffix=".php">./tests</directory>
+            <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
 
