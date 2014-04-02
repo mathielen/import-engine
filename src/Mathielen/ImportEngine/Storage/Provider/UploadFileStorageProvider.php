@@ -25,7 +25,7 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
     public function storage($id)
     {
         if ($id instanceof UploadedFile && $id->isValid()) {
-            $id = $id->move($this->targetDirectory, $id->getClientOriginalName());
+            $id = $id->move($this->targetDirectory);
         }
 
         return parent::storage($id);

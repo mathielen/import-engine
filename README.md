@@ -225,8 +225,9 @@ $targetStorage = ...
 $importer = Importer::build($targetStorage)
   ->setMappingConverterProvider($mappingConverterProvider);
 
+$array = array();
 $import = Import::build($importer)
-  ->setSourceStorage(new ArrayStorage($a = array()))
+  ->setSourceStorage(new ArrayStorage(array))
   ->mappings()
   ->add('salutation', 'gender', 'salutationToGender');
 ```
@@ -256,8 +257,9 @@ $targetStorage = ...
 $importer = Importer::build($targetStorage)
   ->setMappingConverterProvider($mappingConverterProvider);
 
+$array = array();
 $import = Import::build($importer)
-  ->setSourceStorage(new ArrayStorage($a = array()))
+  ->setSourceStorage(new ArrayStorage($array))
   ->mappings()
   ->add('fullname', null, 'splitNames');
 ```

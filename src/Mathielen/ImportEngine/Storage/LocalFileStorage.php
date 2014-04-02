@@ -40,7 +40,7 @@ class LocalFileStorage implements StorageSubtypeInterface
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\StorageSubtypeInterface::availableTypes()
      */
-    public function availableTypes()
+    public function getAvailableTypes()
     {
         return array(
             'csv',

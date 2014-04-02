@@ -14,6 +14,6 @@ interface StorageSubtypeInterface extends StorageInterface
     /**
      * @return array
      */
-    public function availableTypes();
+    public function getAvailableTypes();
 
 }

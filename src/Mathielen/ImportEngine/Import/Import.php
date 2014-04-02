@@ -7,6 +7,7 @@ use Mathielen\ImportEngine\Mapping\Mapping;
 use Mathielen\ImportEngine\Validation\Validation;
 use Mathielen\ImportEngine\Mapping\Mappings;
 use Ddeboer\DataImport\Workflow;
+use Mathielen\ImportEngine\Storage\StorageSubtypeInterface;
 
 class Import
 {
@@ -33,7 +34,7 @@ class Import
 
     private $sourceStorageProviderId;
     private $sourceStorageId;
-    private $sourceStorageTypeId;
+    private $sourceStorageSubtypeId;
     private $dryrun;
 
     /**
@@ -168,11 +169,11 @@ class Import
         $this->sourceStorageId = $sourceStorageId;
 
         //initially get auto type
-        /*if ($sourceStorageId) {
-            $this->sourceStorageTypeId = $this->getSourceStorage()->getType()->getId();
+        if ($sourceStorageId) {
+            $this->sourceStorageSubtypeId = $this->getSourceStorage()->getType()->getId();
         } else {
-            $this->sourceStorageTypeId = null;
-        }*/
+            $this->sourceStorageSubtypeId = null;
+        }
 
         return $this;
     }
@@ -191,17 +192,24 @@ class Import
         return $this;
     }
 
-    /*public function getSourceStorageTypeId()
+    public function getSourceStorageSubtypeId()
     {
-        return $this->sourceStorageTypeId;
+        return $this->sourceStorageSubtypeId;
     }
 
-    public function setSourceStorageTypeId($sourceStorageTypeId)
+    public function setSourceStorageSubtypeId($sourceStorageSubtypeId)
     {
-        $this->sourceStorageTypeId = $sourceStorageTypeId;
+        if (!($this->getSourceStorage() instanceof StorageSubtypeInterface)) {
+            throw new \LogicException("Storage offers no subtype support");
+        }
+        if (!in_array($sourceStorageSubtypeId, $this->getSourceStorage()->getAvailableTypes())) {
+            throw new \InvalidArgumentException("Invalid subtype given: ".$sourceStorageSubtypeId);
+        }
+
+        $this->sourceStorageSubtypeId = $sourceStorageSubtypeId;
 
         return $this;
-    }*/
+    }
 
     /**
      * @return \Mathielen\ImportEngine\Import\Import
