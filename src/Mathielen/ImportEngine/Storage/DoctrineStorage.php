@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
-use Mathielen\ImportEngine\Reader\DoctrineQueryReader;
+use Mathielen\DataImport\Reader\DoctrineQueryReader;
 use Doctrine\ORM\QueryBuilder;
 
 class DoctrineStorage implements StorageInterface

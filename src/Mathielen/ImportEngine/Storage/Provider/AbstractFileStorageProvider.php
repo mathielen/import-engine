@@ -4,7 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
 use Mathielen\ImportEngine\Storage\StorageInterface;
 
-abstract class AbstractStorageProvider
+abstract class AbstractFileStorageProvider implements StorageProviderInterface
 {
 
     /**
@@ -28,10 +28,4 @@ abstract class AbstractStorageProvider
 
         return $this->storageFactory->factor($id);
     }
-
-    public function __toString()
-    {
-        return get_class($this);
-    }
-
 }

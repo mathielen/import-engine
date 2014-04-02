@@ -1,11 +1,10 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
-use Mathielen\ImportEngine\Writer\ObjectWriter;
+use Mathielen\DataImport\Writer\ObjectWriter;
 use Mathielen\ImportEngine\Storage\Parser\JmsMetadataParser;
-use Mathielen\ImportEngine\Reader\IteratorReader;
-use Mathielen\ImportEngine\Writer\ObjectWriter\ObjectFactoryInterface;
-use Mathielen\ImportEngine\Writer\ObjectWriter\DefaultObjectFactory;
+use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
+use Mathielen\DataImport\Writer\ObjectWriter\DefaultObjectFactory;
 
 class ObjectStorage extends \SplObjectStorage implements StorageInterface
 {

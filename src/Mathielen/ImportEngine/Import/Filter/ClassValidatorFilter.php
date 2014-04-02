@@ -2,7 +2,7 @@
 namespace Mathielen\ImportEngine\Import\Filter;
 
 use Ddeboer\DataImport\Filter\FilterInterface;
-use Mathielen\ImportEngine\Writer\ObjectWriter\ObjectFactoryInterface;
+use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 
 class ClassValidatorFilter implements FilterInterface

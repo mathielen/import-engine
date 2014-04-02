@@ -2,8 +2,8 @@
 namespace Mathielen\DataImport\Writer;
 
 use Ddeboer\DataImport\Writer\WriterInterface;
-use Mathielen\ImportEngine\Writer\ObjectWriter\ObjectFactoryInterface;
-use Mathielen\ImportEngine\Writer\ObjectWriter\DefaultObjectFactory;
+use Mathielen\DataImport\Writer\\ObjectWriter\ObjectFactoryInterface;
+use Mathielen\DataImport\Writer\\ObjectWriter\DefaultObjectFactory;
 
 class ObjectWriter implements WriterInterface
 {

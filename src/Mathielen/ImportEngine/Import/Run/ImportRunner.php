@@ -51,9 +51,9 @@ class ImportRunner
      */
     public function dryRun(Import $import)
     {
-        $importRun = new ImportRun();
+        $importRun = new ImportRun(uniqid());
 
-        $workflow = $this->buildDryRunWorkflow($import);
+        $workflow = $this->buildDryRunWorkflow($import, $importRun);
         $workflow->process();
     }
 
@@ -62,7 +62,7 @@ class ImportRunner
      */
     public function run(Import $import)
     {
-        $importRun = new ImportRun();
+        $importRun = new ImportRun(uniqid());
 
         $workflow = $this->buildRunWorkflow($import, $importRun);
         $workflow->process();

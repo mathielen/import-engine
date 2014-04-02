@@ -26,6 +26,11 @@ class Import
      */
     private $targetStorage;
 
+    /**
+     * @var StorageInterface
+     */
+    private $sourceStorage;
+
     private $sourceStorageProviderId;
     private $sourceStorageId;
     private $sourceStorageTypeId;
@@ -57,7 +62,11 @@ class Import
      */
     public function getSourceStorageProvider()
     {
-        return $this->sourceStorageProviderId?$this->importer->getSourceStorageProvider($this->sourceStorageProviderId):null;
+        if (empty($this->sourceStorageProviderId)) {
+            throw new \LogicException("sourceStorageProviderId must be set first.");
+        }
+
+        return $this->importer->getSourceStorageProvider($this->sourceStorageProviderId);
     }
 
     /**
@@ -65,7 +74,20 @@ class Import
      */
     public function getSourceStorage()
     {
-        return ($this->sourceStorageId && $this->getSourceStorageProvider())?$this->getSourceStorageProvider()->storage($this->sourceStorageId):null;
+        if (!$this->sourceStorage && $this->sourceStorageId) {
+            return $this->getSourceStorageProvider()->storage($this->sourceStorageId);
+        } elseif (!$this->sourceStorage) {
+            throw new \LogicException("sourceStorage or sourceStorageId must be set first.");
+        }
+
+        return $this->sourceStorage;
+    }
+
+    public function setSourceStorage(StorageInterface $sourceStorage)
+    {
+        $this->sourceStorage = $sourceStorage;
+
+        return $this;
     }
 
     /**

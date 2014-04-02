@@ -1,7 +1,6 @@
 <?php
 namespace Mathielen\ImportEngine\Importer;
 
-use Mathielen\ImportEngine\Storage\Provider\AbstractStorageProvider;
 use Mathielen\ImportEngine\Mapping\DefaultMappingFactory;
 use Mathielen\ImportEngine\Mapping\MappingFactoryInterface;
 use Mathielen\ImportEngine\Storage\StorageInterface;
@@ -9,6 +8,7 @@ use Ddeboer\DataImport\Reader\ReaderInterface;
 use Mathielen\ImportEngine\Mapping\Converter\Provider\ConverterProviderInterface;
 use Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
 use Mathielen\ImportEngine\Validation\Validation;
+use Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface;
 
 class Importer
 {
@@ -80,7 +80,7 @@ class Importer
     /**
      * @return \Mathielen\ImportEngine\Importer\Importer
      */
-    public function addSourceStorageProvider($id, AbstractStorageProvider $storageProvider)
+    public function addSourceStorageProvider($id, StorageProviderInterface $storageProvider)
     {
         $this->sourceStorageProviders[$id] = $storageProvider;
 

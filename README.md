@@ -1,4 +1,4 @@
-import-engine
+php import-engine
 =============
 
 [![Build Status](https://travis-ci.org/mathielen/import-engine.png?branch=master)](https://travis-ci.org/mathielen/import-engine) 
@@ -49,7 +49,7 @@ The general idea of this library is the following:
   * A [Mapping](#mapping), which may contain converters, field-mappings, etc
   * A [Validation](#validation), that may contain validation-rules for data read from the SourceStorage and/or validation-rules for data that will be written to the TargetStorage.
   * [Logging](#logging)
-* An [Import](#import) is a specific definition of the process. It uses the Importer and has the specific informations that is mandatory for processing the data.
+* An [Import](#import) is a specific definition of the process. It uses the [Importer](#importer) and has the specific informations that is mandatory for processing the data. That is a SourceStorage, a TargetStorage and a [Mapping](#mapping).
 * The [ImportRunner](#importrunner) is used to process the Import.
 * Every run of an Import is represented by an [ImportRun](#importrun)
 
@@ -61,11 +61,10 @@ Using the [Symfony Finder Component](http://symfony.com/doc/current/components/f
 
 ```php
 use Symfony\Component\Finder\Finder;
-use DataImportEngine\Storage\Provider\FinderFileStorageProvider;
+use Mathielen\ImportEngine\Storage\Provider\FinderFileStorageProvider;
 
 $finder = Finder::create()
-  ->in('files/importable/current')
-  ->in('files/importable/failed')
+  ->in('tests/metadata/testfiles')
   ->name('*.csv')
   ->name('*.tab')
   ->size('>0K');
@@ -73,12 +72,39 @@ $finder = Finder::create()
 $ffsp = new FinderFileStorageProvider($finder);
 ```
 
-#### Automatic CSV Delimiter Discovery
-StorageProviders use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
+#### DoctrineQueryStorageProvider
+You can use specific Doctrine Queries or only Entity-Classnames (the query will be SELECT * FROM <Entity> then) as possible Source-Storages.
 
 ```php
-use DataImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
+use Symfony\Component\Finder\Finder;
+use Mathielen\ImportEngine\Storage\Provider\DoctrineQueryStorageProvider;
 
+$em = ... //Doctrine2 EntityManager
+$qb = $em->createQueryBuilder()
+  ->select('a')
+  ->from('MySystem\Entity\Address', 'a')
+  ->andWhere('a.id > 10');
+
+$queries = array(
+  'MySystem/Entity/MyEntity',
+  $qb
+);
+
+$desp = new DoctrineQueryStorageProvider($em, $queries);
+```
+
+#### UploadFileStorageProvider
+
+
+#### Automatic CSV Delimiter Discovery for FileStorageProviders
+FileStorageProviders may use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
+
+```php
+use Mathielen\ImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
+use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
+use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
+
+$ffsp = ...
 $ffsp->setStorageFactory(
   new DefaultLocalFileStorageFactory(
     new MimeTypeDiscoverStrategy(array(
@@ -94,8 +120,8 @@ This way any file that has the text/plain mime-type will be passed to the CsvAut
 
 #### Source data validation
 ```php
-use DataImportEngine\Validation\Validation;
-use DataImportEngine\Import\Filter\ClassValidatorFilter;
+use Mathielen\ImportEngine\Validation\Validation;
+use Mathielen\ImportEngine\Import\Filter\ClassValidatorFilter;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -112,9 +138,9 @@ $validation = Validation::build($validator)
 You can use the ClassValidatorFilter to map the data to an object-tree and validate the objects (using annotations, or [differently configurated validation rules](http://symfony.com/doc/current/book/validation.html#constraint-configuration)). Therefore you must provide an ObjectFactory. There is a JmsSerializerObjectFactory you may want to use.
 
 ```php
-use DataImportEngine\Validation\Validation;
-use DataImportEngine\Import\Filter\ClassValidatorFilter;
-use DataImportEngine\Writer\ObjectWriter\JmsSerializerObjectFactory;
+use Mathielen\ImportEngine\Validation\Validation;
+use Mathielen\ImportEngine\Import\Filter\ClassValidatorFilter;
+use Mathielen\DataImport\Writer\ObjectWriter\JmsSerializerObjectFactory;
 
 $validator = ... //Symfony Validator
 
@@ -129,13 +155,12 @@ $validation = Validation::build($validator)
 
 ### Importer
 ```php
-use DataImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Importer\Importer;
 
 $ffsp = ...
 $validation = ...
-$targetArray = array();
 
-$importer = Importer::build(new ArrayStorage($targetArray))
+$importer = Importer::build(new ArrayStorage($targetArray = array()))
   ->addSourceStorageProvider('uploadedFile', new UploadFileStorageProvider('/tmp'))
   ->addSourceStorageProvider('myLocalFiles', $ffsp)
   ->setValidation($validation)  
@@ -144,7 +169,9 @@ $importer = Importer::build(new ArrayStorage($targetArray))
 
 ### Import
 ```php
-use DataImportEngine\Import\Import;
+use Mathielen\ImportEngine\Import\Import;
+
+$importer = ...
 
 $import = Import::build($importer)
   ->setSourceStorageProviderId('myLocalFiles')
@@ -154,6 +181,8 @@ $import = Import::build($importer)
 
 ### Mapping
 ```php
+$import = ... 
+
 $import->mappings()
   ->add('SALUTATION_FIELD', 'salutation')
   ->add('FILE_FIELD0', 'first_name');
@@ -166,6 +195,8 @@ There are a some field-level build-in converters available:
 * @TODO
 
 ```php
+$import = ...
+
 $import->mappings()
   ->add('SALUTATION_FIELD', 'salutation', 'upperCase');
 ```
@@ -173,10 +204,11 @@ $import->mappings()
 ### Custom fieldlevel-converting
 You have to register more complex converters to the importer for selecting them in your import.
 ```php
-use DataImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
+use Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
 use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
-use DataImportEngine\Import\Import;
-use DataImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Import\Import;
+use Mathielen\ImportEngine\Storage\ArrayStorage;
+use Mathielen\ImportEngine\Importer\Importer;
 
 $mappingConverterProvider = new DefaultConverterProvider();
 $mappingConverterProvider
@@ -189,10 +221,12 @@ $mappingConverterProvider
   }));
 
 $targetStorage = ...
+
 $importer = Importer::build($targetStorage)
   ->setMappingConverterProvider($mappingConverterProvider);
 
 $import = Import::build($importer)
+  ->setSourceStorage(new ArrayStorage($a = array()))
   ->mappings()
   ->add('salutation', 'gender', 'salutationToGender');
 ```
@@ -200,10 +234,11 @@ $import = Import::build($importer)
 ### Custom rowlevel-converting
 Like the fieldlevel converters, you have to register your converters first.
 ```php
-use DataImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
-use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
-use DataImportEngine\Import\Import;
-use DataImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
+use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
+use Mathielen\ImportEngine\Import\Import;
+use Mathielen\ImportEngine\Storage\ArrayStorage;
+use Mathielen\ImportEngine\Importer\Importer;
 
 $mappingConverterProvider = new DefaultConverterProvider();
 $mappingConverterProvider
@@ -217,10 +252,12 @@ $mappingConverterProvider
   }));
 
 $targetStorage = ...
+
 $importer = Importer::build($targetStorage)
   ->setMappingConverterProvider($mappingConverterProvider);
 
 $import = Import::build($importer)
+  ->setSourceStorage(new ArrayStorage($a = array()))
   ->mappings()
   ->add('fullname', null, 'splitNames');
 ```
@@ -228,9 +265,11 @@ $import = Import::build($importer)
 ### ImportRunner
 ```php
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use DataImportEngine\Import\Run;
+use Mathielen\ImportEngine\Import\Run\ImportRunner;
 
 $importRunner = new ImportRunner(new EventDispatcher());
+
+$import = ...
 
 //sneak peak a row
 $previewData = $importRunner->preview($import);

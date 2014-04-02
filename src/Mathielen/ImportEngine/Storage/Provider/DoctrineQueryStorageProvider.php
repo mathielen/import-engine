@@ -5,7 +5,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Mathielen\ImportEngine\Storage\DoctrineStorage;
 use Doctrine\ORM\QueryBuilder;
 
-class DoctrineEntityStorageProvider extends AbstractStorageProvider implements \IteratorAggregate
+class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProviderInterface
 {
 
     /**
@@ -49,11 +49,6 @@ class DoctrineEntityStorageProvider extends AbstractStorageProvider implements \
         return new \ArrayIterator($this->queries);
     }
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \Mathielen\ImportEngine\Storage\Provider\AbstractStorageProvider::storage()
-     */
     public function storage($id)
     {
         return new DoctrineStorage($id->impl);

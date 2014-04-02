@@ -6,7 +6,7 @@ use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
 use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 
-class FinderFileStorageProvider extends AbstractStorageProvider implements \IteratorAggregate
+class FinderFileStorageProvider extends AbstractFileStorageProvider implements \IteratorAggregate
 {
 
     /**
