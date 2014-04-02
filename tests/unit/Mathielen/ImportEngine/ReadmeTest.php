@@ -59,8 +59,9 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     private function getBuildImportCode()
     {
         return $this->getBuildImporterCode() . '
+            $a = array(array("field1"=>"data1"));
             $import = Mathielen\ImportEngine\Import\Import::build($importer);
-            $import->setSourceStorage(new \Mathielen\ImportEngine\Storage\ArrayStorage($a = array(array("field1"=>"data1"))));
+            $import->setSourceStorage(new \Mathielen\ImportEngine\Storage\ArrayStorage($a));
         ';
     }
 
@@ -76,7 +77,8 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     private function getBuildTargetStorage()
     {
         return '
-            $targetStorage = new \Mathielen\ImportEngine\Storage\ArrayStorage($a = array());
+            $a = array();
+            $targetStorage = new \Mathielen\ImportEngine\Storage\ArrayStorage($a);
         ';
     }
 
