@@ -175,7 +175,7 @@ $importer = ...
 
 $import = Import::build($importer)
   ->setSourceStorageProviderId('myLocalFiles')
-  ->setSourceStorageId('files/importable/current/data.csv')
+  ->setSourceStorageId('tests/metadata/testfiles/100.csv')
 ;
 ```
 
@@ -227,7 +227,7 @@ $importer = Importer::build($targetStorage)
 
 $array = array();
 $import = Import::build($importer)
-  ->setSourceStorage(new ArrayStorage(array))
+  ->setSourceStorage(new ArrayStorage($array))
   ->mappings()
   ->add('salutation', 'gender', 'salutationToGender');
 ```
