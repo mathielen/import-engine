@@ -32,7 +32,6 @@
 		"jms/serializer" : "*",
 		"ext-iconv" : "*",
 		"ext-mbstring" : "*",
-		"ext-sqlite3" : "*",
 		"symfony/property-access" : "*",
 		"phpoffice/phpexcel" : "*",
 		"doctrine/orm" : "*",
@@ -47,5 +46,6 @@
 		"phpoffice/phpexcel" : "If you want to use the ExcelReader",
 		"symfony/console" : "If you want to use the ConsoleProgressWriter",
 		"symfony/property-access" : "If you want to use the ObjectConverter"
-	}
+	},
+	"minimum-stability" : "dev"
 }
