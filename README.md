@@ -4,6 +4,7 @@ php import-engine
 [![Build Status](https://travis-ci.org/mathielen/import-engine.png?branch=master)](https://travis-ci.org/mathielen/import-engine) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mathielen/import-engine/badges/quality-score.png?s=c0a55ac5381a3f8fdacd95eeacc5e5ad8926695f)](https://scrutinizer-ci.com/g/mathielen/import-engine/)
 [![Code Coverage](https://scrutinizer-ci.com/g/mathielen/import-engine/badges/coverage.png?s=5f083d5500d3ec956d5fc86a8570a97e2bb9c6dd)](https://scrutinizer-ci.com/g/mathielen/import-engine/)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/985f7541-2ef9-4b92-98d3-8cf7f4144e74/mini.png)](https://insight.sensiolabs.com/projects/985f7541-2ef9-4b92-98d3-8cf7f4144e74)
 [![Latest Stable Version](https://poser.pugx.org/mathielen/import-engine/v/stable.png)](https://packagist.org/packages/mathielen/import-engine)
 
 Full-blown importer stack for importing almost any data into your application. Can be used for exports, too.
