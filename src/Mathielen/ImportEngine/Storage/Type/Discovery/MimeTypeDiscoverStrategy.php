@@ -51,8 +51,9 @@ class MimeTypeDiscoverStrategy implements TypeDiscoverStrategyInterface
 
         //defaults
         switch ($mimeType) {
-            case 'application/zip':
-                return new ZipType($this->mimeTypeToFileType($subMimeType));
+            /*case 'application/zip':
+                //TODO
+                return new ZipType($this->mimeTypeToFileType("zip://", $subMimeType));*/
             case 'text/plain':
                 return new CsvType();
             case 'application/vnd.ms-excel':

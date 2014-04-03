@@ -169,7 +169,7 @@ class Import
         $this->sourceStorageId = $sourceStorageId;
 
         //initially get auto type
-        if ($sourceStorageId) {
+        if ($sourceStorageId && $this->getSourceStorage() instanceof StorageSubtypeInterface) {
             $this->sourceStorageSubtypeId = $this->getSourceStorage()->getType()->getId();
         } else {
             $this->sourceStorageSubtypeId = null;

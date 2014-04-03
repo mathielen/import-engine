@@ -8,6 +8,11 @@ class JmsSerializerObjectFactory implements ObjectFactoryInterface
 
     private $classname;
 
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
     public function __construct($classname, Serializer $serializer)
     {
         $this->classname = $classname;

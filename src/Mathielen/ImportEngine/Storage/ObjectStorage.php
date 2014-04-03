@@ -25,6 +25,8 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
             $objectFactory = $classOrObjectFactory;
         } elseif (is_string($classOrObjectFactory)) {
             $objectFactory = new DefaultObjectFactory($classOrObjectFactory);
+        } else {
+            throw \InvalidArgumentException("classOrObjectFactory must be of type string or ObjectFactoryInterface");
         }
 
         $this->objectFactory = $objectFactory;

@@ -5,7 +5,6 @@ use Ddeboer\DataImport\Workflow;
 use Mathielen\ImportEngine\Import\Filter\ValidatorFilter;
 use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
-use Ddeboer\DataImport\Filter\FilterInterface;
 
 class Validation
 {
@@ -44,7 +43,7 @@ class Validation
     public function addSourceConstraint($field, Constraint $constraint)
     {
         if (!$this->sourceValidatorFilter) {
-            $this->sourceValidatorFilter = new ValidatorFilter($this->validator);
+            $this->setSourceValidatorFilter(new ValidatorFilter($this->validator));
             $this->sourceValidatorFilter->setAllowExtraFields(true); //@TODO configureble?
         }
 
@@ -59,7 +58,7 @@ class Validation
     public function addTargetConstraint($field, Constraint $constraint)
     {
         if (!$this->targetValidatorFilter) {
-            $this->targetValidatorFilter = new ValidatorFilter($this->validator);
+            $this->setTargetValidatorFilter(new ValidatorFilter($this->validator));
         }
 
         $this->targetValidatorFilter->add($field, $constraint);
@@ -67,14 +66,14 @@ class Validation
         return $this;
     }
 
-    public function setSourceValidatorFilter(FilterInterface $validatorFilter)
+    public function setSourceValidatorFilter(ValidatorFilter $validatorFilter)
     {
         $this->sourceValidatorFilter = $validatorFilter;
 
         return $this;
     }
 
-    public function setTargetValidatorFilter(FilterInterface $validatorFilter)
+    public function setTargetValidatorFilter(ValidatorFilter $validatorFilter)
     {
         $this->targetValidatorFilter = $validatorFilter;
 

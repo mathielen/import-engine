@@ -4,8 +4,9 @@ namespace Mathielen\ImportEngine\Import\Filter;
 use Ddeboer\DataImport\Filter\FilterInterface;
 use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
 use Symfony\Component\Validator\ValidatorInterface;
+use Ddeboer\DataImport\Filter\ValidatorFilter;
 
-class ClassValidatorFilter implements FilterInterface
+class ClassValidatorFilter extends ValidatorFilter
 {
 
     /**

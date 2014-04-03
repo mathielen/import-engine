@@ -46,6 +46,7 @@ class JmsMetadataParser
                 return true;
             }
         } catch (\ReflectionException $e) {
+            return false;
         }
 
         return false;

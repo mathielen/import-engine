@@ -26,45 +26,50 @@ class MimeTypeDiscoverer
 
     private function getOfficeFileformat($filePath)
     {
+        $officeFileFormat = false;
+
         $zip = new \ZipArchive();
         if ($zip->open($filePath) === TRUE) {
+            $officeFileFormat = $this->getOfficeFileFormatFromZip($zip);
+            $zip->close();
+        }
 
-            //check for ms office xml filetypes
-            for ($i=0; $i<$zip->numFiles; $i++) {
-                $stat = $zip->statIndex($i);
-                $fileName = $stat['name'];
+        return $officeFileFormat;
+    }
 
-                if ($fileName == 'xl/workbook.xml') {
-                    return self::MIME_XLSX;
-                } elseif ($fileName == 'word/document.xml') {
-                    return self::MIME_DOCX;
-                } elseif ($fileName == 'ppt/presentation.xml') {
-                    return self::MIME_PPTX;
-                }
+    private function getOfficeFileFormatFromZip(\ZipArchive $zip)
+    {
+        //check for ms office xml filetypes
+        for ($i=0; $i<$zip->numFiles; $i++) {
+            $stat = $zip->statIndex($i);
+            $fileName = $stat['name'];
+
+            if ($fileName == 'xl/workbook.xml') {
+                return self::MIME_XLSX;
+            } elseif ($fileName == 'word/document.xml') {
+                return self::MIME_DOCX;
+            } elseif ($fileName == 'ppt/presentation.xml') {
+                return self::MIME_PPTX;
             }
+        }
 
-            //check for one-file-in-file zips
-            if ($zip->numFiles == 1) {
-                $stat = $zip->statIndex(0);
-                $fp = $zip->getStream($stat['name']);
-                if (!$fp) {
-                    return false;
-                }
-
-                $contents = '';
-                while (!feof($fp)) {
-                    $contents .= fread($fp, 2);
-                }
-
-                $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                $mimeType = $finfo->buffer($contents);
-
-                return 'application/zip '.$mimeType;
-            } else {
+        //check for one-file-in-file zips
+        if ($zip->numFiles == 1) {
+            $stat = $zip->statIndex(0);
+            $fp = $zip->getStream($stat['name']);
+            if (!$fp) {
                 return false;
             }
 
-            $zip->close();
+            $contents = '';
+            while (!feof($fp)) {
+                $contents .= fread($fp, 2);
+            }
+
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($contents);
+
+            return 'application/zip '.$mimeType;
         } else {
             return false;
         }
