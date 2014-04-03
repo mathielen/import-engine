@@ -31,7 +31,7 @@ class ImportEventDispatcher implements WriterInterface
         $importRun = $this->importRun;
 
         return new CallbackFilter(function (array $item) use ($eventDispatcher, $importRun) {
-            $this->eventDispatcher->dispatch(ImportEvent::AFTER_READ, new ImportEvent($importRun, $item));
+            $eventDispatcher->dispatch(ImportEvent::AFTER_READ, new ImportEvent($importRun, $item));
 
             return true;
         });
