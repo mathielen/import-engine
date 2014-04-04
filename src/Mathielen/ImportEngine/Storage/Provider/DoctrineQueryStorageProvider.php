@@ -14,6 +14,9 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      */
     private $entityManager;
 
+    /**
+     * @var QueryBuilder[]
+     */
     private $queries;
 
     public function __construct(EntityManagerInterface $entityManager, array $classNamesOrQueries)
@@ -26,16 +29,15 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
     {
         $this->queries = array();
         foreach ($classNamesOrQueries as &$classNameOrQuery) {
-            $query = new \stdClass();
-
             if (is_string($classNameOrQuery)) {
-                $query->name = $classNameOrQuery;
-                $query->impl = $this->entityManager->createQueryBuilder()
+                $queryBuilder = $this->entityManager->createQueryBuilder()
                     ->select('o')
                     ->from($classNameOrQuery, 'o');
+                $query = new StorageSelection($classNameOrQuery, $classNameOrQuery, $queryBuilder);
+
             } elseif ($classNameOrQuery instanceof QueryBuilder) {
-                $query->impl = $classNameOrQuery;
-                $query->name = $classNameOrQuery->getDQL();
+                $query = new StorageSelection($classNameOrQuery->getDQL(), $classNameOrQuery->getDQL(), $classNameOrQuery);
+
             } else {
                 throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
             }
@@ -49,8 +51,22 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
         return new \ArrayIterator($this->queries);
     }
 
-    public function storage($id)
+    /**
+     * (non-PHPdoc)
+     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
+     */
+    public function storage(StorageSelection $selection)
     {
-        return new DoctrineStorage($id->impl);
+        return new DoctrineStorage($selection->getImpl());
     }
+
+    /**
+     * (non-PHPdoc)
+     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
+     */
+    public function select($id)
+    {
+        return $id;
+    }
+
 }

@@ -4,7 +4,6 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 use Symfony\Component\Finder\Finder;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
-use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 
 class FinderFileStorageProvider extends AbstractFileStorageProvider implements \IteratorAggregate
 {
@@ -26,13 +25,28 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
     {
         $files = array();
         foreach ($this->finder->files() as $file) {
-            $item = new \stdClass();
-            $item->name = $file->getFilename();
-            $item->impl = $file;
+            $item = new StorageSelection($file->getFilename(), $file->getFilename(), new \SplFileObject($file));
             $files[] = $item;
         }
 
         return new \ArrayIterator($files);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
+     */
+    public function select($id)
+    {
+        if (is_string($id)) {
+            $selection = new StorageSelection($id, $id, new \SplFileObject($id));
+        } elseif ($id instanceof \SplFileObject) {
+            $selection = new StorageSelection($id->getFilename(), $id->getFilename(), $id);
+        } elseif (!($id instanceof StorageSelection)) {
+            throw new \InvalidArgumentException("id must be string, SplFileObject or instance of StorageSelection");
+        }
+
+        return $selection;
     }
 
 }

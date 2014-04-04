@@ -4,9 +4,9 @@ namespace Mathielen\ImportEngine\Import\Filter;
 use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints;
-use Ddeboer\DataImport\Filter\FilterInterface;
+use Ddeboer\DataImport\Filter\ValidatorFilter as OriginalValidatorFilter;
 
-class ValidatorFilter implements FilterInterface
+class ValidatorFilter extends OriginalValidatorFilter
 {
 
     /**

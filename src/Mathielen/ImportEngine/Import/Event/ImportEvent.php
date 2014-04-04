@@ -28,9 +28,17 @@ class ImportEvent extends Event
         $this->currentRow = $currentRow;
     }
 
-    public function currentRow()
+    public function getCurrentRow()
     {
         return $this->currentRow;
+    }
+
+    /**
+     * @return ImportRun
+     */
+    public function getImportRun()
+    {
+        return $this->importRun;
     }
 
 }

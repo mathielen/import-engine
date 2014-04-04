@@ -2,9 +2,9 @@
 namespace Mathielen\ImportEngine\Validation;
 
 use Ddeboer\DataImport\Workflow;
-use Mathielen\ImportEngine\Import\Filter\ValidatorFilter;
 use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
+use Ddeboer\DataImport\Filter\ValidatorFilter;
 
 class Validation
 {

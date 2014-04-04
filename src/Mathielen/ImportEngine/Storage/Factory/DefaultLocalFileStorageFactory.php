@@ -3,6 +3,7 @@ namespace Mathielen\ImportEngine\Storage\Factory;
 
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
 use Mathielen\ImportEngine\Storage\Type\Discovery\TypeDiscoverStrategyInterface;
+use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
 
 class DefaultLocalFileStorageFactory implements StorageFactoryInterface
 {
@@ -21,9 +22,9 @@ class DefaultLocalFileStorageFactory implements StorageFactoryInterface
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface::factor()
      */
-    public function factor($id)
+    public function factor(StorageSelection $selection)
     {
-        $file = new \SplFileObject($id);
+        $file = $selection->getImpl();
 
         $type = $this->typeDiscoverStrategyInterface->getType($file->getRealPath());
         if (!$type) {

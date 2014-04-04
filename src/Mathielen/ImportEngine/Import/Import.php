@@ -8,6 +8,7 @@ use Mathielen\ImportEngine\Validation\Validation;
 use Mathielen\ImportEngine\Mapping\Mappings;
 use Ddeboer\DataImport\Workflow;
 use Mathielen\ImportEngine\Storage\StorageSubtypeInterface;
+use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
 
 class Import
 {
@@ -77,8 +78,6 @@ class Import
     {
         if (!$this->sourceStorage && $this->sourceStorageId) {
             return $this->getSourceStorageProvider()->storage($this->sourceStorageId);
-        } elseif (!$this->sourceStorage) {
-            throw new \LogicException("sourceStorage or sourceStorageId must be set first.");
         }
 
         return $this->sourceStorage;
@@ -166,6 +165,10 @@ class Import
             throw new \LogicException("Cannot set sourceStorage without setting sourceStorageProvider first");
         }
 
+        if (!empty($sourceStorageId) && !($sourceStorageId instanceof StorageSelection)) {
+            $sourceStorageId = $this->getSourceStorageProvider()->select($sourceStorageId);
+        }
+
         $this->sourceStorageId = $sourceStorageId;
 
         //initially get auto type
@@ -186,8 +189,8 @@ class Import
     public function setSourceStorageProviderId($sourceStorageProviderId)
     {
         $this->sourceStorageProviderId = $sourceStorageProviderId;
-
         $this->setSourceStorageId(null);
+        $this->sourceStorage = null;
 
         return $this;
     }

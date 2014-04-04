@@ -2,7 +2,6 @@
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
-use Mathielen\ImportEngine\Storage\StorageInterface;
 
 abstract class AbstractFileStorageProvider implements StorageProviderInterface
 {
@@ -18,14 +17,16 @@ abstract class AbstractFileStorageProvider implements StorageProviderInterface
     }
 
     /**
-     * @return StorageInterface
+     * (non-PHPdoc)
+     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
      */
-    public function storage($id)
+    public function storage(StorageSelection $selection)
     {
         if (!$this->storageFactory) {
             throw new \LogicException('StorageFactory is missing.');
         }
 
-        return $this->storageFactory->factor($id);
+        return $this->storageFactory->factor($selection);
     }
+
 }

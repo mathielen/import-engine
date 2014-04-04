@@ -61,6 +61,8 @@ class MimeTypeDiscoverStrategy implements TypeDiscoverStrategyInterface
                 return new ExcelType();
             case 'application/xml':
                 return new XmlType();
+            default:
+                throw new \LogicException("Unknown mime-type: $mimeType. No registered factoried nor any default for $uri");
         }
 
         return null;

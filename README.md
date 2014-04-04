@@ -4,6 +4,7 @@ php import-engine
 [![Build Status](https://travis-ci.org/mathielen/import-engine.png?branch=master)](https://travis-ci.org/mathielen/import-engine) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mathielen/import-engine/badges/quality-score.png?s=c0a55ac5381a3f8fdacd95eeacc5e5ad8926695f)](https://scrutinizer-ci.com/g/mathielen/import-engine/)
 [![Code Coverage](https://scrutinizer-ci.com/g/mathielen/import-engine/badges/coverage.png?s=5f083d5500d3ec956d5fc86a8570a97e2bb9c6dd)](https://scrutinizer-ci.com/g/mathielen/import-engine/)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/985f7541-2ef9-4b92-98d3-8cf7f4144e74/mini.png)](https://insight.sensiolabs.com/projects/985f7541-2ef9-4b92-98d3-8cf7f4144e74)
 [![Latest Stable Version](https://poser.pugx.org/mathielen/import-engine/v/stable.png)](https://packagist.org/packages/mathielen/import-engine)
 
 Full-blown importer stack for importing almost any data into your application. Can be used for exports, too.
@@ -50,7 +51,7 @@ The general idea of this library is the following:
   * A TargetStorage that may be a file, a database table, an array, an object-tree, etc
   * A [Mapping](#mapping), which may contain converters, field-mappings, etc
   * A [Validation](#validation), that may contain validation-rules for data read from the SourceStorage and/or validation-rules for data that will be written to the TargetStorage.
-  * [Logging](#logging)
+  * An [Eventsystem](#eventsystem) for implementing detailed [Logging](#eventsystem) or other interactions within the process.
 * An [Import](#import) is a specific definition of the process. It uses the [Importer](#importer) and has the specific informations that is mandatory for processing the data. That is a SourceStorage, a TargetStorage and a [Mapping](#mapping).
 * The [ImportRunner](#importrunner) is used to process the Import.
 * Every run of an Import is represented by an [ImportRun](#importrun)
@@ -96,7 +97,13 @@ $desp = new DoctrineQueryStorageProvider($em, $queries);
 ```
 
 #### UploadFileStorageProvider
+You can use a Provider to facilitate a File-Upload.
 
+```php
+use Mathielen\ImportEngine\Storage\Provider\UploadFileStorageProvider;
+
+$ufsp = new UploadFileStorageProvider('/tmp'); //path to where the uploaded files will be transferred to
+```
 
 #### Automatic CSV Delimiter Discovery for FileStorageProviders
 FileStorageProviders may use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
@@ -281,15 +288,40 @@ $previewData = $importRunner->preview($import);
 //dont really write, just validate
 $importRun = $importRunner->dryRun($import);
 
-//do everything
+//do the import
 $importRun = $importRunner->run($import);
 ```
 
 ### ImportRun statistics
 @TODO
 
-### Logging
-@TODO
+### Eventsystem
+You can interact with the running import via the [Symfony Eventdispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html).
+
+```php
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Mathielen\ImportEngine\Import\Run\ImportRunner;
+use Mathielen\ImportEngine\Import\Event\ImportEvent;
+
+$myListener = function (ImportEvent $event) {
+    $currentRow = $event->getCurrentRow(); //readonly access to current row in the process
+    $importRun = $event->getImportRun(); //access the current importrun
+};
+
+$eventDispatcher = new EventDispatcher();
+$eventDispatcher->addListener(ImportEvent::COMPILE, $myListener);
+$eventDispatcher->addListener(ImportEvent::START, $myListener);
+$eventDispatcher->addListener(ImportEvent::AFTER_READ, $myListener);
+$eventDispatcher->addListener(ImportEvent::AFTER_CONVERSION, $myListener);
+$eventDispatcher->addListener(ImportEvent::AFTER_WRITE, $myListener);
+$eventDispatcher->addListener(ImportEvent::FINISH, $myListener);
+
+
+$importRunner = new ImportRunner($eventDispatcher);
+
+$import = ...
+$importRun = $importRunner->run($import);
+```
 
 License
 -------

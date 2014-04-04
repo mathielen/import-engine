@@ -22,13 +22,24 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
                 new MimeTypeDiscoverStrategy()));
     }
 
-    public function storage($id)
+    /**
+     * (non-PHPdoc)
+     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
+     */
+    public function select($id)
     {
         if ($id instanceof UploadedFile && $id->isValid()) {
-            $id = $id->move($this->targetDirectory);
+            $newFile = $id->move($this->targetDirectory, uniqid() . $id->getClientOriginalName());
+
+            $selection = new StorageSelection(
+                $this->targetDirectory.  '/' . $newFile->getFilename(),
+                $id->getClientOriginalName(),
+                new \SplFileObject($newFile));
+        } else {
+            throw new \InvalidArgumentException("Not an uploadedfile: ".print_r($id, true));
         }
 
-        return parent::storage($id);
+        return $selection;
     }
 
 }
