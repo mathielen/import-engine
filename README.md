@@ -70,7 +70,8 @@ $finder = Finder::create()
   ->in('tests/metadata/testfiles')
   ->name('*.csv')
   ->name('*.tab')
-  ->size('>0K');
+  ->size('>0K')
+;
   
 $ffsp = new FinderFileStorageProvider($finder);
 ```
@@ -86,7 +87,8 @@ $em = ... //Doctrine2 EntityManager
 $qb = $em->createQueryBuilder()
   ->select('a')
   ->from('MySystem\Entity\Address', 'a')
-  ->andWhere('a.id > 10');
+  ->andWhere('a.id > 10')
+;
 
 $queries = array(
   'MySystem/Entity/MyEntity',
@@ -139,6 +141,7 @@ $validator = ... //Symfony Validator
 $validation = Validation::build($validator)
   ->addSourceConstraint('salutation', new NotBlank()) //source field 'salutation' should not be empty
   ->addSourceConstraint('zipcode', new Regex("/[0-9]{5}/")) //source field 'zipcode' should be 5 digits
+;
 ```
 
 #### Target data Validation
@@ -194,7 +197,8 @@ $import = ...
 
 $import->mappings()
   ->add('SALUTATION_FIELD', 'salutation')
-  ->add('FILE_FIELD0', 'first_name');
+  ->add('FILE_FIELD0', 'first_name')
+;
 ```
 
 ### Converting fields
@@ -207,7 +211,8 @@ There are a some field-level build-in converters available:
 $import = ...
 
 $import->mappings()
-  ->add('SALUTATION_FIELD', 'salutation', 'upperCase');
+  ->add('SALUTATION_FIELD', 'salutation', 'upperCase')
+;
 ```
 
 ### Custom fieldlevel-converting
@@ -238,7 +243,8 @@ $array = array();
 $import = Import::build($importer)
   ->setSourceStorage(new ArrayStorage($array))
   ->mappings()
-  ->add('salutation', 'gender', 'salutationToGender');
+  ->add('salutation', 'gender', 'salutationToGender')
+;
 ```
 
 ### Custom rowlevel-converting
@@ -270,7 +276,8 @@ $array = array();
 $import = Import::build($importer)
   ->setSourceStorage(new ArrayStorage($array))
   ->mappings()
-  ->add('fullname', null, 'splitNames');
+  ->add('fullname', null, 'splitNames')
+;
 ```
 
 ### ImportRunner
