@@ -16,7 +16,7 @@ As the Data-Import library offers a great toolkit to implement a data import/exp
 
 Features
 --------
-* Storage Abstraction for CSV files, Excel files, databases and more. Providing nice features like automatic delimiter- and mapping-discovering.
+* Storage Abstraction for CSV files, Excel files, databases and more. Providing nice features like [automatic delimiter- and mapping-discovering](#automatic-csv-delimiter-discovery-for-filestorageproviders).
 * Storage Provisioning (virtual file system) for local files, remote files, uploaded files, database connections and more.
 * A mapping sub-system, for building various mappings for your import: field-field, field-converter-field, field-converter-object and more.
 * Automatic mapping into object tree's using the [JMSSerializer](http://jmsyst.com/libs/serializer)
