@@ -60,6 +60,7 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
                 } else {
                     return new ZipFormat();
                 }
+            case 'text/csv':
             case 'text/plain':
                 return new CsvFormat();
             case 'application/vnd.ms-excel':
