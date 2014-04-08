@@ -125,6 +125,11 @@ $ffsp->setStorageFactory(
 This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterFormatFactory to determine the delimiter.
 
 ### Validation
+You can get the source and target validation errors with:
+```php
+$import = ...
+$import->getViolations();
+```
 
 #### Source data validation
 ```php
@@ -332,7 +337,7 @@ use Mathielen\DataImport\Event\ImportProcessEvent;
 use Mathielen\DataImport\Event\ImportItemEvent;
 
 $myListener = function ($event) {
-	if ($event instanceof ImportItemEvent) {
+    if ($event instanceof ImportItemEvent) {
     	$currentResult = $event->getCurrentResult(); //readonly access to current result in the process (might be false)
     }
 };
@@ -344,6 +349,7 @@ $eventDispatcher->addListener(ImportItemEvent::AFTER_FILTER, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSION, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSIONFILTER, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_WRITE, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_VALIDATION, $myListener);
 $eventDispatcher->addListener(ImportProcessEvent::AFTER_FINISH, $myListener);
 
 
