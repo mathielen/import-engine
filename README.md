@@ -170,8 +170,9 @@ use Mathielen\ImportEngine\Storage\Provider\UploadFileStorageProvider;
 
 $ffsp = ...
 $validation = ...
+$targetStorage = ...
 
-$importer = Importer::build(new ArrayStorage($targetArray = array())) //target storage
+$importer = Importer::build($targetStorage)
   ->addSourceStorageProvider('uploadedFile', new UploadFileStorageProvider('/tmp'))
   ->addSourceStorageProvider('myLocalFiles', $ffsp)
   ->setValidation($validation)  
@@ -199,7 +200,8 @@ use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
-$importer = Importer::build(new ArrayStorage($targetArray = array()));
+$targetArray = ...
+$importer = Importer::build($targetArray);
 $import = Import::build($importer)
   ->setSourceStorage(new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvFormat()));
 
