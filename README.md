@@ -16,8 +16,12 @@ As the Data-Import library offers a great toolkit to implement a data import/exp
 
 Features
 --------
-* Storage Abstraction for CSV files, Excel files, databases and more. Providing nice features like [automatic delimiter- and mapping-discovering](#automatic-csv-delimiter-discovery-for-filestorageproviders).
-* Storage Provisioning (virtual file system) for local files, remote files, uploaded files, database connections and more.
+* A Storage Abstraction-layer that supports nice features like [automatic delimiter-discovering](#automatic-csv-delimiter-discovery-for-filestorageproviders) or processing compressed files. Currently these storages are supported:
+  * CSV files
+  * Excel files
+  * Doctrine2 queries
+  * Compressed files support (with a single file inside)
+* Storage Provisioning. Provide a list of possible storage-containers for your import. I.e. local files, remote files, uploaded files, database connections, service endpoints and more.
 * A mapping sub-system, for building various mappings for your import: field-field, field-converter-field, field-converter-object and more.
 * Automatic mapping into object tree's using the [JMSSerializer](http://jmsyst.com/libs/serializer)
 * Source (read) and Target (write) validation using [Symfony Validation](http://symfony.com/doc/current/book/validation.html). Annotations can be used.
