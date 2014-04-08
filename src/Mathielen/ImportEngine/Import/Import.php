@@ -7,8 +7,8 @@ use Mathielen\ImportEngine\Mapping\Mapping;
 use Mathielen\ImportEngine\Validation\Validation;
 use Mathielen\ImportEngine\Mapping\Mappings;
 use Mathielen\DataImport\Workflow;
-use Mathielen\ImportEngine\Storage\StorageSubtypeInterface;
 use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
+use Mathielen\ImportEngine\Storage\StorageFormatInterface;
 
 class Import
 {
@@ -35,7 +35,7 @@ class Import
 
     private $sourceStorageProviderId;
     private $sourceStorageId;
-    private $sourceStorageSubtypeId;
+    private $sourceStorageFormatId;
     private $dryrun;
 
     /**
@@ -171,11 +171,11 @@ class Import
 
         $this->sourceStorageId = $sourceStorageId;
 
-        //initially get auto type
-        if ($sourceStorageId && $this->getSourceStorage() instanceof StorageSubtypeInterface) {
-            $this->sourceStorageSubtypeId = $this->getSourceStorage()->getType()->getId();
+        //initially get auto format
+        if ($sourceStorageId && $this->getSourceStorage() instanceof StorageFormatInterface) {
+            $this->sourceStorageFormatId = $this->getSourceStorage()->getFormat()->getId();
         } else {
-            $this->sourceStorageSubtypeId = null;
+            $this->sourceStorageFormatId = null;
         }
 
         return $this;
@@ -195,21 +195,21 @@ class Import
         return $this;
     }
 
-    public function getSourceStorageSubtypeId()
+    public function getSourceStorageFormatId()
     {
-        return $this->sourceStorageSubtypeId;
+        return $this->sourceStorageFormatId;
     }
 
-    public function setSourceStorageSubtypeId($sourceStorageSubtypeId)
+    public function setSourceStorageFormatId($sourceStorageFormatId)
     {
-        if (!($this->getSourceStorage() instanceof StorageSubtypeInterface)) {
-            throw new \LogicException("Storage offers no subtype support");
+        if (!($this->getSourceStorage() instanceof StorageFormatInterface)) {
+            throw new \LogicException("Storage offers no format support");
         }
-        if (!in_array($sourceStorageSubtypeId, $this->getSourceStorage()->getAvailableTypes())) {
-            throw new \InvalidArgumentException("Invalid subtype given: ".$sourceStorageSubtypeId);
+        if (!in_array($sourceStorageFormatId, $this->getSourceStorage()->getAvailableFormats())) {
+            throw new \InvalidArgumentException("Invalid format given: ".$sourceStorageFormatId);
         }
 
-        $this->sourceStorageSubtypeId = $sourceStorageSubtypeId;
+        $this->sourceStorageFormatId = $sourceStorageFormatId;
 
         return $this;
     }

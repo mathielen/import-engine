@@ -1,5 +1,5 @@
 <?php
-namespace Mathielen\ImportEngine\Storage\Type\Discovery\Mime;
+namespace Mathielen\ImportEngine\Storage\Format\Discovery\Mime;
 
 class MimeTypeDiscoverer
 {

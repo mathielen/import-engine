@@ -1,7 +1,7 @@
 <?php
-namespace Mathielen\ImportEngine\Storage\Type;
+namespace Mathielen\ImportEngine\Storage\Format;
 
-class CsvType extends Type
+class CsvFormat extends Format
 {
 
     public $delimiter = ';';

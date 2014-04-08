@@ -46,7 +46,7 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
      */
     public function reader()
     {
-        return new IteratorReader($this);
+        //return new IteratorReader($this);
     }
 
     /**

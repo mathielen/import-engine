@@ -1,7 +1,7 @@
 <?php
-namespace Mathielen\ImportEngine\Storage\Type;
+namespace Mathielen\ImportEngine\Storage\Format;
 
-class ExcelType extends Type
+class ExcelFormat extends Format
 {
 
     public $headerinfirstrow = true;

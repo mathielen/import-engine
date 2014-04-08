@@ -4,8 +4,8 @@ namespace Mathielen\ImportEngine\Import\Run;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Finder\Finder;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
-use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
-use Mathielen\ImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
+use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
+use Mathielen\ImportEngine\Storage\Format\Factory\CsvAutoDelimiterFormatFactory;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
@@ -32,7 +32,7 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
         $lfsp->setStorageFactory(
             new DefaultLocalFileStorageFactory(
                 new MimeTypeDiscoverStrategy(array(
-                    'text/plain' => new CsvAutoDelimiterTypeFactory()
+                    'text/plain' => new CsvAutoDelimiterFormatFactory()
                 ))));
 
         $array = array();

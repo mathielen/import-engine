@@ -111,18 +111,18 @@ $ufsp = new UploadFileStorageProvider('/tmp'); //path to where the uploaded file
 FileStorageProviders may use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
 
 ```php
-use Mathielen\ImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
+use Mathielen\ImportEngine\Storage\Format\Factory\CsvAutoDelimiterFormatFactory;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
-use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
+use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
 
 $ffsp = ...
 $ffsp->setStorageFactory(
   new DefaultLocalFileStorageFactory(
     new MimeTypeDiscoverStrategy(array(
-      'text/plain' => new CsvAutoDelimiterTypeFactory()
+      'text/plain' => new CsvAutoDelimiterFormatFactory()
 ))));
 ```
-This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterTypeFactory to determine the delimiter.
+This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterFormatFactory to determine the delimiter.
 
 ### Validation
 
@@ -197,11 +197,11 @@ use Mathielen\ImportEngine\Storage\ArrayStorage;
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Importer\Importer;
-use Mathielen\ImportEngine\Storage\Type\CsvType;
+use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
 $importer = Importer::build(new ArrayStorage($targetArray = array()));
 $import = Import::build($importer)
-  ->setSourceStorage(new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvType()));
+  ->setSourceStorage(new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvFormat()));
 
 ```
 

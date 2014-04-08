@@ -2,20 +2,20 @@
 namespace Mathielen\ImportEngine\Storage\Factory;
 
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
-use Mathielen\ImportEngine\Storage\Type\Discovery\TypeDiscoverStrategyInterface;
+use Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface;
 use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
 
 class DefaultLocalFileStorageFactory implements StorageFactoryInterface
 {
 
     /**
-     * @var TypeDiscoverStrategyInterface
+     * @var FormatDiscoverStrategyInterface
      */
-    private $typeDiscoverStrategyInterface;
+    private $formatDiscoverStrategyInterface;
 
-    public function __construct(TypeDiscoverStrategyInterface $typeDiscoverStrategyInterface)
+    public function __construct(FormatDiscoverStrategyInterface $formatDiscoverStrategyInterface)
     {
-        $this->typeDiscoverStrategyInterface = $typeDiscoverStrategyInterface;
+        $this->formatDiscoverStrategyInterface = $formatDiscoverStrategyInterface;
     }
 
     /**
@@ -26,12 +26,12 @@ class DefaultLocalFileStorageFactory implements StorageFactoryInterface
     {
         $file = $selection->getImpl();
 
-        $type = $this->typeDiscoverStrategyInterface->getType($file->getRealPath());
-        if (!$type) {
-            throw new \LogicException("Could not discover mimetype!");
+        $format = $this->formatDiscoverStrategyInterface->getFormat($file->getRealPath());
+        if (!$format) {
+            throw new \LogicException("Could not discover format!");
         }
 
-        $localFile = new LocalFileStorage($file, $type);
+        $localFile = new LocalFileStorage($file, $format);
 
         return $localFile;
     }

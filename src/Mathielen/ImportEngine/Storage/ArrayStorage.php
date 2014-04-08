@@ -45,7 +45,7 @@ class ArrayStorage extends \SplObjectStorage implements StorageInterface
     {
         return array(
             'name' => 'Array Storage',
-            'type' => 'Array Storage',
+            'format' => 'Array Storage',
             'count' => count($this->reader())
         );
     }

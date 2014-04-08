@@ -3,7 +3,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
+use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
 
 class UploadFileStorageProvider extends AbstractFileStorageProvider
 {

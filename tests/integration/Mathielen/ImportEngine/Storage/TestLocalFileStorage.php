@@ -1,22 +1,22 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
-use Mathielen\ImportEngine\Storage\Type\CsvType;
-use Mathielen\ImportEngine\Storage\Type\ExcelType;
+use Mathielen\ImportEngine\Storage\Format\CsvFormat;
+use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 
 class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
 {
 
     public function testCsv()
     {
-        $type = new CsvType('#');
-        $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata.csv'), $type);
+        $format = new CsvFormat('#');
+        $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata.csv'), $format);
         $reader = $localFile->reader();
 
         $info = $localFile->info();
         $this->assertEquals(array(
             'name' => 'flatdata.csv',
-            'type' => $type,
+            'format' => $format,
             'size' => 2846,
             'count' => 1
         ), $info);
@@ -27,14 +27,14 @@ class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
 
     public function testXls()
     {
-        $type = new ExcelType();
-        $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata-excel.xls'), $type);
+        $format = new ExcelFormat();
+        $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata-excel.xls'), $format);
         $reader = $localFile->reader();
 
         $info = $localFile->info();
         $this->assertEquals(array(
             'name' => 'flatdata-excel.xls',
-            'type' => $type,
+            'format' => $format,
             'size' => 23552,
             'count' => 1
         ), $info);
@@ -45,14 +45,14 @@ class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
 
     public function testXlsx()
     {
-        $type = new ExcelType();
-        $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata-excel-xml.xlsx'), $type);
+        $format = new ExcelFormat();
+        $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata-excel-xml.xlsx'), $format);
         $reader = $localFile->reader();
 
         $info = $localFile->info();
         $this->assertEquals(array(
             'name' => 'flatdata-excel-xml.xlsx',
-            'type' => $type,
+            'format' => $format,
             'size' => 8895,
             'count' => 2
         ), $info);

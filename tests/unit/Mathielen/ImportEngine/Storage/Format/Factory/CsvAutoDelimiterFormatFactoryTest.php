@@ -1,7 +1,7 @@
 <?php
-namespace Mathielen\ImportEngine\Storage\Type\Factory;
+namespace Mathielen\ImportEngine\Storage\Format\Factory;
 
-class CsvAutoDelimiterTypeFactoryTest extends \PHPUnit_Framework_TestCase
+class CsvAutoDelimiterFormatFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -9,8 +9,8 @@ class CsvAutoDelimiterTypeFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGuessDelimiter($line, $expectedDelimiter)
     {
-        $csvAutoDelimiterTypeFactory = new CsvAutoDelimiterTypeFactory();
-        $actualDelimiter = $csvAutoDelimiterTypeFactory->guessDelimiter($line);
+        $csvAutoDelimiterFormatFactory = new CsvAutoDelimiterFormatFactory();
+        $actualDelimiter = $csvAutoDelimiterFormatFactory->guessDelimiter($line);
 
         $this->assertEquals($expectedDelimiter, $actualDelimiter);
     }

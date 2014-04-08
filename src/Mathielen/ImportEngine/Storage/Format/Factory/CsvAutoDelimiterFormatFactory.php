@@ -1,13 +1,13 @@
 <?php
-namespace Mathielen\ImportEngine\Storage\Type\Factory;
+namespace Mathielen\ImportEngine\Storage\Format\Factory;
 
-use Mathielen\ImportEngine\Storage\Type\CsvType;
+use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
-class CsvAutoDelimiterTypeFactory implements TypeFactory
+class CsvAutoDelimiterFormatFactory implements FormatFactory
 {
 
     /**
-     * @return \Mathielen\ImportEngine\Storage\Type\Type
+     * @return \Mathielen\ImportEngine\Storage\Format\Format
      */
     public function factor($uri)
     {
@@ -16,7 +16,7 @@ class CsvAutoDelimiterTypeFactory implements TypeFactory
         $file = new \SplFileObject($uri);
         $delimiter = $this->guessDelimiter(utf8_encode($file->getCurrentLine()));
 
-        return new CsvType($delimiter);
+        return new CsvFormat($delimiter);
     }
 
     public function guessDelimiter($line)
