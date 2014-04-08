@@ -1,7 +1,7 @@
 <?php
 use Faker\Factory;
 use Ddeboer\DataImport\Reader\ArrayReader;
-use Ddeboer\DataImport\Workflow;
+use Mathielen\DataImport\Workflow;
 use Ddeboer\DataImport\Writer\CsvWriter;
 require 'bootstrap.php';
 

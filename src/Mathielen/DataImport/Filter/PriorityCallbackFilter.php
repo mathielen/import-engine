@@ -1,5 +1,5 @@
 <?php
-namespace Mathielen\ImportEngine\Import\Filter;
+namespace Mathielen\DataImport\Filter;
 
 use Ddeboer\DataImport\Filter\CallbackFilter;
 class PriorityCallbackFilter extends CallbackFilter

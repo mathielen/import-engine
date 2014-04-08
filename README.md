@@ -132,7 +132,7 @@ This way any file that has the text/plain mime-type will be passed to the CsvAut
 #### Source data validation
 ```php
 use Mathielen\ImportEngine\Validation\Validation;
-use Mathielen\ImportEngine\Import\Filter\ClassValidatorFilter;
+use Mathielen\DataImport\Filter\ClassValidatorFilter;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -308,20 +308,23 @@ You can interact with the running import via the [Symfony Eventdispatcher](http:
 ```php
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Mathielen\ImportEngine\Import\Run\ImportRunner;
-use Mathielen\ImportEngine\Import\Event\ImportEvent;
+use Mathielen\DataImport\Event\ImportProcessEvent;
+use Mathielen\DataImport\Event\ImportItemEvent;
 
-$myListener = function (ImportEvent $event) {
-    $currentRow = $event->getCurrentRow(); //readonly access to current row in the process
-    $importRun = $event->getImportRun(); //access the current importrun
+$myListener = function ($event) {
+	if ($event instanceof ImportItemEvent) {
+    	$currentResult = $event->getCurrentResult(); //readonly access to current result in the process (might be false)
+    }
 };
 
 $eventDispatcher = new EventDispatcher();
-$eventDispatcher->addListener(ImportEvent::COMPILE, $myListener);
-$eventDispatcher->addListener(ImportEvent::START, $myListener);
-$eventDispatcher->addListener(ImportEvent::AFTER_READ, $myListener);
-$eventDispatcher->addListener(ImportEvent::AFTER_CONVERSION, $myListener);
-$eventDispatcher->addListener(ImportEvent::AFTER_WRITE, $myListener);
-$eventDispatcher->addListener(ImportEvent::FINISH, $myListener);
+$eventDispatcher->addListener(ImportProcessEvent::AFTER_PREPARE, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_READ, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_FILTER, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSION, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSIONFILTER, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_WRITE, $myListener);
+$eventDispatcher->addListener(ImportProcessEvent::AFTER_FINISH, $myListener);
 
 
 $importRunner = new ImportRunner($eventDispatcher);

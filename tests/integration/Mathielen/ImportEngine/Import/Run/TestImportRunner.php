@@ -8,9 +8,9 @@ use Mathielen\ImportEngine\Storage\Type\Discovery\MimeTypeDiscoverStrategy;
 use Mathielen\ImportEngine\Storage\Type\Factory\CsvAutoDelimiterTypeFactory;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Import\Import;
-use Mathielen\ImportEngine\Import\Event\ImportEvent;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
 use Mathielen\ImportEngine\Storage\Provider\FinderFileStorageProvider;
+use Mathielen\DataImport\Event\ImportItemEvent;
 
 class TestImportRunner extends \PHPUnit_Framework_TestCase
 {
@@ -18,12 +18,11 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
     public function test()
     {
         $eventDispatcher = new EventDispatcher();
-        $eventDispatcher->addListener(ImportEvent::COMPILE, array($this, 'onCompile'));
-        $eventDispatcher->addListener(ImportEvent::START, array($this, 'onStart'));
-        $eventDispatcher->addListener(ImportEvent::AFTER_READ, array($this, 'onAfterRead'));
-        $eventDispatcher->addListener(ImportEvent::AFTER_CONVERSION, array($this, 'onAfterConversion'));
-        $eventDispatcher->addListener(ImportEvent::AFTER_WRITE, array($this, 'onAfterWrite'));
-        $eventDispatcher->addListener(ImportEvent::FINISH, array($this, 'onFinish'));
+        $eventDispatcher->addListener(ImportItemEvent::AFTER_READ, array($this, 'onAfterRead'));
+        $eventDispatcher->addListener(ImportItemEvent::AFTER_FILTER, array($this, 'onAfterFilter'));
+        $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSION, array($this, 'onAfterConversion'));
+        $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSIONFILTER, array($this, 'onAfterConversionFilter'));
+        $eventDispatcher->addListener(ImportItemEvent::AFTER_WRITE, array($this, 'onAfterWrite'));
 
         $finder = Finder::create()
             ->in(__DIR__ . '/../../../../../metadata/testfiles')
@@ -63,40 +62,29 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $previewResult['to']);
     }
 
-    public function onCompile(ImportEvent $event)
+    public function onAfterRead(ImportItemEvent $event)
     {
-        echo "compile\n";
-        print_r($event->currentRow());
+        //echo "after Read\n";
     }
 
-    public function onStart(ImportEvent $event)
+    public function onAfterFilter(ImportItemEvent $event)
     {
-        echo "start\n";
-        print_r($event->currentRow());
+        //echo "after Filter\n";
     }
 
-    public function onAfterRead(ImportEvent $event)
+    public function onAfterConversion(ImportItemEvent $event)
     {
-        echo "after Read\n";
-        print_r($event->currentRow());
+        //echo "after Conversion\n";
     }
 
-    public function onAfterConversion(ImportEvent $event)
+    public function onAfterConversionFilter(ImportItemEvent $event)
     {
-        echo "after Conversion\n";
-        print_r($event->currentRow());
+        //echo "after ConversionFilter\n";
     }
 
-    public function onAfterWrite(ImportEvent $event)
+    public function onAfterWrite(ImportItemEvent $event)
     {
-        echo "after Write\n";
-        print_r($event->currentRow());
-    }
-
-    public function onFinish(ImportEvent $event)
-    {
-        echo "finish\n";
-        print_r($event->currentRow());
+        //echo "after Write\n";
     }
 
 }

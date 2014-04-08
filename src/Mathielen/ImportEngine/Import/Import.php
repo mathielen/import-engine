@@ -6,7 +6,7 @@ use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Mapping\Mapping;
 use Mathielen\ImportEngine\Validation\Validation;
 use Mathielen\ImportEngine\Mapping\Mappings;
-use Ddeboer\DataImport\Workflow;
+use Mathielen\DataImport\Workflow;
 use Mathielen\ImportEngine\Storage\StorageSubtypeInterface;
 use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
 

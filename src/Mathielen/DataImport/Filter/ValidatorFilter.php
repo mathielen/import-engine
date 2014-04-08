@@ -1,5 +1,5 @@
 <?php
-namespace Mathielen\ImportEngine\Import\Filter;
+namespace Mathielen\DataImport\Filter;
 
 use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;

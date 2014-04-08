@@ -7,14 +7,21 @@ class ImportRun
 {
 
     private $id;
-    private $rowsProcessed = 0;
-    private $rowsWritten = 0;
-    private $rowsSkipped = 0;
-    private $rowsInvalid = 0;
+    private $statistics;
 
     public function __construct($id)
     {
         $this->id = $id;
+    }
+
+    public function setStatistics(array $statistics)
+    {
+        return $this->statistics = $statistics;
+    }
+
+    public function getStatistics()
+    {
+        return $this->statistics;
     }
 
 }

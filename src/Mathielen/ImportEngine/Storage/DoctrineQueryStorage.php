@@ -4,7 +4,7 @@ namespace Mathielen\ImportEngine\Storage;
 use Mathielen\DataImport\Reader\DoctrineQueryReader;
 use Doctrine\ORM\QueryBuilder;
 
-class DoctrineStorage implements StorageInterface
+class DoctrineQueryStorage implements StorageInterface
 {
 
     /**
