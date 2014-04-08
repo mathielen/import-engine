@@ -84,7 +84,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     private function getBuildImportRunCode()
     {
         return $this->getBuildImportCode() . '
-            $importRunner = new Mathielen\ImportEngine\Import\Run\ImportRunner(new Symfony\Component\EventDispatcher\EventDispatcher());
+            $importRunner = new Mathielen\ImportEngine\Import\Run\ImportRunner(new Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory(new Symfony\Component\EventDispatcher\EventDispatcher()));
             $importRun = $importRunner->run($import);
         ';
     }
@@ -100,10 +100,13 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
 
     private function getBuildImporterCode()
     {
-        return $this->getBuildFFSP() .
+        return
+            $this->getBuildValidationCode() .
+            $this->getBuildFFSP() .
             $this->getBuildTargetStorage() . '
             $importer = Mathielen\ImportEngine\Importer\Importer::build($targetStorage)
-               ->addSourceStorageProvider(\'myLocalFiles\', $ffsp);
+               ->addSourceStorageProvider(\'myLocalFiles\', $ffsp)
+               ->setValidation($validation);
         ';
     }
 

@@ -128,7 +128,7 @@ This way any file that has the text/plain mime-type will be passed to the CsvAut
 You can get the source and target validation errors with:
 ```php
 $import = ...
-$import->getViolations();
+$import->validation()->getViolations();
 ```
 
 #### Source data validation
@@ -302,11 +302,15 @@ $import = Import::build($importer)
 ```
 
 ### ImportRunner
+For running a configured Import you need an ImportRunner. Internally the ImportRunner builds a workflow and runs it.
+You can change the way how the workflow is built by supplying a different WorkflowFactory.
 ```php
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Mathielen\ImportEngine\Import\Run\ImportRunner;
+use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 
-$importRunner = new ImportRunner(new EventDispatcher());
+$workflowFactory = new DefaultWorkflowFactory(new EventDispatcher());
+$importRunner = new ImportRunner($workflowFactory);
 
 $import = ...
 
@@ -321,10 +325,23 @@ $importRun = $importRunner->run($import);
 ```
 
 ### ImportRun statistics
+If you use the DefaultWorkflowFactory with your ImportRunner you get basic statistics from dryRun() and run() invocations. 
 ```php
-$importRun = ...
+$import = ...
+$importRunner = ...
 
-$importRun->getStatistics();
+$importRun = $importRunner->dryRun($import);
+$stats = $importRun->getStatistics();
+
+/*
+Array
+(
+    [processed] => 1
+    [written] => 1
+    [skipped] => 0
+    [invalid] => 0
+)
+*/
 ```
 
 ### Eventsystem
@@ -335,6 +352,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Mathielen\ImportEngine\Import\Run\ImportRunner;
 use Mathielen\DataImport\Event\ImportProcessEvent;
 use Mathielen\DataImport\Event\ImportItemEvent;
+use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 
 $myListener = function ($event) {
     if ($event instanceof ImportItemEvent) {
@@ -348,12 +366,12 @@ $eventDispatcher->addListener(ImportItemEvent::AFTER_READ, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_FILTER, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSION, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSIONFILTER, $myListener);
-$eventDispatcher->addListener(ImportItemEvent::AFTER_WRITE, $myListener);
 $eventDispatcher->addListener(ImportItemEvent::AFTER_VALIDATION, $myListener);
+$eventDispatcher->addListener(ImportItemEvent::AFTER_WRITE, $myListener);
 $eventDispatcher->addListener(ImportProcessEvent::AFTER_FINISH, $myListener);
 
-
-$importRunner = new ImportRunner($eventDispatcher);
+$workflowFactory = new DefaultWorkflowFactory($eventDispatcher);
+$importRunner = new ImportRunner($workflowFactory);
 
 $import = ...
 $importRun = $importRunner->run($import);

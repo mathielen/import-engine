@@ -3,25 +3,27 @@ namespace Mathielen\ImportEngine\Import\Run\Statistics;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Mathielen\DataImport\Event\ImportItemEvent;
+use Mathielen\ImportEngine\Import\Run\ImportRun;
 
 class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
 {
 
+    /**
+     * @var ImportRun
+     */
+    private $importrun;
+
     private $statistics;
 
-    public function __construct()
+    public function __construct(ImportRun $importrun)
     {
+        $this->importrun = $importrun;
         $this->statistics = array(
             'processed' => 0,
             'written' => 0,
             'skipped' => 0,
             'invalid' => 0
         );
-    }
-
-    public function getStatistics()
-    {
-        return $this->statistics;
     }
 
     public static function getSubscribedEvents()
@@ -39,12 +41,16 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     public function onAfterRead(ImportItemEvent $event)
     {
         ++$this->statistics['processed'];
+
+        $this->importrun->setStatistics($this->statistics);
     }
 
     public function onAfterFilter(ImportItemEvent $event)
     {
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
+
+            $this->importrun->setStatistics($this->statistics);
         }
     }
 
@@ -52,6 +58,8 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     {
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
+
+            $this->importrun->setStatistics($this->statistics);
         }
     }
 
@@ -59,6 +67,8 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     {
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
+
+            $this->importrun->setStatistics($this->statistics);
         }
     }
 
@@ -66,11 +76,15 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     {
         if (!$event->getCurrentResult()) {
             ++$this->statistics['invalid'];
+
+            $this->importrun->setStatistics($this->statistics);
         }
     }
 
     public function onAfterWrite(ImportItemEvent $event)
     {
         ++$this->statistics['written'];
+
+        $this->importrun->setStatistics($this->statistics);
     }
 }

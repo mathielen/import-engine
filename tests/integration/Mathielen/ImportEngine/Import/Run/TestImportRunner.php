@@ -11,6 +11,7 @@ use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
 use Mathielen\ImportEngine\Storage\Provider\FinderFileStorageProvider;
 use Mathielen\DataImport\Event\ImportItemEvent;
+use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 
 class TestImportRunner extends \PHPUnit_Framework_TestCase
 {
@@ -49,7 +50,7 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
             ->add('Anrede', 'salutation', 'upperCase')
             ->add('Name', 'name', 'lowerCase');
 
-        $importRunner = new ImportRunner($eventDispatcher);
+        $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
 
         $expectedResult = array(
             'StrasseHausnr' => 'Mümmelstr 12',
