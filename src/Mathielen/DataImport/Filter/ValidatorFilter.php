@@ -5,26 +5,44 @@ use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints;
 use Ddeboer\DataImport\Filter\ValidatorFilter as OriginalValidatorFilter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Mathielen\DataImport\Event\ImportItemEvent;
 
+/**
+ * Validationfilter with more options and an eventDispatcher.
+ */
 class ValidatorFilter extends OriginalValidatorFilter
 {
 
     /**
      * @var ValidatorInterface
      */
-    private $validator;
+    protected $validator;
 
-    private $line = 1;
+    protected $line = 1;
 
-    private $options = array();
+    protected $options = array();
 
-    private $violations = array();
+    protected $violations = array();
 
-    private $skipOnViolation = true;
+    protected $skipOnViolation = true;
 
-    public function __construct(ValidatorInterface $validator)
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    public function __construct(
+        ValidatorInterface $validator,
+        EventDispatcherInterface $eventDispatcher=null)
     {
         $this->validator = $validator;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function setSkipOnViolation($skipOnViolation)
@@ -60,8 +78,7 @@ class ValidatorFilter extends OriginalValidatorFilter
 
     public function filter(array $item)
     {
-        $constraints = new Constraints\Collection($this->options);
-        $list = $this->validator->validateValue($item, $constraints);
+        $list = $this->validate($item);
 
         if (count($list) > 0) {
             $this->violations[$this->line] = $list;
@@ -69,7 +86,21 @@ class ValidatorFilter extends OriginalValidatorFilter
 
         $this->line++;
 
-        return !$this->skipOnViolation || 0 === count($list);
+        $validationResult = !$this->skipOnViolation || 0 === count($list);
+
+        if ($this->eventDispatcher) {
+            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult));
+        }
+
+        return $validationResult;
+    }
+
+    protected function validate(array $item)
+    {
+        $constraints = new Constraints\Collection($this->options);
+        $list = $this->validator->validateValue($item, $constraints);
+
+        return $list;
     }
 
     /**

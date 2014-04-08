@@ -12,13 +12,14 @@ class ImportItemEvent extends Event
     const AFTER_CONVERSION = 'data-import.conversion';
     const AFTER_CONVERSIONFILTER = 'data-import.conversionfilter';
     const AFTER_WRITE = 'data-import.write';
+    const AFTER_VALIDATION = 'data-import.validation';
 
     /**
      * @var array
      */
     private $currentItem;
 
-    public function __construct(array &$item)
+    public function __construct($item)
     {
         $this->setCurrentResult($item);
     }

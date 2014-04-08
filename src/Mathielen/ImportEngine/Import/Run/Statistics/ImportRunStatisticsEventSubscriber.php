@@ -31,6 +31,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
             ImportItemEvent::AFTER_FILTER => array('onAfterFilter', 0),
             ImportItemEvent::AFTER_CONVERSION => array('onAfterConversion', 0),
             ImportItemEvent::AFTER_CONVERSIONFILTER => array('onAfterConversionFilter', 0),
+            ImportItemEvent::AFTER_VALIDATION => array('onAfterValidate', 0),
             ImportItemEvent::AFTER_WRITE => array('onAfterWrite', 0)
         );
     }
@@ -58,6 +59,13 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     {
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
+        }
+    }
+
+    public function onAfterValidate(ImportItemEvent $event)
+    {
+        if (!$event->getCurrentResult()) {
+            ++$this->statistics['invalid'];
         }
     }
 

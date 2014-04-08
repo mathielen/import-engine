@@ -124,9 +124,6 @@ $ffsp->setStorageFactory(
 ```
 This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterTypeFactory to determine the delimiter.
 
-### Storage
-@TODO
-
 ### Validation
 
 #### Source data validation
@@ -151,7 +148,7 @@ You can use the ClassValidatorFilter to map the data to an object-tree and valid
 
 ```php
 use Mathielen\ImportEngine\Validation\Validation;
-use Mathielen\ImportEngine\Import\Filter\ClassValidatorFilter;
+use Mathielen\DataImport\Filter\ClassValidatorFilter;
 use Mathielen\DataImport\Writer\ObjectWriter\JmsSerializerObjectFactory;
 
 $validator = ... //Symfony Validator
@@ -168,11 +165,13 @@ $validation = Validation::build($validator)
 ### Importer
 ```php
 use Mathielen\ImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Storage\ArrayStorage;
+use Mathielen\ImportEngine\Storage\Provider\UploadFileStorageProvider;
 
 $ffsp = ...
 $validation = ...
 
-$importer = Importer::build(new ArrayStorage($targetArray = array()))
+$importer = Importer::build(new ArrayStorage($targetArray = array())) //target storage
   ->addSourceStorageProvider('uploadedFile', new UploadFileStorageProvider('/tmp'))
   ->addSourceStorageProvider('myLocalFiles', $ffsp)
   ->setValidation($validation)  
@@ -186,9 +185,24 @@ use Mathielen\ImportEngine\Import\Import;
 $importer = ...
 
 $import = Import::build($importer)
-  ->setSourceStorageProviderId('myLocalFiles')
-  ->setSourceStorageId('tests/metadata/testfiles/100.csv')
+  ->setSourceStorageProviderId('myLocalFiles') //use this storageProvider
+  ->setSourceStorageId('tests/metadata/testfiles/flatdata.csv') //use this storage-id
 ;
+```
+
+### Source Storage
+You can either use a StorageProvider (see above) and set the selection-id or you can use a specific Storage-Handler directly:
+```php
+use Mathielen\ImportEngine\Storage\ArrayStorage;
+use Mathielen\ImportEngine\Storage\LocalFileStorage;
+use Mathielen\ImportEngine\Import\Import;
+use Mathielen\ImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Storage\Type\CsvType;
+
+$importer = Importer::build(new ArrayStorage($targetArray = array()));
+$import = Import::build($importer)
+  ->setSourceStorage(new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvType()));
+
 ```
 
 ### Mapping
@@ -300,7 +314,11 @@ $importRun = $importRunner->run($import);
 ```
 
 ### ImportRun statistics
-@TODO
+```php
+$importRun = ...
+
+$importRun->getStatistics();
+```
 
 ### Eventsystem
 You can interact with the running import via the [Symfony Eventdispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html).

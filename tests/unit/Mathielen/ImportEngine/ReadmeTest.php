@@ -43,8 +43,12 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
 
                 $code = str_replace('$ffsp = ...', $this->getBuildFFSP(), $code);
                 $code = str_replace('$targetStorage = ...', $this->getBuildTargetStorage(), $code);
+                $code = str_replace('$importRun = ...', $this->getBuildImportRunCode(), $code);
                 $code = str_replace('$importer = ...', $this->getBuildImporterCode(), $code);
                 $code = str_replace('$import = ...', $this->getBuildImportCode(), $code);
+                $code = str_replace('$validator = ...', $this->getBuildValidatorCode(), $code);
+                $code = str_replace('$validation = ...', $this->getBuildValidationCode(), $code);
+                $code = str_replace('$jms_serializer = ...', $this->getBuildJmsSerializerCode(), $code);
 
                 $chunks[] = array($startLine, $code);
                 $startLine = $endLine = null;
@@ -56,12 +60,41 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         return $chunks;
     }
 
+    private function getBuildValidationCode()
+    {
+        return $this->getBuildValidatorCode() . '
+            $validation = new Mathielen\ImportEngine\Validation\Validation($validator);
+        ';
+    }
+
+    private function getBuildValidatorCode()
+    {
+        return '
+            $validator = $this->getMock("Symfony\Component\Validator\ValidatorInterface");
+        ';
+    }
+
+    private function getBuildJmsSerializerCode()
+    {
+        return '
+            $jms_serializer = $this->getMock("JMS\Serializer\Serializer", array(), array(), "", false);
+        ';
+    }
+
+    private function getBuildImportRunCode()
+    {
+        return $this->getBuildImportCode() . '
+            $importRunner = new Mathielen\ImportEngine\Import\Run\ImportRunner(new Symfony\Component\EventDispatcher\EventDispatcher());
+            $importRun = $importRunner->run($import);
+        ';
+    }
+
     private function getBuildImportCode()
     {
         return $this->getBuildImporterCode() . '
             $a = array(array("field1"=>"data1"));
             $import = Mathielen\ImportEngine\Import\Import::build($importer);
-            $import->setSourceStorage(new \Mathielen\ImportEngine\Storage\ArrayStorage($a));
+            $import->setSourceStorage(new Mathielen\ImportEngine\Storage\ArrayStorage($a));
         ';
     }
 
@@ -69,7 +102,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getBuildFFSP() .
             $this->getBuildTargetStorage() . '
-            $importer = \Mathielen\ImportEngine\Importer\Importer::build($targetStorage)
+            $importer = Mathielen\ImportEngine\Importer\Importer::build($targetStorage)
                ->addSourceStorageProvider(\'myLocalFiles\', $ffsp);
         ';
     }
@@ -78,7 +111,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     {
         return '
             $a = array();
-            $targetStorage = new \Mathielen\ImportEngine\Storage\ArrayStorage($a);
+            $targetStorage = new Mathielen\ImportEngine\Storage\ArrayStorage($a);
         ';
     }
 

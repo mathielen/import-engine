@@ -2,6 +2,7 @@
 namespace Mathielen\DataImport\Writer\ObjectWriter;
 
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 
 class JmsSerializerObjectFactory implements ObjectFactoryInterface
 {
@@ -9,11 +10,11 @@ class JmsSerializerObjectFactory implements ObjectFactoryInterface
     private $classname;
 
     /**
-     * @var Serializer
+     * @var SerializerInterface
      */
     private $serializer;
 
-    public function __construct($classname, Serializer $serializer)
+    public function __construct($classname, SerializerInterface $serializer)
     {
         $this->classname = $classname;
         $this->serializer = $serializer;
