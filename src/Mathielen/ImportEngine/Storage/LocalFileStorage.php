@@ -61,28 +61,30 @@ class LocalFileStorage implements StorageFormatInterface
      */
     public function reader()
     {
-        return $this->formatToReader($this->format);
+        return $this->formatToReader($this->format, $this->file);
     }
 
-    private function formatToReader($format)
+    private function formatToReader($format, \SplFileObject $file)
     {
         $reader = null;
 
         if ($format instanceof CsvFormat) {
-            $reader = new CsvReader($this->file, $format->delimiter, $format->enclosure, $format->escape);
+            $reader = new CsvReader($file, $format->delimiter, $format->enclosure, $format->escape);
             $reader->setStrict(false);
             if ($format->headerinfirstrow) {
                 $reader->setHeaderRowNumber(0);
             }
 
         } elseif ($format instanceof ExcelFormat) {
-            $reader = new ExcelReader($this->file);
+            $reader = new ExcelReader($file);
             if ($format->headerinfirstrow) {
                 $reader->setHeaderRowNumber(0);
             }
 
-        } elseif ($format instanceof ZipFormat) {
-//            $reader = new CompressedStreamReader($this->typeToReader($type->getSubType()));
+        } elseif ($format instanceof ZipFormat && $format->getSubFormat()) {
+            file_put_contents('/tmp/unpacked', file_get_contents($format->getStreamUri()));
+
+            $reader = $this->formatToReader($format->getSubFormat(), new \SplFileObject('/tmp/unpacked'));
 
         } else {
             throw new \LogicException("Cannot build reader. Unknown format: ".$format);

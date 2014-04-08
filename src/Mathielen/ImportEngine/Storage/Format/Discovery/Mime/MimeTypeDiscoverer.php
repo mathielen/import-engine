@@ -8,36 +8,44 @@ class MimeTypeDiscoverer
     const MIME_DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     const MIME_XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-    public function getMimeType($filePath)
+    public function discoverMimeType($filePath)
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->file($filePath);
 
-        //fix for ms office files
+        //TODO handle other compressed mimetypes
         if ($mimeType == 'application/zip') {
-            $officeFileFormat = $this->getOfficeFileformat($filePath);
-            if ($officeFileFormat) {
-                $mimeType = $officeFileFormat;
-            }
+            $mimeType = $this->handleZipfile($filePath);
         }
 
         return $mimeType;
     }
 
-    private function getOfficeFileformat($filePath)
+    private function handleZipfile($filePath)
     {
-        $officeFileFormat = false;
+        $zipMimeType = 'application/zip';
 
         $zip = new \ZipArchive();
-        if ($zip->open($filePath) === TRUE) {
-            $officeFileFormat = $this->getOfficeFileFormatFromZip($zip);
+        if ($zip->open($filePath) === true) {
+            $zipMimeType = $this->getMimetypeFromZipArchive($zip);
             $zip->close();
         }
 
-        return $officeFileFormat;
+        return $zipMimeType;
     }
 
-    private function getOfficeFileFormatFromZip(\ZipArchive $zip)
+    private function getMimetypeFromZipArchive(\ZipArchive $zip)
+    {
+        $hasMultipleFiles = $zip->numFiles > 1;
+
+        if ($hasMultipleFiles) {
+            return $this->getMimetypeFromMultifileZip($zip);
+        } else {
+            return $this->getMimetypeFromSinglefileZip($zip);
+        }
+    }
+
+    private function getMimetypeFromMultifileZip(\ZipArchive $zip)
     {
         //check for ms office xml filetypes
         for ($i=0; $i<$zip->numFiles; $i++) {
@@ -53,26 +61,26 @@ class MimeTypeDiscoverer
             }
         }
 
-        //check for one-file-in-file zips
-        if ($zip->numFiles == 1) {
-            $stat = $zip->statIndex(0);
-            $fp = $zip->getStream($stat['name']);
-            if (!$fp) {
-                return false;
-            }
+        return 'application/zip';
+    }
 
-            $contents = '';
-            while (!feof($fp)) {
-                $contents .= fread($fp, 2);
-            }
-
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->buffer($contents);
-
-            return 'application/zip '.$mimeType;
-        } else {
-            return false;
+    private function getMimetypeFromSinglefileZip(\ZipArchive $zip)
+    {
+        $stat = $zip->statIndex(0);
+        $fp = $zip->getStream($stat['name']);
+        if (!$fp) {
+            return 'application/zip';
         }
+
+        $contents = '';
+        while (!feof($fp)) {
+            $contents .= fread($fp, 2);
+        }
+
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($contents);
+
+        return 'application/zip '.$mimeType.'@'.$stat['name'];
     }
 
 }

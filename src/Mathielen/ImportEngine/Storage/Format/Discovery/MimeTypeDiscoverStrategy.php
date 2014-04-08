@@ -5,7 +5,8 @@ use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\Discovery\Mime\MimeTypeDiscoverer;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
-use Mathielen\ImportEngine\Storage\Format\Factory\FormatFactory;
+use Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface;
+use Mathielen\ImportEngine\Storage\Format\ZipFormat;
 
 class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
 {
@@ -23,7 +24,7 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
         $this->mimetypeDiscoverer = new MimeTypeDiscoverer();
     }
 
-    public function addMimeTypeFactory($mimeType, FormatFactory $factory)
+    public function addMimeTypeFactory($mimeType, FormatFactoryInterface $factory)
     {
         $this->mimeTypeFactories[$mimeType] = $factory;
     }
@@ -34,15 +35,15 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
      */
     public function getFormat($uri)
     {
-        $mimeType = $this->mimetypeDiscoverer->getMimeType($uri);
-        @list($mimeType, $subMimeType) = explode(' ', $mimeType);
+        $mimeType = $this->mimetypeDiscoverer->discoverMimeType($uri);
+        @list($mimeType, $subInformation) = explode(' ', $mimeType);
 
-        $type = $this->mimeTypeToFormat($uri, $mimeType, $subMimeType);
+        $type = $this->mimeTypeToFormat($uri, $mimeType, $subInformation);
 
         return $type;
     }
 
-    private function mimeTypeToFormat($uri, $mimeType, $subMimeType = null)
+    private function mimeTypeToFormat($uri, $mimeType, $subInformation = null)
     {
         if (array_key_exists($mimeType, $this->mimeTypeFactories)) {
             return $this->mimeTypeFactories[$mimeType]->factor($uri);
@@ -50,9 +51,15 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
 
         //defaults
         switch ($mimeType) {
-            /*case 'application/zip':
-                //TODO
-                return new ZipType($this->mimeTypeToFileType("zip://", $subMimeType));*/
+            case 'application/zip':
+                if ($subInformation) {
+                    list($subMimeType, $subFile) = explode('@', $subInformation);
+                    $streamUri = "zip://$uri#$subFile";
+
+                    return new ZipFormat($streamUri, $this->mimeTypeToFormat($streamUri, $subMimeType));
+                } else {
+                    return new ZipFormat();
+                }
             case 'text/plain':
                 return new CsvFormat();
             case 'application/vnd.ms-excel':

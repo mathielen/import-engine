@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Storage\Format\Factory;
 
-interface FormatFactory
+interface FormatFactoryInterface
 {
 
     /**

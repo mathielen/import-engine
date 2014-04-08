@@ -3,7 +3,7 @@ namespace Mathielen\ImportEngine\Storage\Format\Factory;
 
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
-class CsvAutoDelimiterFormatFactory implements FormatFactory
+class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
 {
 
     /**
