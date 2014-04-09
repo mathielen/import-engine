@@ -34,10 +34,10 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
                 $queryBuilder = $this->entityManager->createQueryBuilder()
                     ->select('o')
                     ->from($classNameOrQuery, 'o');
-                $query = new StorageSelection($classNameOrQuery, $classNameOrQuery, $queryBuilder);
+                $query = new StorageSelection($queryBuilder, $classNameOrQuery, $classNameOrQuery);
 
             } elseif ($classNameOrQuery instanceof QueryBuilder) {
-                $query = new StorageSelection($classNameOrQuery->getDQL(), $classNameOrQuery->getDQL(), $classNameOrQuery);
+                $query = new StorageSelection($classNameOrQuery, $classNameOrQuery->getDQL(), $classNameOrQuery->getDQL());
 
             } else {
                 throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
@@ -65,7 +65,7 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
      */
-    public function select($id)
+    public function select($id = null)
     {
         return $id;
     }

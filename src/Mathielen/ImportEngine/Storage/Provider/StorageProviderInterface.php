@@ -20,6 +20,6 @@ interface StorageProviderInterface
      *
      * @return StorageSelection $selection
      */
-    public function select($id);
+    public function select($id = null);
 
 }

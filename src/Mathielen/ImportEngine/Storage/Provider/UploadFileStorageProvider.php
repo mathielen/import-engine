@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 
 class UploadFileStorageProvider extends AbstractFileStorageProvider
 {
@@ -26,15 +27,15 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
      */
-    public function select($id)
+    public function select($id = null)
     {
         if ($id instanceof UploadedFile && $id->isValid()) {
             $newFile = $id->move($this->targetDirectory, uniqid() . $id->getClientOriginalName());
 
             $selection = new StorageSelection(
+                new \SplFileObject($newFile),
                 $this->targetDirectory.  '/' . $newFile->getFilename(),
-                $id->getClientOriginalName(),
-                new \SplFileObject($newFile));
+                $id->getClientOriginalName());
         } else {
             throw new \InvalidArgumentException("Not an uploadedfile: ".print_r($id, true));
         }

@@ -46,7 +46,7 @@ class LocalFileStorage implements StorageFormatInterface
             'csv',
             'excel',
             'xml',
-            'zip'
+            'zlib'
         );
     }
 

@@ -6,7 +6,7 @@ use Mathielen\ImportEngine\Storage\Format\Discovery\Mime\MimeTypeDiscoverer;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface;
-use Mathielen\ImportEngine\Storage\Format\ZipFormat;
+use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 
 class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
 {
@@ -56,9 +56,9 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
                     list($subMimeType, $subFile) = explode('@', $subInformation);
                     $streamUri = "zip://$uri#$subFile";
 
-                    return new ZipFormat($streamUri, $this->mimeTypeToFormat($streamUri, $subMimeType));
+                    return new CompressedFormat($streamUri, $this->mimeTypeToFormat($streamUri, $subMimeType));
                 } else {
-                    return new ZipFormat();
+                    return new CompressedFormat();
                 }
             case 'text/csv':
             case 'text/plain':

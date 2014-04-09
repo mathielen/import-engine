@@ -8,11 +8,11 @@ class StorageSelection
     private $name;
     private $impl;
 
-    public function __construct($id, $name, $impl)
+    public function __construct($impl, $id=null, $name=null)
     {
+        $this->impl = $impl;
         $this->id = $id;
         $this->name = $name;
-        $this->impl = $impl;
     }
 
     public function getId()

@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Importer;
 
-class Repository
+class ImporterRepository
 {
 
     /**

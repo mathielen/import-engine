@@ -26,7 +26,7 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
     {
         $files = array();
         foreach ($this->finder->files() as $file) {
-            $item = new StorageSelection($file->getFilename(), $file->getFilename(), new \SplFileObject($file));
+            $item = new StorageSelection(new \SplFileObject($file), $file->getFilename(), $file->getFilename());
             $files[] = $item;
         }
 
@@ -37,12 +37,13 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
      */
-    public function select($id)
+    public function select($id = null)
     {
+        $selection = $id;
         if (is_string($id)) {
-            $selection = new StorageSelection($id, $id, new \SplFileObject($id));
+            $selection = new StorageSelection(new \SplFileObject($id), $id, $id);
         } elseif ($id instanceof \SplFileObject) {
-            $selection = new StorageSelection($id->getFilename(), $id->getFilename(), $id);
+            $selection = new StorageSelection($id, $id->getFilename(), $id->getFilename());
         } elseif (!($id instanceof StorageSelection)) {
             throw new \InvalidArgumentException("id must be string, SplFileObject or instance of StorageSelection");
         }

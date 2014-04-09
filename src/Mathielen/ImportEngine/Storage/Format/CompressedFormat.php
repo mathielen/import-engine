@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Storage\Format;
 
-class ZipFormat extends Format
+class CompressedFormat extends Format
 {
 
     /**
@@ -9,8 +9,8 @@ class ZipFormat extends Format
      */
     private $subFormat;
 
-    protected $name = 'Zip File';
-    protected $id = 'zip';
+    protected $name = 'Compressed File';
+    protected $id = 'zlib';
 
     public function __construct($streamUri=null, Format $subFormat=null)
     {
