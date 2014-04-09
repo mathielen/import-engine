@@ -2,6 +2,7 @@
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\StorageInterface;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 
 interface StorageProviderInterface
 {

@@ -4,7 +4,7 @@ namespace Mathielen\ImportEngine\Storage;
 use Ddeboer\DataImport\Reader\ArrayReader;
 use Ddeboer\DataImport\Writer\ArrayWriter;
 
-class ArrayStorage extends \SplObjectStorage implements StorageInterface
+class ArrayStorage implements StorageInterface
 {
 
     private $array;
@@ -48,20 +48,6 @@ class ArrayStorage extends \SplObjectStorage implements StorageInterface
             'format' => 'Array Storage',
             'count' => count($this->reader())
         );
-    }
-
-    /**
-     * @return array|null
-     */
-    public function preview($rowNum = 0)
-    {
-        $i = 0;
-        foreach ($this->reader() as $row) {
-            if ($i == $rowNum) {
-                return $row;
-            }
-            ++$i;
-        }
     }
 
 }

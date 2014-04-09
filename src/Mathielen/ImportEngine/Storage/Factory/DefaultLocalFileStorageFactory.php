@@ -3,7 +3,7 @@ namespace Mathielen\ImportEngine\Storage\Factory;
 
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
 use Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface;
-use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 
 class DefaultLocalFileStorageFactory implements StorageFactoryInterface
 {

@@ -2,6 +2,7 @@
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 
 abstract class AbstractFileStorageProvider implements StorageProviderInterface
 {

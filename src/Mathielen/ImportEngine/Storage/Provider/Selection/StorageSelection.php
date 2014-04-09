@@ -1,5 +1,5 @@
 <?php
-namespace Mathielen\ImportEngine\Storage\Provider;
+namespace Mathielen\ImportEngine\Storage\Provider\Selection;
 
 class StorageSelection
 {

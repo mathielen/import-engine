@@ -2,8 +2,9 @@
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Mathielen\ImportEngine\Storage\DoctrineQueryStorage;
 use Doctrine\ORM\QueryBuilder;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
+use Mathielen\ImportEngine\Storage\DoctrineStorage;
 
 class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProviderInterface
 {
@@ -57,7 +58,7 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      */
     public function storage(StorageSelection $selection)
     {
-        return new DoctrineQueryStorage($selection->getImpl());
+        return new DoctrineStorage($this->entityManager, $selection->getImpl());
     }
 
     /**

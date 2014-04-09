@@ -7,7 +7,7 @@ use Mathielen\ImportEngine\Mapping\Mapping;
 use Mathielen\ImportEngine\Validation\Validation;
 use Mathielen\ImportEngine\Mapping\Mappings;
 use Mathielen\DataImport\Workflow;
-use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 use Mathielen\ImportEngine\Storage\StorageFormatInterface;
 
 class Import

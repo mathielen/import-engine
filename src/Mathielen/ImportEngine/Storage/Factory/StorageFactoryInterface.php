@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Storage\Factory;
 
-use Mathielen\ImportEngine\Storage\Provider\StorageSelection;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 interface StorageFactoryInterface
 {
 

@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 use Symfony\Component\Finder\Finder;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 
 class FinderFileStorageProvider extends AbstractFileStorageProvider implements \IteratorAggregate
 {

@@ -20,7 +20,7 @@ class Repository
             throw new \InvalidArgumentException("Unknown importer: $id. Register first.");
         }
 
-        $this->importers[$id];
+        return $this->importers[$id];
     }
 
 }
