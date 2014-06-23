@@ -3,6 +3,8 @@ namespace Mathielen\ImportEngine\Import\Workflow;
 
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Import\Run\ImportRun;
+use Mathielen\DataImport\Workflow;
+
 interface WorkflowFactoryInterface
 {
 

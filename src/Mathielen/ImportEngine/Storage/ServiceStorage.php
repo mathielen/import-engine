@@ -1,41 +1,23 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
-use phpDocumentor\Descriptor\Interfaces\ContainerInterface;
-use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
+use Mathielen\DataImport\Reader\ServiceReader;
 
 class ServiceStorage implements StorageInterface
 {
 
-    private $serviceName;
+    private $service;
 
     private $methodName;
 
-    /**
-     *
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct($serviceName, $methodName)
+    public function __construct($service, $methodName)
     {
-        $this->serviceName = $serviceName;
+        $this->service = $service;
         $this->methodName = $methodName;
-    }
 
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
-     */
-    public function storage(StorageSelection $selection)
-    {
-        // return $this->container->
+        if (!is_callable(array($service, $methodName))) {
+            throw new \InvalidArgumentException("Cannot call method $methodName on service of class ".get_class($service));
+        }
     }
 
     /*
@@ -43,7 +25,7 @@ class ServiceStorage implements StorageInterface
      */
     public function reader()
     {
-        // TODO: Auto-generated method stub
+        return new ServiceReader($this->service, $this->methodName);
     }
 
     /*
@@ -51,7 +33,7 @@ class ServiceStorage implements StorageInterface
      */
     public function writer()
     {
-        // TODO: Auto-generated method stub
+        return new ServiceWriter($this->service, $this->methodName);
     }
 
     /*
@@ -59,7 +41,12 @@ class ServiceStorage implements StorageInterface
      */
     public function info()
     {
-        // TODO: Auto-generated method stub
+        return array(
+            'name' => get_class($this->service).'.'.$this->methodName,
+            'format' => 'Service method',
+            'size' => 0,
+            'count' => count($this->reader())
+        );
     }
 
     /*
@@ -67,6 +54,6 @@ class ServiceStorage implements StorageInterface
      */
     public function getFields()
     {
-        // TODO: Auto-generated method stub
+        return $this->reader()->getFields();
     }
 }

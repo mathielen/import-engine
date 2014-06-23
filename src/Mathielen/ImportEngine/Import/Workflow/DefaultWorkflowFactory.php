@@ -33,9 +33,8 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
         $workflow->setEventDispatcher($this->eventDispatcher);
 
         //validation
-        $import
-            ->applyValidation($workflow)
-            ->applyMapping($workflow, $import->importer()->converters());
+        $import->importer()->validation()->apply($workflow);
+        $import->mappings()->apply($workflow, $import->importer()->transformation()->converterProvider()->getAll());
 
         return $workflow;
     }
@@ -72,7 +71,7 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     public function buildRunWorkflow(Import $import, ImportRun $importRun)
     {
         //build basics
-        $workflow = $this->buildBaseWorkflow($import, $importRun);
+        $workflow = $this->buildBaseWorkflow($import);
 
         //output
         $workflow->addWriter($import->getTargetStorage()->writer());
@@ -91,7 +90,7 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     public function buildDryrunWorkflow(Import $import, ImportRun $importRun)
     {
         //build basics
-        $workflow = $this->buildBaseWorkflow($import, $importRun);
+        $workflow = $this->buildBaseWorkflow($import);
 
         //collect statistics by default
         $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun);

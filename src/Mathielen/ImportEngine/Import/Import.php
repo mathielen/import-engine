@@ -3,12 +3,8 @@ namespace Mathielen\ImportEngine\Import;
 
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\StorageInterface;
-use Mathielen\ImportEngine\Mapping\Mapping;
-use Mathielen\ImportEngine\Validation\Validation;
+use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Mapping\Mappings;
-use Mathielen\DataImport\Workflow;
-use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
-use Mathielen\ImportEngine\Storage\StorageFormatInterface;
 
 class Import
 {
@@ -19,9 +15,9 @@ class Import
     private $importer;
 
     /**
-     * @var Mappings
+     * @var Transformation
      */
-    private $mappings;
+    private $transformation;
 
     /**
      * @var StorageInterface
@@ -33,10 +29,10 @@ class Import
      */
     private $sourceStorage;
 
-    private $sourceStorageProviderId;
-    private $sourceStorageId;
-    private $sourceStorageFormatId;
-    private $dryrun;
+    /**
+     * @var Mappings
+     */
+    private $mappings;
 
     /**
      * @return \Mathielen\ImportEngine\Importer\Import
@@ -49,6 +45,7 @@ class Import
     public function __construct(Importer $importer)
     {
         $this->importer = $importer;
+        $this->transformation = new Transformation();
     }
 
     /**
@@ -60,188 +57,45 @@ class Import
     }
 
     /**
-     * @return StorageProviderInterface
-     */
-    public function getSourceStorageProvider()
-    {
-        if (empty($this->sourceStorageProviderId)) {
-            throw new \LogicException("sourceStorageProviderId must be set first.");
-        }
-
-        return $this->importer->getSourceStorageProvider($this->sourceStorageProviderId);
-    }
-
-    /**
-     * @return StorageInterface
-     */
-    public function getSourceStorage()
-    {
-        if (!$this->sourceStorage && $this->sourceStorageId) {
-            return $this->getSourceStorageProvider()->storage($this->sourceStorageId);
-        }
-
-        return $this->sourceStorage;
-    }
-
-    public function setSourceStorage(StorageInterface $sourceStorage)
-    {
-        $this->sourceStorage = $sourceStorage;
-
-        return $this;
-    }
-
-    /**
-     * @return StorageInterface
-     */
-    public function getTargetStorage()
-    {
-        return $this->importer()->getTargetStorage();
-    }
-
-    /**
      * @return Mappings
      */
     public function mappings()
     {
         if (!$this->mappings) {
-            $this->mappings = $this->importer->buildMappings($this->getSourceStorage()->reader());
+            $this->mappings = $this->transformation->buildMapping($this->getSourceStorage()->reader());
         }
 
         return $this->mappings;
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Validation\Validation
+     * @return \Mathielen\ImportEngine\Storage\StorageInterface
      */
-    public function validation()
+    public function targetStorage()
     {
-        return $this->importer()->validation();
+        return $this->importer->targetStorage();
     }
 
-    //set and get values to mapping (needs to be magic, as the import is the VO in forms)
-    public function __get($property)
+    /**
+     * @return \Mathielen\ImportEngine\Storage\StorageInterface
+     */
+    public function getSourceStorage()
     {
-        @list ($mappingProperty, $id) = explode('_', $property);
-        if (!$id) {
-            return;
+        if (!$this->sourceStorage && $this->importer->getSourceStorage()) {
+            $this->sourceStorage = $this->importer->getSourceStorage();
         }
 
-        $fields = $this->getSourceStorage()->getFields();
-        $fieldName = $fields[$id];
-
-        $mapping = $this->mappings()->get($fieldName);
-        if (!$mapping) {
-            return null;
-        }
-
-        return $mapping->$mappingProperty;
-    }
-
-    public function __set($property, $value)
-    {
-        @list ($mappingProperty, $id) = explode('_', $property);
-        if (!$id) {
-            return;
-        }
-
-        $fields = $this->getSourceStorage()->getFields();
-        $fieldName = $fields[$id];
-
-        if ($mappingProperty == 'to') {
-            $this->mappings()->add($fieldName, $value);
-        } elseif ($mappingProperty == 'converter') {
-            $this->mappings()->setConverter($fieldName, $value);
-        }
-    }
-
-    public function getSourceStorageId()
-    {
-        return $this->sourceStorageId;
-    }
-
-    public function setSourceStorageId($sourceStorageId)
-    {
-        if (!$this->getSourceStorageProvider()) {
-            throw new \LogicException("Cannot set sourceStorage without setting sourceStorageProvider first");
-        }
-
-        if (!empty($sourceStorageId) && !($sourceStorageId instanceof StorageSelection)) {
-            $sourceStorageId = $this->getSourceStorageProvider()->select($sourceStorageId);
-        }
-
-        $this->sourceStorageId = $sourceStorageId;
-
-        //initially get auto format
-        if ($sourceStorageId && $this->getSourceStorage() instanceof StorageFormatInterface) {
-            $this->sourceStorageFormatId = $this->getSourceStorage()->getFormat()->getId();
-        } else {
-            $this->sourceStorageFormatId = null;
-        }
-
-        return $this;
-    }
-
-    public function getSourceStorageProviderId()
-    {
-        return $this->sourceStorageProviderId;
-    }
-
-    public function setSourceStorageProviderId($sourceStorageProviderId)
-    {
-        $this->sourceStorageProviderId = $sourceStorageProviderId;
-        $this->setSourceStorageId(null);
-        $this->sourceStorage = null;
-
-        return $this;
-    }
-
-    public function getSourceStorageFormatId()
-    {
-        return $this->sourceStorageFormatId;
-    }
-
-    public function setSourceStorageFormatId($sourceStorageFormatId)
-    {
-        if (!($this->getSourceStorage() instanceof StorageFormatInterface)) {
-            throw new \LogicException("Storage offers no format support");
-        }
-        if (!in_array($sourceStorageFormatId, $this->getSourceStorage()->getAvailableFormats())) {
-            throw new \InvalidArgumentException("Invalid format given: ".$sourceStorageFormatId);
-        }
-
-        $this->sourceStorageFormatId = $sourceStorageFormatId;
-
-        return $this;
+        return $this->sourceStorage;
     }
 
     /**
      * @return \Mathielen\ImportEngine\Import\Import
      */
-    public function applyValidation(Workflow $workflow)
+    public function setSourceStorage(StorageInterface $storage)
     {
-        $this->validation() ? $this->validation()->apply($workflow) : null;
+        $this->sourceStorage = $storage;
 
         return $this;
-    }
-
-    /**
-     * @return \Mathielen\ImportEngine\Import\Import
-     */
-    public function applyMapping(Workflow $workflow, array $converters)
-    {
-        $this->mappings()->apply($workflow, $converters);
-
-        return $this;
-    }
-
-    public function setDryrun($dryrun)
-    {
-        $this->dryrun = $dryrun;
-    }
-
-    public function isDryrun()
-    {
-        return $this->dryrun;
     }
 
 }

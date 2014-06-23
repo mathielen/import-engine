@@ -4,8 +4,8 @@ namespace Mathielen\ImportEngine\Mapping\Converter\Provider;
 interface ConverterProviderInterface
 {
 
-    public function converters();
+    public function getAll();
 
-    public function converter($id);
+    public function get($id);
 
 }

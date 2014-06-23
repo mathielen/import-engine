@@ -6,7 +6,7 @@ use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Mathielen\DataImport\Filter\ValidatorFilter;
 
-class Validation
+class ValidatorValidation implements ValidationInterface
 {
 
     /**

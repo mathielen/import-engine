@@ -30,12 +30,12 @@ class DefaultConverterProvider implements ConverterProviderInterface
         return $this;
     }
 
-    public function converters()
+    public function getAll()
     {
         return $this->converters;
     }
 
-    public function converter($id)
+    public function get($id)
     {
         return $this->converters[$id];
     }

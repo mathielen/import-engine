@@ -6,8 +6,8 @@ use Mathielen\ImportEngine\Import\Import;
 class ImportRun
 {
 
-    private $id;
-    private $statistics;
+    protected $id;
+    protected $statistics;
 
     public function __construct($id)
     {

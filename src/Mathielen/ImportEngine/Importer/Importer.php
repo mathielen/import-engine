@@ -1,35 +1,39 @@
 <?php
 namespace Mathielen\ImportEngine\Importer;
 
-use Mathielen\ImportEngine\Mapping\DefaultMappingFactory;
-use Mathielen\ImportEngine\Mapping\MappingFactoryInterface;
 use Mathielen\ImportEngine\Storage\StorageInterface;
-use Ddeboer\DataImport\Reader\ReaderInterface;
-use Mathielen\ImportEngine\Mapping\Converter\Provider\ConverterProviderInterface;
-use Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
-use Mathielen\ImportEngine\Validation\Validation;
 use Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface;
+use Mathielen\ImportEngine\Transformation\Transformation;
+use Mathielen\ImportEngine\Validation\ValidationInterface;
+use Mathielen\ImportEngine\Validation\DummyValidation;
 
 class Importer
 {
 
+    /**
+     * @var StorageProviderInterface[]
+     */
     private $sourceStorageProviders = array();
+
+    /**
+     * @var StorageInterface
+     */
+    private $sourceStorage;
+
+    /**
+     * @var StorageInterface
+     */
     private $targetStorage;
 
     /**
-     * @var MappingFactoryInterface
-     */
-    private $mappingFactory;
-
-    /**
-     * @var Validation
+     * @var ValidationInterface
      */
     private $validation;
 
     /**
-     * @var ConverterProviderInterface
+     * @var Transformation
      */
-    private $mappingConverterProvider;
+    private $transformation;
 
     /**
      * @return \Mathielen\ImportEngine\Importer\Importer
@@ -43,38 +47,42 @@ class Importer
     {
         $this->targetStorage = $targetStorage;
 
-        $this->setMappingFactory(new DefaultMappingFactory());
-        $this->setMappingConverterProvider(new DefaultConverterProvider());
+        $this->validation = new DummyValidation();
+        $this->transformation = new Transformation();
     }
 
     /**
      * @return \Mathielen\ImportEngine\Importer\Importer
      */
-    public function setMappingConverterProvider(ConverterProviderInterface $mappingConverterProvider)
-    {
-        $this->mappingConverterProvider = $mappingConverterProvider;
-
-        return $this;
-    }
-
-    /**
-     * @return \Mathielen\ImportEngine\Importer\Importer
-     */
-    public function setMappingFactory(MappingFactoryInterface $mappingFactory)
-    {
-        $this->mappingFactory = $mappingFactory;
-
-        return $this;
-    }
-
-    /**
-     * @return \Mathielen\ImportEngine\Importer\Importer
-     */
-    public function setValidation(Validation $validation)
+    public function setValidation(ValidationInterface $validation)
     {
         $this->validation = $validation;
 
         return $this;
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function targetStorage()
+    {
+        return $this->targetStorage;
+    }
+
+    /**
+     * @return ValidationInterface
+     */
+    public function validation()
+    {
+        return $this->validation;
+    }
+
+    /**
+     * @return \Mathielen\ImportEngine\Transformation\Transformation
+     */
+    public function transformation()
+    {
+        return $this->transformation;
     }
 
     /**
@@ -87,6 +95,9 @@ class Importer
         return $this;
     }
 
+    /**
+     * @return \Mathielen\ImportEngine\Importer\StorageProviderInterface[]
+     */
     public function getSourceStorageProviders()
     {
         return $this->sourceStorageProviders;
@@ -107,35 +118,19 @@ class Importer
     /**
      * @return StorageInterface
      */
-    public function getTargetStorage()
+    public function getSourceStorage()
     {
-        return $this->targetStorage;
+        return $this->sourceStorage;
     }
 
     /**
-     * @return Mappings
+     * @return \Mathielen\ImportEngine\Importer\Importer
      */
-    public function buildMappings(ReaderInterface $reader)
+    public function setSourceStorage(StorageInterface $sourceStorage)
     {
-        return $this->mappingFactory->factor($reader);
-    }
+        $this->sourceStorage = $sourceStorage;
 
-    /**
-     * @return Validation
-     */
-    public function validation()
-    {
-        return $this->validation;
-    }
-
-    public function converters()
-    {
-        return $this->mappingConverterProvider->converters();
-    }
-
-    public function converter($id)
-    {
-        return $this->mappingConverterProvider->converter($id);
+        return $this;
     }
 
 }
