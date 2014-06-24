@@ -69,7 +69,7 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
             case 'application/xml':
                 return new XmlFormat();
             default:
-                throw new \LogicException("Unknown mime-type: $mimeType. No registered factoried nor any default for $uri");
+                throw new \LogicException("Unknown mime-type: $mimeType. No registered factory nor any default for $uri");
         }
 
         return null;

@@ -25,6 +25,7 @@ class DefaultLocalFileStorageFactory implements StorageFactoryInterface
     public function factor(StorageSelection $selection)
     {
         $file = $selection->getImpl();
+
         if (!($file instanceof \SplFileObject)) {
             throw new \InvalidArgumentException("StorageSelection does not contain a SplFileObject as impl property");
         }

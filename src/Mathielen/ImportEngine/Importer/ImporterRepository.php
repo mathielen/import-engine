@@ -14,6 +14,9 @@ class ImporterRepository
         $this->importers[$id] = $importer;
     }
 
+    /**
+     * @return Importer
+     */
     public function get($id)
     {
         if (!array_key_exists($id, $this->importers)) {

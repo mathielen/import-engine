@@ -30,4 +30,24 @@ class StorageSelection
         return $this->impl;
     }
 
+    public function prePersist()
+    {
+        if ($this->impl instanceof \SplFileObject) {
+
+            //TODO some sort of serializable wrapper?
+            $this->impl = array(
+                'class'=>get_class($this->impl),
+                'args'=>array($this->impl->getRealPath())
+            );
+        }
+    }
+
+    public function postLoad()
+    {
+        if (is_array($this->impl)) {
+            $reflectionClass = new \ReflectionClass($this->impl['class']);
+            $this->impl = $reflectionClass->newInstanceArgs($this->impl['args']);
+        }
+    }
+
 }

@@ -35,7 +35,7 @@ class Import
     private $mappings;
 
     /**
-     * @return \Mathielen\ImportEngine\Importer\Import
+     * @return Import
      */
     public static function build(Importer $importer)
     {

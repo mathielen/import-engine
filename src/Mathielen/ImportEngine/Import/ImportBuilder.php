@@ -11,7 +11,8 @@ class ImportBuilder
      */
     private $importerRepository;
 
-    public function __construct(ImporterRepository $importerRepository)
+    public function __construct(
+        ImporterRepository $importerRepository)
     {
         $this->importerRepository = $importerRepository;
     }
@@ -19,17 +20,22 @@ class ImportBuilder
     /**
      * @return Import
      */
-    public function build(ImportConfiguration $importConfiguration)
+    public function build($importId, $configuration = array())
     {
+        $importConfiguration = $this->configuration($importId);
+
+        //TODO apply config?
+
         return $importConfiguration->buildImport();
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Configuration\ImportConfiguration
+     * @return ImportConfiguration
      */
     public function configuration($importId)
     {
         $importer = $this->importerRepository->get($importId);
+
         $importConfiguration = new ImportConfiguration($importer);
 
         if (count($importer->getSourceStorageProviders()) == 1) {

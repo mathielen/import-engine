@@ -3,28 +3,30 @@ namespace Mathielen\ImportEngine\Configuration;
 
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
 class ImportConfiguration
 {
+
+    private $id;
 
     public $sourceStorageProviderId = 'source';
     public $sourceStorageId;
     public $sourceStorageFormatId;
-    public $dryrun = false;
 
-    private $import;
+    /**
+     * @var Importer
+     */
     private $importer;
 
     public function __construct(Importer $importer)
     {
+        $this->id = uniqid();
         $this->importer = $importer;
     }
 
-    /**
-     * @return Import
-     */
-    public function import()
+    public function getId()
     {
-        return $this->import;
+        return $this->id;
     }
 
     /**
@@ -40,18 +42,32 @@ class ImportConfiguration
      */
     public function buildImport()
     {
-        $import = new Import($this->importer);
+        $import = Import::build($this->importer);
+        $this->applyConfiguration($import);
 
-        if ($this->sourceStorageProviderId) {
+        return $import;
+    }
+
+    private function applyConfiguration(Import $import)
+    {
+        if ($this->sourceStorageId instanceof StorageInterface) {
+            $import->setSourceStorage($this->sourceStorageId);
+
+        } elseif ($this->sourceStorageProviderId) {
             $sourceStorageProvider = $import->importer()->getSourceStorageProvider($this->sourceStorageProviderId);
             if ($this->sourceStorageId) {
-                $storage = $sourceStorageProvider->storage($this->sourceStorageId);
-                $import->setSourceStorage($storage);
-            }
-        }
+                //wrap to StorageSelection, if plain data & possible
+                if (!$this->sourceStorageId instanceof StorageSelection) {
+                    $this->sourceStorageId = $sourceStorageProvider->select($this->sourceStorageId);
+                }
 
-        $this->import = $import;
-        return $import;
+                $sourceStorage = $sourceStorageProvider->storage($this->sourceStorageId);
+                $import->setSourceStorage($sourceStorage);
+            }
+
+        } else {
+            throw new \InvalidArgumentException("SourceStorageId is missing or does not implement StorageInterface");
+        }
     }
 
     //set and get values to mapping (needs to be magic, as the import is the VO in forms)

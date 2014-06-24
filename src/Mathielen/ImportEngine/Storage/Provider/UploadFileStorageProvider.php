@@ -30,7 +30,7 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
     public function select($id = null)
     {
         if ($id instanceof UploadedFile && $id->isValid()) {
-            $newFile = $id->move($this->targetDirectory, uniqid() . $id->getClientOriginalName());
+            $newFile = $id->move($this->targetDirectory, $this->generateTargetFilename($id));
 
             $selection = new StorageSelection(
                 new \SplFileObject($newFile),
@@ -41,6 +41,11 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
         }
 
         return $selection;
+    }
+
+    private function generateTargetFilename(UploadedFile $file)
+    {
+        return uniqid() . $file->getClientOriginalName();
     }
 
 }
