@@ -2,7 +2,7 @@
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use phpDocumentor\Descriptor\Interfaces\ContainerInterface;
-use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class ServiceStorageProvider implements StorageProviderInterface
 {

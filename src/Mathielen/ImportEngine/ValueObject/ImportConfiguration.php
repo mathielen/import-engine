@@ -1,27 +1,34 @@
 <?php
-namespace Mathielen\ImportEngine\Configuration;
+namespace Mathielen\ImportEngine\ValueObject;
 
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Importer\Importer;
-use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
+use Mathielen\ImportEngine\Importer\ImporterRepository;
 class ImportConfiguration
 {
 
     private $id;
 
+    public $importerId;
     public $sourceStorageProviderId = 'source';
     public $sourceStorageId;
     public $sourceStorageFormatId;
+
+    /**
+     * @var Import
+     */
+    private $import;
 
     /**
      * @var Importer
      */
     private $importer;
 
-    public function __construct(Importer $importer)
+    public function __construct($importerId)
     {
         $this->id = uniqid();
-        $this->importer = $importer;
+        $this->importerId = $importerId;
     }
 
     public function getId()
@@ -29,23 +36,24 @@ class ImportConfiguration
         return $this->id;
     }
 
-    /**
-     * @return Importer
-     */
-    public function importer()
+    public function getImporter()
     {
         return $this->importer;
     }
 
-    /**
-     * @return \Mathielen\ImportEngine\Import\Import
-     */
-    public function buildImport()
+    public function getImport()
     {
-        $import = Import::build($this->importer);
-        $this->applyConfiguration($import);
+        return $this->import;
+    }
 
-        return $import;
+    public function applyImporter(Importer $importer)
+    {
+        $this->importer = $importer;
+
+        $import = Import::build($importer);
+        $this->import = $import;
+
+        $this->applyConfiguration($import);
     }
 
     private function applyConfiguration(Import $import)

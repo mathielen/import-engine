@@ -2,7 +2,7 @@
 namespace Mathielen\ImportEngine\Import;
 
 use Mathielen\ImportEngine\Importer\ImporterRepository;
-use Mathielen\ImportEngine\Configuration\ImportConfiguration;
+use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 class ImportBuilder
 {
 
@@ -18,30 +18,16 @@ class ImportBuilder
     }
 
     /**
-     * @return Import
-     */
-    public function build($importId, $configuration = array())
-    {
-        $importConfiguration = $this->configuration($importId);
-
-        //TODO apply config?
-
-        return $importConfiguration->buildImport();
-    }
-
-    /**
      * @return ImportConfiguration
      */
-    public function configuration($importId)
+    public function build(ImportConfiguration $importConfiguration)
     {
-        $importer = $this->importerRepository->get($importId);
-
-        $importConfiguration = new ImportConfiguration($importer);
-
-        if (count($importer->getSourceStorageProviders()) == 1) {
+        $importer = $this->importerRepository->get($importConfiguration->importerId);
+        if (!isset($importConfiguration->sourceStorageProviderId) && count($importer->getSourceStorageProviders()) == 1) {
             $importConfiguration->sourceStorageProviderId = key($importer->getSourceStorageProviders());
         }
 
+        $importConfiguration->applyImporter($importer);
         return $importConfiguration;
     }
 

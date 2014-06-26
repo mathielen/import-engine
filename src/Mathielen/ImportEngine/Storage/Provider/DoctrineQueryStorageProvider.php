@@ -3,7 +3,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
-use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Storage\DoctrineStorage;
 
 class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProviderInterface

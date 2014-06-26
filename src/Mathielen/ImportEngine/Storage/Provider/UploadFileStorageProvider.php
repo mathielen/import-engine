@@ -4,7 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
-use Mathielen\ImportEngine\Storage\Provider\Selection\StorageSelection;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class UploadFileStorageProvider extends AbstractFileStorageProvider
 {
@@ -45,7 +45,7 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
 
     private function generateTargetFilename(UploadedFile $file)
     {
-        return uniqid() . $file->getClientOriginalName();
+        return uniqid() . '_' . $file->getClientOriginalName();
     }
 
 }
