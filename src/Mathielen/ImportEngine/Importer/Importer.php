@@ -6,6 +6,7 @@ use Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface;
 use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Validation\ValidationInterface;
 use Mathielen\ImportEngine\Validation\DummyValidation;
+use Mathielen\ImportEngine\Importer\Discovery\DiscoverStrategyInterface;
 
 class Importer
 {
