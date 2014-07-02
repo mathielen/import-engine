@@ -15,17 +15,17 @@ class ServiceReader implements ReaderInterface
      */
     protected $iterableResult;
 
-    private $service;
+    /**
+     * @var callable
+     */
+    private $callable;
 
-    private $methodName;
-
-    public function __construct($service, $methodName)
+    public function __construct(callable $callable, $objectTransformer)
     {
-        $this->service = $service;
-        $this->methodName = $methodName;
+        $this->callable = $callable;
 
-        if (!is_callable(array($service, $methodName))) {
-            throw new \InvalidArgumentException("Cannot call method $methodName on service of class ".get_class($service));
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException("Cannot call callable");
         }
     }
 
@@ -95,7 +95,7 @@ class ServiceReader implements ReaderInterface
 
     private function getDataFromService()
     {
-        return call_user_func(array($this->service, $this->methodName));
+        return call_user_func($this->callable);
     }
 
 }

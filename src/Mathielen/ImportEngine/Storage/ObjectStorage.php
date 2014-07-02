@@ -71,8 +71,8 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
      */
     public function info()
     {
-        return array(
-        );
+        return new StorageInfo(array(
+        ));
     }
 
 }

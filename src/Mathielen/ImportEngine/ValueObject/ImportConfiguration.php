@@ -3,115 +3,66 @@ namespace Mathielen\ImportEngine\ValueObject;
 
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Importer\Importer;
-use Mathielen\ImportEngine\ValueObject\StorageSelection;
-use Mathielen\ImportEngine\Importer\ImporterRepository;
+use Mathielen\ImportEngine\Storage\StorageLocator;
 class ImportConfiguration
 {
 
-    private $id;
+    private $importerId;
 
-    public $importerId;
-    public $sourceStorageProviderId = 'source';
-    public $sourceStorageId;
-    public $sourceStorageFormatId;
+    /**
+     * @var StorageSelection
+     */
+    private $sourceStorageSelection;
 
     /**
      * @var Import
      */
     private $import;
 
-    /**
-     * @var Importer
-     */
-    private $importer;
-
-    public function __construct($importerId)
+    public function __construct($importerId, StorageSelection $sourceStorageSelection=null)
     {
-        $this->id = uniqid();
+        $this->setImporterId($importerId);
+        $this->setSourceStorageSelection($sourceStorageSelection);
+    }
+
+    public function setSourceStorageSelection(StorageSelection $sourceStorageSelection)
+    {
+        $this->sourceStorageSelection = $sourceStorageSelection;
+
+        return $this;
+    }
+
+    public function setImporterId($importerId)
+    {
         $this->importerId = $importerId;
+
+        return $this;
     }
 
-    public function getId()
+    public function getImporterId()
     {
-        return $this->id;
+        return $this->importerId;
     }
 
-    public function getImporter()
+    /**
+     * @return ImportConfiguration
+     */
+    public function applyImport(Import $import, StorageLocator $storageLocator)
     {
-        return $this->importer;
+        $this->import = $import;
+
+        $storage = $storageLocator->getStorage($this->sourceStorageSelection);
+        $import->setSourceStorage($storage);
+
+        return $this;
     }
 
+    /**
+     * @return Import
+     */
     public function getImport()
     {
         return $this->import;
-    }
-
-    public function applyImporter(Importer $importer)
-    {
-        $this->importer = $importer;
-
-        $import = Import::build($importer);
-        $this->import = $import;
-
-        $this->applyConfiguration($import);
-    }
-
-    private function applyConfiguration(Import $import)
-    {
-        if ($this->sourceStorageId instanceof StorageInterface) {
-            $import->setSourceStorage($this->sourceStorageId);
-
-        } elseif ($this->sourceStorageProviderId) {
-            $sourceStorageProvider = $import->importer()->getSourceStorageProvider($this->sourceStorageProviderId);
-            if ($this->sourceStorageId) {
-                //wrap to StorageSelection, if plain data & possible
-                if (!$this->sourceStorageId instanceof StorageSelection) {
-                    $this->sourceStorageId = $sourceStorageProvider->select($this->sourceStorageId);
-                }
-
-                $sourceStorage = $sourceStorageProvider->storage($this->sourceStorageId);
-                $import->setSourceStorage($sourceStorage);
-            }
-
-        } else {
-            throw new \InvalidArgumentException("SourceStorageId is missing or does not implement StorageInterface");
-        }
-    }
-
-    //set and get values to mapping (needs to be magic, as the import is the VO in forms)
-    public function __get($property)
-    {
-        @list ($mappingProperty, $id) = explode('_', $property);
-        if (!$id) {
-            return;
-        }
-
-        $fields = $this->import()->getSourceStorage()->getFields();
-        $fieldName = $fields[$id];
-
-        $mapping = $this->import()->mappings()->get($fieldName);
-        if (!$mapping) {
-            return null;
-        }
-
-        return $mapping->$mappingProperty;
-    }
-
-    public function __set($property, $value)
-    {
-        @list ($mappingProperty, $id) = explode('_', $property);
-        if (!$id) {
-            return;
-        }
-
-        $fields = $this->import()->getSourceStorage()->getFields();
-        $fieldName = $fields[$id];
-
-        if ($mappingProperty == 'to') {
-            $this->import()->mappings()->add($fieldName, $value);
-        } elseif ($mappingProperty == 'converter') {
-            $this->import()->mappings()->setConverter($fieldName, $value);
-        }
     }
 
 }

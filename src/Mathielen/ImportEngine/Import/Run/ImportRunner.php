@@ -4,6 +4,8 @@ namespace Mathielen\ImportEngine\Import\Run;
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\DataImport\Workflow;
 use Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface;
+use Mathielen\ImportEngine\Exception\ImportRunException;
+use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class ImportRunner
 {
@@ -21,15 +23,16 @@ class ImportRunner
     /**
      * @return array
      */
-    public function preview(Import $import, $offset = 0)
+    public function preview(ImportRun $importRun, $offset = 0)
     {
+        $import = $importRun->getConfiguration()->getImport();
         $previewResult = array('from'=>array(), 'to'=>array());
 
         $workflow = $this->workflowFactory->buildPreviewWorkflow($import, $previewResult, $offset);
         $workflow->process();
 
         if (0 == count($previewResult['from'])) {
-            throw new \LogicException("Unable to preview row with offset '$offset'. EOF?");
+            throw new ImportRunException("Unable to preview row with offset '$offset'. EOF?");
         }
 
         //cleanup from writer
@@ -45,10 +48,9 @@ class ImportRunner
     /**
      * @return ImportRun
      */
-    public function dryRun(Import $import)
+    public function dryRun(ImportRun $importRun)
     {
-        $importRun = new ImportRun(uniqid());
-
+        $import = $importRun->getConfiguration()->getImport();
         $workflow = $this->workflowFactory->buildDryrunWorkflow($import, $importRun);
         $workflow->process();
 
@@ -58,10 +60,9 @@ class ImportRunner
     /**
      * @return ImportRun
      */
-    public function run(Import $import)
+    public function run(ImportRun $importRun)
     {
-        $importRun = new ImportRun(uniqid());
-
+        $import = $importRun->getConfiguration()->getImport();
         $workflow = $this->workflowFactory->buildRunWorkflow($import, $importRun);
         $workflow->process();
 

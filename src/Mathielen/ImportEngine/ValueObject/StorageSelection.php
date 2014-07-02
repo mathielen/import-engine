@@ -4,15 +4,22 @@ namespace Mathielen\ImportEngine\ValueObject;
 class StorageSelection
 {
 
-    private $id;
-    private $name;
-    private $impl;
+    protected $providerId = 'default';
+    protected $id;
+    protected $name;
+    protected $impl;
 
-    public function __construct($impl, $id=null, $name=null)
+    public function __construct($impl, $id=null, $name=null, $providerId = 'default')
     {
         $this->impl = $impl;
         $this->id = $id;
         $this->name = $name;
+        $this->providerId = $providerId;
+    }
+
+    public function getProviderId()
+    {
+        return $this->providerId;
     }
 
     public function getId()
@@ -44,6 +51,7 @@ class StorageSelection
 
     public function postLoad()
     {
+        //TODO some sort of serializable wrapper?
         if (is_array($this->impl)) {
             $reflectionClass = new \ReflectionClass($this->impl['class']);
             $this->impl = $reflectionClass->newInstanceArgs($this->impl['args']);

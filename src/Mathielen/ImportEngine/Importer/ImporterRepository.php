@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Importer;
 
+use Mathielen\ImportEngine\Storage\StorageInterface;
 class ImporterRepository
 {
 
@@ -9,9 +10,18 @@ class ImporterRepository
      */
     private $importers = array();
 
-    public function register($id, Importer $importer)
+    /**
+     * @var ImporterPrecondition[]
+     */
+    private $preconditions = array();
+
+    public function register($id, Importer $importer, ImporterPrecondition $precondition = null)
     {
         $this->importers[$id] = $importer;
+
+        if ($precondition) {
+            $this->preconditions[$id] = $precondition;
+        }
     }
 
     /**
@@ -24,6 +34,20 @@ class ImporterRepository
         }
 
         return $this->importers[$id];
+    }
+
+    /**
+     * @return id
+     */
+    public function find(StorageInterface $storage)
+    {
+        foreach ($this->preconditions as $importerId => $precondition) {
+            if ($precondition->isSatisfiedBy($storage)) {
+                return $importerId;
+            }
+        }
+
+        return null;
     }
 
 }

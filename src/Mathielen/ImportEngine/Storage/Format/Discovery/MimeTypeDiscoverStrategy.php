@@ -7,6 +7,7 @@ use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface;
 use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
+use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
 {
@@ -69,7 +70,7 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
             case 'application/xml':
                 return new XmlFormat();
             default:
-                throw new \LogicException("Unknown mime-type: $mimeType. No registered factory nor any default for $uri");
+                throw new InvalidConfigurationException("Unknown mime-type: $mimeType. No registered factory nor any default for $uri");
         }
 
         return null;

@@ -2,22 +2,38 @@
 namespace Mathielen\ImportEngine\Storage;
 
 use Mathielen\DataImport\Reader\ServiceReader;
+use Mathielen\DataImport\Writer\ServiceWriter;
 
 class ServiceStorage implements StorageInterface
 {
 
-    private $service;
+    /**
+     * @var callable
+     */
+    private $callable;
 
-    private $methodName;
+    private $objectMapper;
+    private $objectFactory;
 
-    public function __construct($service, $methodName)
+    public function __construct(callable $callable, $objectMapper=null)
     {
-        $this->service = $service;
-        $this->methodName = $methodName;
+        $this->callable = $callable;
+        $this->setObjectFactory($objectMapper);
+        $this->setObjectTransformer($objectMapper);
 
-        if (!is_callable(array($service, $methodName))) {
-            throw new \InvalidArgumentException("Cannot call method $methodName on service of class ".get_class($service));
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException("Cannot call callable");
         }
+    }
+
+    public function setObjectFactory($objectFactory)
+    {
+        $this->objectFactory = $objectFactory;
+    }
+
+    public function setObjectTransformer($objectTransformer)
+    {
+        $this->objectTransformer = $objectTransformer;
     }
 
     /*
@@ -25,7 +41,10 @@ class ServiceStorage implements StorageInterface
      */
     public function reader()
     {
-        return new ServiceReader($this->service, $this->methodName);
+        return new ServiceReader(
+            $this->callable,
+            $this->objectTransformer
+        );
     }
 
     /*
@@ -33,7 +52,10 @@ class ServiceStorage implements StorageInterface
      */
     public function writer()
     {
-        return new ServiceWriter($this->service, $this->methodName);
+        return new ServiceWriter(
+            $this->callable,
+            $this->objectFactory
+        );
     }
 
     /*
@@ -41,12 +63,12 @@ class ServiceStorage implements StorageInterface
      */
     public function info()
     {
-        return array(
-            'name' => get_class($this->service).'.'.$this->methodName,
+        return new StorageInfo(array(
+            'name' => get_class($this->service).'::'.$this->methodName,
             'format' => 'Service method',
             'size' => 0,
             'count' => count($this->reader())
-        );
+        ));
     }
 
     /*

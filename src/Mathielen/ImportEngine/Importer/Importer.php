@@ -2,19 +2,12 @@
 namespace Mathielen\ImportEngine\Importer;
 
 use Mathielen\ImportEngine\Storage\StorageInterface;
-use Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface;
 use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Validation\ValidationInterface;
 use Mathielen\ImportEngine\Validation\DummyValidation;
-use Mathielen\ImportEngine\Importer\Discovery\DiscoverStrategyInterface;
 
 class Importer
 {
-
-    /**
-     * @var StorageProviderInterface[]
-     */
-    private $sourceStorageProviders = array();
 
     /**
      * @var StorageInterface
@@ -84,36 +77,6 @@ class Importer
     public function transformation()
     {
         return $this->transformation;
-    }
-
-    /**
-     * @return \Mathielen\ImportEngine\Importer\Importer
-     */
-    public function addSourceStorageProvider($id, StorageProviderInterface $storageProvider)
-    {
-        $this->sourceStorageProviders[$id] = $storageProvider;
-
-        return $this;
-    }
-
-    /**
-     * @return \Mathielen\ImportEngine\Importer\StorageProviderInterface[]
-     */
-    public function getSourceStorageProviders()
-    {
-        return $this->sourceStorageProviders;
-    }
-
-    /**
-     * @return StorageProviderInterface
-     */
-    public function getSourceStorageProvider($id)
-    {
-        if (!array_key_exists($id, $this->sourceStorageProviders)) {
-            throw new \InvalidArgumentException("'$id' not found");
-        }
-
-        return $this->sourceStorageProviders[$id];
     }
 
     /**

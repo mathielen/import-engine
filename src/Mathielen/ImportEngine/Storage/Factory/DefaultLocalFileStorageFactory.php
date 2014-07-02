@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Factory;
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
 use Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
+use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class DefaultLocalFileStorageFactory implements StorageFactoryInterface
 {
@@ -27,12 +28,12 @@ class DefaultLocalFileStorageFactory implements StorageFactoryInterface
         $file = $selection->getImpl();
 
         if (!($file instanceof \SplFileObject)) {
-            throw new \InvalidArgumentException("StorageSelection does not contain a SplFileObject as impl property");
+            throw new InvalidConfigurationException("StorageSelection does not contain a SplFileObject as impl property but this is mandatory for a LocalFileStorage.");
         }
 
         $format = $this->formatDiscoverStrategyInterface->getFormat($file->getRealPath());
         if (!$format) {
-            throw new \LogicException("Could not discover format!");
+            throw new InvalidConfigurationException("Could not discover format!");
         }
 
         $localFile = new LocalFileStorage($file, $format);

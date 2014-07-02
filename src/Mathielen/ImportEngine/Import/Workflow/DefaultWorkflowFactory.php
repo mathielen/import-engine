@@ -2,13 +2,13 @@
 namespace Mathielen\ImportEngine\Import\Workflow;
 
 use Mathielen\ImportEngine\Import\Import;
-use Mathielen\ImportEngine\Import\Run\ImportRun;
 use Ddeboer\DataImport\Writer\ArrayWriter;
 use Ddeboer\DataImport\Filter\OffsetFilter;
 use Mathielen\DataImport\Filter\PriorityCallbackFilter;
 use Mathielen\DataImport\Workflow;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Mathielen\ImportEngine\Import\Run\Statistics\ImportRunStatisticsEventSubscriber;
+use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class DefaultWorkflowFactory implements WorkflowFactoryInterface
 {
@@ -74,7 +74,7 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
         $workflow = $this->buildBaseWorkflow($import);
 
         //output
-        $workflow->addWriter($import->getTargetStorage()->writer());
+        $workflow->addWriter($import->targetStorage()->writer());
 
         //collect statistics by default
         $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun);

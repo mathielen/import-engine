@@ -43,11 +43,11 @@ class ArrayStorage implements StorageInterface
      */
     public function info()
     {
-        return array(
+        return new StorageInfo(array(
             'name' => 'Array Storage',
             'format' => 'Array Storage',
             'count' => count($this->reader())
-        );
+        ));
     }
 
 }

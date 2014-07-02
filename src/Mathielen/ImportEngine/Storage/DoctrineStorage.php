@@ -66,11 +66,11 @@ class DoctrineStorage implements StorageInterface
     {
         $count = count($this->reader());
 
-        return array(
+        return new StorageInfo(array(
             'name' => $this->queryBuilder->getDQL(),
             'type' => 'DQL Query',
             'count' => $count
-        );
+        ));
     }
 
     /**

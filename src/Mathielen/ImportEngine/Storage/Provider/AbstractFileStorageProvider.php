@@ -3,6 +3,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
+use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 abstract class AbstractFileStorageProvider implements StorageProviderInterface
 {
@@ -24,7 +25,7 @@ abstract class AbstractFileStorageProvider implements StorageProviderInterface
     public function storage(StorageSelection $selection)
     {
         if (!$this->storageFactory) {
-            throw new \LogicException('StorageFactory is missing.');
+            throw new InvalidConfigurationException('StorageFactory is missing.');
         }
 
         return $this->storageFactory->factor($selection);

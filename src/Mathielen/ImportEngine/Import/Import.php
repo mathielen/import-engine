@@ -81,10 +81,6 @@ class Import
      */
     public function getSourceStorage()
     {
-        if (!$this->sourceStorage && $this->importer->getSourceStorage()) {
-            $this->sourceStorage = $this->importer->getSourceStorage();
-        }
-
         return $this->sourceStorage;
     }
 

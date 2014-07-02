@@ -3,7 +3,7 @@ namespace Mathielen\ImportEngine\Import\Run\Statistics;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Mathielen\DataImport\Event\ImportItemEvent;
-use Mathielen\ImportEngine\Import\Run\ImportRun;
+use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
 {

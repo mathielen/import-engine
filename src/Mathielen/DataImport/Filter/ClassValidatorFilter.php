@@ -22,6 +22,10 @@ class ClassValidatorFilter extends ValidatorFilter
         $this->objectFactory = $objectFactory;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \Mathielen\DataImport\Filter\ValidatorFilter::validate()
+     */
     protected function validate(array $item)
     {
         $object = $this->objectFactory->factor($item);

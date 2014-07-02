@@ -7,6 +7,7 @@ use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\ZipFormat;
+use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class LocalFileStorage implements StorageFormatInterface
 {
@@ -87,7 +88,7 @@ class LocalFileStorage implements StorageFormatInterface
             $reader = $this->formatToReader($format->getSubFormat(), new \SplFileObject('/tmp/unpacked'));
 
         } else {
-            throw new \LogicException("Cannot build reader. Unknown format: ".$format);
+            throw new InvalidConfigurationException("Cannot build reader. Unknown format: ".$format);
         }
 
         return $reader;
@@ -99,7 +100,7 @@ class LocalFileStorage implements StorageFormatInterface
      */
     public function writer()
     {
-
+        //TODO
     }
 
     /**
@@ -108,12 +109,13 @@ class LocalFileStorage implements StorageFormatInterface
      */
     public function info()
     {
-        return array(
+        return new StorageInfo(array(
             'name' => $this->file->getFilename(),
+            'hash' => md5_file($this->file->getRealPath()),
             'format' => $this->getFormat(),
             'size' => $this->file->getSize(),
             'count' => count($this->reader())
-        );
+        ));
     }
 
 }

@@ -95,6 +95,9 @@ class ValidatorFilter extends OriginalValidatorFilter
         return $validationResult;
     }
 
+    /**
+     * @return \Symfony\Component\Validator\ConstraintViolationListInterface
+     */
     protected function validate(array $item)
     {
         $constraints = new Constraints\Collection($this->options);

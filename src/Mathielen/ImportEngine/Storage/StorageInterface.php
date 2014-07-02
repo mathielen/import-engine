@@ -17,7 +17,11 @@ interface StorageInterface
      */
     public function writer();
 
+    /**
+     * @return StorageInfo
+     */
     public function info();
+
     public function getFields();
 
 }
