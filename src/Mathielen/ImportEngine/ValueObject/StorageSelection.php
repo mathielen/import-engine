@@ -53,8 +53,12 @@ class StorageSelection
     {
         //TODO some sort of serializable wrapper?
         if (is_array($this->impl)) {
-            $reflectionClass = new \ReflectionClass($this->impl['class']);
-            $this->impl = $reflectionClass->newInstanceArgs($this->impl['args']);
+            try {
+                $reflectionClass = new \ReflectionClass($this->impl['class']);
+                $this->impl = $reflectionClass->newInstanceArgs($this->impl['args']);
+            } catch (\Exception $e) {
+                //do nothing
+            }
         }
     }
 

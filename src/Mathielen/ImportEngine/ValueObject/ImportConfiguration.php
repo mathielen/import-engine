@@ -2,7 +2,6 @@
 namespace Mathielen\ImportEngine\ValueObject;
 
 use Mathielen\ImportEngine\Import\Import;
-use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\StorageLocator;
 class ImportConfiguration
 {

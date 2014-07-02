@@ -2,6 +2,8 @@
 namespace Mathielen\ImportEngine\Mapping\Converter\Provider;
 
 use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
+use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
+use Ddeboer\DataImport\ValueConverter\ValueConverterInterface;
 
 class DefaultConverterProvider implements ConverterProviderInterface
 {
@@ -25,6 +27,13 @@ class DefaultConverterProvider implements ConverterProviderInterface
      */
     public function add($id, $converter)
     {
+        if (!($converter instanceof ValueConverterInterface || $converter instanceof ItemConverterInterface)) {
+            throw new \InvalidArgumentException("Convert must implement ValueConverterInterface or ItemConverterInterface");
+        }
+        if (empty($id)) {
+            throw new \InvalidArgumentException("Id cannot be empty");
+        }
+
         $this->converters[$id] = $converter;
 
         return $this;

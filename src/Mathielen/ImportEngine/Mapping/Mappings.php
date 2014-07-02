@@ -5,6 +5,7 @@ use Mathielen\DataImport\Workflow;
 use Ddeboer\DataImport\ValueConverter\ValueConverterInterface;
 use Ddeboer\DataImport\ItemConverter\MappingItemConverter;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
+use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class Mappings extends \ArrayObject
 {
@@ -27,15 +28,19 @@ class Mappings extends \ArrayObject
         $this->getOrCreateMapping($from)->to = $to;
 
         if ($converter) {
-            $this->setConverter($from, $converter);
+            $this->setConverter($converter, $from);
         }
 
         return $this;
     }
 
-    public function setConverter($from, $converter)
+    public function setConverter($converter, $from=null)
     {
-        $this->getOrCreateMapping($from)->converter = $converter;
+        if ($from) {
+            $this->getOrCreateMapping($from)->converter = $converter;
+        } else {
+            $this->append($converter);
+        }
     }
 
     /**
@@ -64,18 +69,28 @@ class Mappings extends \ArrayObject
         $fieldMapping = array();
 
         foreach ($this as $mapping) {
-            $to = $mapping->to;
-            $from = $mapping->from;
-            $converter = $mapping->converter;
+            if ($mapping instanceof Mapping) {
+                $to = $mapping->to;
+                $from = $mapping->from;
+                $converter = $mapping->converter;
+            } else {
+                $converter = $mapping;
+            }
 
             if (!empty($to)) {
                 $fieldMapping[$from] = $to;
             }
 
-            if ($converter && array_key_exists($converter, $converters)) {
+            if ($converter) {
+                if (!array_key_exists($converter, $converters)) {
+                    print_r($mapping);die();
+                    throw new InvalidConfigurationException("Converter with id '$converter' not found in configured converters.");
+                }
+
                 $converter = $converters[$converter];
                 if ($converter instanceof ValueConverterInterface) {
-                    $workflow->addValueConverter($to, $converter);
+                    $workflow->addValueConverter($from, $converter);
+
                 } elseif ($converter instanceof ItemConverterInterface) {
                     $workflow->addItemConverter($converter);
                 }

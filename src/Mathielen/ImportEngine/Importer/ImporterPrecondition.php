@@ -54,7 +54,7 @@ class ImporterPrecondition
      */
     public function field($fieldname)
     {
-        $this->anyfields[] = $fieldname;
+        $this->anyfields[] = strtolower($fieldname);
 
         return $this;
     }
@@ -66,7 +66,7 @@ class ImporterPrecondition
      */
     public function fieldset(array $fieldset)
     {
-        $this->fieldset = $fieldset;
+        $this->fieldset = array_map('strtolower', $fieldset);
 
         return $this;
     }
@@ -149,6 +149,8 @@ class ImporterPrecondition
             return true;
         }
 
+        $fields = array_map('strtolower', $fields);
+
         foreach ($this->anyfields as $anyField) {
            if (!in_array($anyField, $fields)) {
                return false;
@@ -158,13 +160,13 @@ class ImporterPrecondition
         return true;
     }
 
-    private function isSatisfiedFieldset(array $fields)
+    private function isSatisfiedFieldset(array $fieldset)
     {
         if (empty($this->fieldset)) {
             return true;
         }
 
-        return $fields == $this->fieldset;
+        return array_map('strtolower', $fieldset) == $this->fieldset;
     }
 
 }
