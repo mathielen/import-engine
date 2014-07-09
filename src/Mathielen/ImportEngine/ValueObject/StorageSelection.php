@@ -39,7 +39,7 @@ class StorageSelection
 
     public function prePersist()
     {
-        if ($this->impl instanceof \SplFileObject) {
+        if ($this->impl instanceof \SplFileInfo) {
 
             //TODO some sort of serializable wrapper?
             $this->impl = array(

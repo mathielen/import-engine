@@ -20,6 +20,24 @@ abstract class AbstractFileStorageProvider implements StorageProviderInterface
 
     /**
      * (non-PHPdoc)
+     * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
+     */
+    public function select($id = null)
+    {
+        if ($id instanceof \SplFileInfo) {
+            $selection = new StorageSelection($id, $id->getFilename(), $id->getFilename());
+            return $selection;
+        } elseif (!($id instanceof StorageSelection)) {
+            throw new \InvalidArgumentException("Id must be an Instance of SplFileInfo or StorageSelection");
+        }
+
+        return $id;
+    }
+
+
+
+    /**
+     * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
      */
     public function storage(StorageSelection $selection)

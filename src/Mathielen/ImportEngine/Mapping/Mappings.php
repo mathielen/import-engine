@@ -83,7 +83,6 @@ class Mappings extends \ArrayObject
 
             if ($converter) {
                 if (!array_key_exists($converter, $converters)) {
-                    print_r($mapping);die();
                     throw new InvalidConfigurationException("Converter with id '$converter' not found in configured converters.");
                 }
 

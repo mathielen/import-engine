@@ -13,7 +13,7 @@ class LocalFileStorage implements StorageFormatInterface
 {
 
     /**
-     * @var \SplFileObject
+     * @var \SplFileInfo
      */
     private $file;
 
@@ -22,7 +22,7 @@ class LocalFileStorage implements StorageFormatInterface
      */
     private $format;
 
-    public function __construct(\SplFileObject $file, Format $format)
+    public function __construct(\SplFileInfo $file, Format $format)
     {
         $this->file = $file;
         $this->format = $format;
@@ -65,7 +65,7 @@ class LocalFileStorage implements StorageFormatInterface
         return $this->formatToReader($this->format, $this->file);
     }
 
-    private function formatToReader($format, \SplFileObject $file)
+    private function formatToReader($format, \SplFileInfo $file)
     {
         $reader = null;
 
@@ -77,7 +77,7 @@ class LocalFileStorage implements StorageFormatInterface
             }
 
         } elseif ($format instanceof ExcelFormat) {
-            $reader = new ExcelReader($file);
+            $reader = new ExcelReader($file->openFile());
             if ($format->headerinfirstrow) {
                 $reader->setHeaderRowNumber(0);
             }

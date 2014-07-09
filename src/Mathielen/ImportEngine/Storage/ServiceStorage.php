@@ -12,7 +12,17 @@ class ServiceStorage implements StorageInterface
      */
     private $callable;
 
-    private $objectMapper;
+    /**
+     * @var callable
+     */
+    private $prepareCallable;
+
+    /**
+     * @var callable
+     */
+    private $finishCallable;
+
+    private $objectTransformer;
     private $objectFactory;
 
     public function __construct(callable $callable, $objectMapper=null)
@@ -24,6 +34,16 @@ class ServiceStorage implements StorageInterface
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Cannot call callable");
         }
+    }
+
+    public function setPrepareCallable(callable $callable)
+    {
+        $this->prepareCallable = $callable;
+    }
+
+    public function setFinishCallable(callable $callable)
+    {
+        $this->finishCallable = $callable;
     }
 
     public function setObjectFactory($objectFactory)
@@ -41,10 +61,12 @@ class ServiceStorage implements StorageInterface
      */
     public function reader()
     {
-        return new ServiceReader(
+        $reader = new ServiceReader(
             $this->callable,
             $this->objectTransformer
         );
+
+        return $reader;
     }
 
     /*
@@ -52,10 +74,19 @@ class ServiceStorage implements StorageInterface
      */
     public function writer()
     {
-        return new ServiceWriter(
+        $writer = new ServiceWriter(
             $this->callable,
             $this->objectFactory
         );
+
+        if ($this->prepareCallable) {
+            $writer->setPrepareCallable($this->prepareCallable);
+        }
+        if ($this->finishCallable) {
+            $writer->setFinishCallable($this->finishCallable);
+        }
+
+        return $writer;
     }
 
     /*
@@ -64,7 +95,7 @@ class ServiceStorage implements StorageInterface
     public function info()
     {
         return new StorageInfo(array(
-            'name' => get_class($this->service).'::'.$this->methodName,
+            'name' => $this->callable.'',
             'format' => 'Service method',
             'size' => 0,
             'count' => count($this->reader())

@@ -33,14 +33,14 @@ class UploadFileStorageProvider extends AbstractFileStorageProvider
             $newFile = $id->move($this->targetDirectory, $this->generateTargetFilename($id));
 
             $selection = new StorageSelection(
-                new \SplFileObject($newFile),
+                new \SplFileInfo($newFile),
                 $this->targetDirectory.  '/' . $newFile->getFilename(),
                 $id->getClientOriginalName());
-        } else {
-            throw new \InvalidArgumentException("Not an uploadedfile: ".print_r($id, true));
+
+            return $selection;
         }
 
-        return $selection;
+        return parent::select($id);
     }
 
     private function generateTargetFilename(UploadedFile $file)

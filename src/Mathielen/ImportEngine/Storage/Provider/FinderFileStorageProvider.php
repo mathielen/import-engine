@@ -26,7 +26,7 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
     {
         $files = array();
         foreach ($this->finder->files() as $file) {
-            $item = new StorageSelection(new \SplFileObject($file), $file->getFilename(), $file->getFilename());
+            $item = new StorageSelection(new \SplFileInfo($file), $file->getFilename(), $file->getFilename());
             $files[] = $item;
         }
 
@@ -41,14 +41,11 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
     {
         $selection = $id;
         if (is_string($id)) {
-            $selection = new StorageSelection(new \SplFileObject($id), $id, $id);
-        } elseif ($id instanceof \SplFileObject) {
-            $selection = new StorageSelection($id, $id->getFilename(), $id->getFilename());
-        } elseif (!($id instanceof StorageSelection)) {
-            throw new \InvalidArgumentException("id must be string, SplFileObject or instance of StorageSelection");
+            $selection = new StorageSelection(new \SplFileInfo($id), $id, $id);
+            return $selection;
         }
 
-        return $selection;
+        return parent::select($id);
     }
 
 }

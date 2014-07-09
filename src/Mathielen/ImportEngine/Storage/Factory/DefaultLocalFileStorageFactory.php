@@ -27,8 +27,8 @@ class DefaultLocalFileStorageFactory implements StorageFactoryInterface
     {
         $file = $selection->getImpl();
 
-        if (!($file instanceof \SplFileObject)) {
-            throw new InvalidConfigurationException("StorageSelection does not contain a SplFileObject as impl property but this is mandatory for a LocalFileStorage.");
+        if (!($file instanceof \SplFileInfo)) {
+            throw new InvalidConfigurationException("StorageSelection does not contain a SplFileInfo as impl property but this is mandatory for a LocalFileStorage.");
         }
 
         $format = $this->formatDiscoverStrategyInterface->getFormat($file->getRealPath());
