@@ -19,9 +19,15 @@ class ImportItemEvent extends Event
      */
     private $currentItem;
 
-    public function __construct($item)
+    /**
+     * @var array
+     */
+    private $info;
+
+    public function __construct($item, $info = array())
     {
         $this->setCurrentResult($item);
+        $this->info = $info;
     }
 
     /**
@@ -37,6 +43,15 @@ class ImportItemEvent extends Event
     public function getCurrentResult()
     {
         return $this->currentItem;
+    }
+
+    public function getInfo($property = null)
+    {
+        if (is_null($property)) {
+            return $this->info;
+        }
+
+        return $this->info['property'];
     }
 
 }

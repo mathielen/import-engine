@@ -25,6 +25,9 @@ class ValidatorFilter extends OriginalValidatorFilter
 
     protected $violations = array();
 
+    /* if we skip everything else in the workflow when an error occurs, the "line" property of
+     * the following filters aren correct. so you can disable the skip behavior here.
+     */
     protected $skipOnViolation = true;
 
     /**
@@ -86,13 +89,13 @@ class ValidatorFilter extends OriginalValidatorFilter
 
         $this->line++;
 
-        $validationResult = !$this->skipOnViolation || 0 === count($list);
+        $validationResult = 0 === count($list);
 
         if ($this->eventDispatcher) {
-            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult));
+            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult?$item:false));
         }
 
-        return $validationResult;
+        return !$this->skipOnViolation || $validationResult;
     }
 
     /**
