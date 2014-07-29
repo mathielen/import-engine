@@ -43,6 +43,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         ++$this->statistics['processed'];
 
         $this->importrun->setStatistics($this->statistics);
+        $this->importrun->finish();
     }
 
     public function onAfterFilter(ImportItemEvent $event)

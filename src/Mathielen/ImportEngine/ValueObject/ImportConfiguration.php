@@ -21,7 +21,10 @@ class ImportConfiguration
     public function __construct($importerId, StorageSelection $sourceStorageSelection=null)
     {
         $this->setImporterId($importerId);
-        $this->setSourceStorageSelection($sourceStorageSelection);
+
+        if ($sourceStorageSelection) {
+            $this->setSourceStorageSelection($sourceStorageSelection);
+        }
     }
 
     public function setSourceStorageSelection(StorageSelection $sourceStorageSelection)
@@ -62,6 +65,17 @@ class ImportConfiguration
     public function getImport()
     {
         return $this->import;
+    }
+
+    public function toArray()
+    {
+        return array(
+            'importerid' => $this->importerId,
+            'sourcestorageselection' => array(
+                'name' => $this->sourceStorageSelection->getName(),
+                'id' => $this->sourceStorageSelection->getId()
+            )
+        );
     }
 
 }

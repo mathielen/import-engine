@@ -42,9 +42,16 @@ class ImportRun
         return $this->configuration;
     }
 
+    public function finish()
+    {
+        $this->finishedAt = new \DateTime();
+    }
+
     public function setStatistics(array $statistics)
     {
-        return $this->statistics = $statistics;
+        $this->statistics = $statistics;
+
+        return $this;
     }
 
     public function getStatistics()
@@ -56,7 +63,7 @@ class ImportRun
     {
         return array(
             'id' => $this->id,
-            'importer_id' => $this->configuration->getImporterId(),
+            'configuration' => $this->configuration->toArray(),
             'created_at' => $this->createdAt->getTimestamp(),
             'finished_at' => $this->finishedAt?$this->finishedAt->getTimestamp():null
         );

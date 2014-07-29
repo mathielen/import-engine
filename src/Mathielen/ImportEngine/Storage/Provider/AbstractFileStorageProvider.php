@@ -34,8 +34,6 @@ abstract class AbstractFileStorageProvider implements StorageProviderInterface
         return $id;
     }
 
-
-
     /**
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
