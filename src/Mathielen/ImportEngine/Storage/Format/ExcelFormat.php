@@ -5,6 +5,7 @@ class ExcelFormat extends Format
 {
 
     public $headerinfirstrow = true;
+    public $activesheet = 0;
 
     protected $name = 'Excel File';
     protected $id = 'excel';

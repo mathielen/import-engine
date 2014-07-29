@@ -11,6 +11,16 @@ class StorageLocator
      */
     private $providers = array();
 
+    /**
+     * @var \SplObjectStorage
+     */
+    private $storageCache;
+
+    public function __construct()
+    {
+        $this->storageCache = new \SplObjectStorage();
+    }
+
     public function register($idProvider, StorageProviderInterface $provider)
     {
         $this->providers[$idProvider] = $provider;
@@ -43,9 +53,14 @@ class StorageLocator
      */
     public function getStorage(StorageSelection $selection)
     {
-        $provider = $this->get($selection->getProviderId());
+        if (!isset($this->storageCache[$selection])) {
+            $provider = $this->get($selection->getProviderId());
+            $storage = $provider->storage($selection);
 
-        return $provider->storage($selection);
+            $this->storageCache[$selection] = $storage;
+        }
+
+        return $this->storageCache[$selection];
     }
 
 }

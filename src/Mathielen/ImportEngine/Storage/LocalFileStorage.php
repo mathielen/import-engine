@@ -3,6 +3,8 @@ namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
+use Ddeboer\DataImport\Reader\ReaderInterface;
+use Ddeboer\DataImport\Writer\WriterInterface;
 use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
@@ -21,6 +23,16 @@ class LocalFileStorage implements StorageFormatInterface
      * @var Format
      */
     private $format;
+
+    /**
+     * @var ReaderInterface
+     */
+    private $reader;
+
+    /**
+     * @var WriterInterface
+     */
+    private $writer;
 
     public function __construct(\SplFileInfo $file, Format $format)
     {
@@ -62,7 +74,11 @@ class LocalFileStorage implements StorageFormatInterface
      */
     public function reader()
     {
-        return $this->formatToReader($this->format, $this->file);
+        if (!$this->reader) {
+            $this->reader = $this->formatToReader($this->format, $this->file);
+        }
+
+        return $this->reader;
     }
 
     private function formatToReader($format, \SplFileInfo $file)
@@ -77,10 +93,8 @@ class LocalFileStorage implements StorageFormatInterface
             }
 
         } elseif ($format instanceof ExcelFormat) {
-            $reader = new ExcelReader($file->openFile());
-            if ($format->headerinfirstrow) {
-                $reader->setHeaderRowNumber(0);
-            }
+            $headerRowNumber = $format->headerinfirstrow?0:null;
+            $reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->activesheet);
 
         } elseif ($format instanceof ZipFormat && $format->getSubFormat()) {
             file_put_contents('/tmp/unpacked', file_get_contents($format->getStreamUri()));
@@ -100,7 +114,11 @@ class LocalFileStorage implements StorageFormatInterface
      */
     public function writer()
     {
-        //TODO
+        if (!$this->writer) {
+           //$this->writer = $this->formatToWriter($this->format, $this->file);
+        }
+
+        return $this->writer;
     }
 
     /**

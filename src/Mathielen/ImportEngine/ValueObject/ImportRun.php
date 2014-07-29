@@ -17,6 +17,8 @@ class ImportRun
 
     protected $statistics;
 
+    protected $info;
+
     public function __construct(ImportConfiguration $configuration)
     {
         $this->id = uniqid();
@@ -57,6 +59,16 @@ class ImportRun
     public function getStatistics()
     {
         return $this->statistics;
+    }
+
+    public function setInfo(array $info)
+    {
+        $this->info = $info;
+    }
+
+    public function getInfo()
+    {
+        return $this->info;
     }
 
     public function toArray()
