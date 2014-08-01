@@ -48,20 +48,6 @@ class ImportBuilder
     /**
      * @return ImportConfiguration
      */
-    public function configure($idImporter, StorageSelection $storageSelection=null)
-    {
-        if (empty($idImporter)) {
-            throw new \InvalidArgumentException("Importer Id must be given!");
-        }
-
-        $importConfiguration = new ImportConfiguration($idImporter, $storageSelection);
-
-        return $this->build($importConfiguration);
-    }
-
-    /**
-     * @return ImportConfiguration
-     */
     public function build(ImportConfiguration $importConfiguration)
     {
         $importer = $this->importerRepository->get($importConfiguration->getImporterId());

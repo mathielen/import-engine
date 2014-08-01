@@ -18,15 +18,19 @@ class ImportConfiguration
      */
     private $import;
 
-    public function __construct($importerId, StorageSelection $sourceStorageSelection=null)
+    public function __construct(StorageSelection $sourceStorageSelection=null, $importerId=null)
     {
-        $this->setImporterId($importerId);
-
+        if ($importerId) {
+            $this->setImporterId($importerId);
+        }
         if ($sourceStorageSelection) {
             $this->setSourceStorageSelection($sourceStorageSelection);
         }
     }
 
+    /**
+     * @return ImportConfiguration
+     */
     public function setSourceStorageSelection(StorageSelection $sourceStorageSelection)
     {
         $this->sourceStorageSelection = $sourceStorageSelection;
@@ -34,8 +38,23 @@ class ImportConfiguration
         return $this;
     }
 
+    /**
+     * @return StorageSelection
+     */
+    public function getSourceStorageSelection()
+    {
+        return $this->sourceStorageSelection;
+    }
+
+    /**
+     * @return ImportConfiguration
+     */
     public function setImporterId($importerId)
     {
+        if (empty($importerId)) {
+            throw new \InvalidArgumentException("importerId must be given");
+        }
+
         $this->importerId = $importerId;
 
         return $this;
@@ -71,10 +90,10 @@ class ImportConfiguration
     {
         return array(
             'importerid' => $this->importerId,
-            'sourcestorageselection' => array(
+            'sourcestorageselection' => $this->sourceStorageSelection?array(
                 'name' => $this->sourceStorageSelection->getName(),
                 'id' => $this->sourceStorageSelection->getId()
-            )
+            ):null
         );
     }
 

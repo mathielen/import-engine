@@ -21,18 +21,11 @@ class Workflow extends OriginalWorkflow
 
     public function process()
     {
-        if (!$this->eventDispatcher) {
-            return parent::process();
-        }
-
         $importProcessEvent = new ImportProcessEvent();
         $count = 0;
 
-        // Prepare writers
-        foreach ($this->writers as $writer) {
-            $writer->prepare();
-        }
-        $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE, $importProcessEvent);
+        //Prepare
+        $this->prepare($importProcessEvent);
 
         // Read all items
         foreach ($this->reader as $item) {
@@ -61,14 +54,32 @@ class Workflow extends OriginalWorkflow
             $count++;
         }
 
+        //Finish
+        $this->finish($importProcessEvent);
+
+        return $count;
+    }
+
+    private function prepare(ImportProcessEvent $importProcessEvent)
+    {
+        //Prepare writers
+        foreach ($this->writers as $writer) {
+            $writer->prepare();
+        }
+
+        //Send global event
+        $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE, $importProcessEvent);
+    }
+
+    private function finish(ImportProcessEvent $importProcessEvent)
+    {
         // Finish writers
         foreach ($this->writers as $writer) {
             $writer->finish();
         }
 
+        //Send global event
         $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH, $importProcessEvent);
-
-        return $count;
     }
 
     protected function processRead(array $item, ImportItemEvent $event)

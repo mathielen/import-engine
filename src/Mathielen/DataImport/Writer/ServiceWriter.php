@@ -21,16 +21,6 @@ class ServiceWriter implements WriterInterface
      */
     private $callable;
 
-    /**
-     * @var callable
-     */
-    private $prepareCallable;
-
-    /**
-     * @var callable
-     */
-    private $finishCallable;
-
     public function __construct(callable $callable, $classOrObjectFactory=null)
     {
         $this->setObjectFactory($classOrObjectFactory);
@@ -52,25 +42,12 @@ class ServiceWriter implements WriterInterface
         $this->objectFactory = $objectFactory;
     }
 
-    public function setPrepareCallable(callable $callable)
-    {
-        $this->prepareCallable = $callable;
-    }
-
-    public function setFinishCallable(callable $callable)
-    {
-        $this->finishCallable = $callable;
-    }
 
     /**
      * {@inheritDoc}
      */
     public function prepare()
     {
-        if ($this->prepareCallable) {
-            call_user_func_array($this->prepareCallable, array());
-        }
-
         return $this;
     }
 
@@ -111,10 +88,6 @@ class ServiceWriter implements WriterInterface
      */
     public function finish()
     {
-        if ($this->finishCallable) {
-            call_user_func_array($this->finishCallable, array());
-        }
-
         return $this;
     }
 

@@ -12,16 +12,6 @@ class ServiceStorage implements StorageInterface
      */
     private $callable;
 
-    /**
-     * @var callable
-     */
-    private $prepareCallable;
-
-    /**
-     * @var callable
-     */
-    private $finishCallable;
-
     private $objectTransformer;
     private $objectFactory;
 
@@ -34,16 +24,6 @@ class ServiceStorage implements StorageInterface
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Cannot call callable");
         }
-    }
-
-    public function setPrepareCallable(callable $callable)
-    {
-        $this->prepareCallable = $callable;
-    }
-
-    public function setFinishCallable(callable $callable)
-    {
-        $this->finishCallable = $callable;
     }
 
     public function setObjectFactory($objectFactory)
@@ -78,13 +58,6 @@ class ServiceStorage implements StorageInterface
             $this->callable,
             $this->objectFactory
         );
-
-        if ($this->prepareCallable) {
-            $writer->setPrepareCallable($this->prepareCallable);
-        }
-        if ($this->finishCallable) {
-            $writer->setFinishCallable($this->finishCallable);
-        }
 
         return $writer;
     }
