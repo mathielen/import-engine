@@ -30,7 +30,7 @@ class Workflow extends OriginalWorkflow
         // Read all items
         foreach ($this->reader as $item) {
             //only create event once for every item-event for performance reasons
-            $event = new ImportItemEvent($item);
+            $event = $importProcessEvent->newItemEvent($item);
 
             $this->processRead($item, $event);
 

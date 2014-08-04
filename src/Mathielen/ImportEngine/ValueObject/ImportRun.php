@@ -75,7 +75,7 @@ class ImportRun
     {
         return array(
             'id' => $this->id,
-            'configuration' => $this->configuration->toArray(),
+            'configuration' => $this->configuration?$this->configuration->toArray():null,
             'created_at' => $this->createdAt->getTimestamp(),
             'finished_at' => $this->finishedAt?$this->finishedAt->getTimestamp():null
         );

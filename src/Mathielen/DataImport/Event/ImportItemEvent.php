@@ -19,15 +19,21 @@ class ImportItemEvent extends Event
      */
     private $currentItem;
 
-    /**
-     * @var array
-     */
-    private $info;
+    private $context;
 
-    public function __construct($item, $info = array())
+    public function __construct($item)
     {
         $this->setCurrentResult($item);
-        $this->info = $info;
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 
     /**
@@ -43,15 +49,6 @@ class ImportItemEvent extends Event
     public function getCurrentResult()
     {
         return $this->currentItem;
-    }
-
-    public function getInfo($property = null)
-    {
-        if (is_null($property)) {
-            return $this->info;
-        }
-
-        return $this->info['property'];
     }
 
 }
