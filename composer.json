@@ -18,10 +18,9 @@
 	],
 	"license" : "MIT",
 	"authors" : [{
-			"name" : "Markus Thielen",
-			"email" : "markus@logicx.de"
-		}
-	],
+        "name" : "Markus Thielen",
+        "email" : "markus@logicx.de"
+    }],
 	"require" : {
 		"ddeboer/data-import" : ">=0.12.1",
 		"symfony/event-dispatcher" : "*"

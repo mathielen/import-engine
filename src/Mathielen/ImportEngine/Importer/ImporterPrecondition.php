@@ -16,7 +16,7 @@ class ImporterPrecondition
     private $fieldset = null;
 
     /**
-     * @return \Mathielen\ImportEngine\Importer\Discovery\Strategy\DefaultDiscoverStrategy
+     * @return ImporterPrecondition
      */
     public function filename($pattern)
     {
@@ -26,7 +26,7 @@ class ImporterPrecondition
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Importer\Discovery\Strategy\DefaultDiscoverStrategy
+     * @return ImporterPrecondition
      */
     public function format($id)
     {
@@ -38,7 +38,7 @@ class ImporterPrecondition
     /**
      * Fieldset must have this number of fields
      *
-     * @return \Mathielen\ImportEngine\Importer\Discovery\Strategy\DefaultDiscoverStrategy
+     * @return ImporterPrecondition
      */
     public function fieldcount($count)
     {
@@ -48,9 +48,9 @@ class ImporterPrecondition
     }
 
     /**
-     * Fieldest must have field with this name, anywhere in fieldset
+     * Fieldset must have field with this name, anywhere in fieldset
      *
-     * @return \Mathielen\ImportEngine\Importer\Discovery\Strategy\DefaultDiscoverStrategy
+     * @return ImporterPrecondition
      */
     public function field($fieldname)
     {
@@ -62,7 +62,7 @@ class ImporterPrecondition
     /**
      * Add required fields, must exist in the given order
      *
-     * @return \Mathielen\ImportEngine\Importer\Discovery\Strategy\DefaultDiscoverStrategy
+     * @return ImporterPrecondition
      */
     public function fieldset(array $fieldset)
     {
@@ -71,10 +71,6 @@ class ImporterPrecondition
         return $this;
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \Mathielen\ImportEngine\Importer\Discovery\Strategy\DiscoverStrategyInterface::discover()
-     */
     public function isSatisfiedBy(StorageInterface $storage)
     {
         if (!($storage instanceof StorageFormatInterface) && !empty($this->formats)) {
