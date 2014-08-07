@@ -26,6 +26,7 @@ abstract class AbstractFileStorageProvider implements StorageProviderInterface
     {
         if ($id instanceof \SplFileInfo) {
             $selection = new StorageSelection($id, $id->getFilename(), $id->getFilename());
+
             return $selection;
         } elseif (!($id instanceof StorageSelection)) {
             throw new \InvalidArgumentException("Id must be an Instance of SplFileInfo or StorageSelection");

@@ -1,6 +1,11 @@
 <?php
 namespace Mathielen\ImportEngine\Import\Run;
 
+use Mathielen\ImportEngine\Import\ImportBuilder;
+use Mathielen\ImportEngine\Importer\ImporterRepository;
+use Mathielen\ImportEngine\Storage\StorageLocator;
+use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Finder\Finder;
 use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
@@ -25,8 +30,9 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(ImportItemEvent::AFTER_CONVERSIONFILTER, array($this, 'onAfterConversionFilter'));
         $eventDispatcher->addListener(ImportItemEvent::AFTER_WRITE, array($this, 'onAfterWrite'));
 
+        $fileDir = __DIR__ . '/../../../../../metadata/testfiles';
         $finder = Finder::create()
-            ->in(__DIR__ . '/../../../../../metadata/testfiles')
+            ->in($fileDir)
             ->name('*');
 
         $lfsp = new FinderFileStorageProvider($finder);
@@ -35,16 +41,25 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
                 new MimeTypeDiscoverStrategy(array(
                     'text/plain' => new CsvAutoDelimiterFormatFactory()
                 ))));
+        $storageLocator = new StorageLocator();
+        $storageLocator->register('defaultProvider', $lfsp);
 
         $array = array();
         $targetStorage = new ArrayStorage($array);
 
-        $importer = Importer::build($targetStorage)
-            ->addSourceStorageProvider('myLocalFiles', $lfsp);
+        $importer = Importer::build($targetStorage);
+        $importRepository = new ImporterRepository();
+        $importRepository->register('defaultImporter', $importer);
 
-        $import = Import::build($importer)
-            ->setSourceStorageProviderId('myLocalFiles')
-            ->setSourceStorageId(__DIR__ . '/../../../../../metadata/testfiles/testmapping.csv');
+        $storageSelection = $lfsp->select($fileDir . '/100.csv');
+        $importConfiguration = new ImportConfiguration($storageSelection, 'defaultImporter');
+
+        $importBuilder = new ImportBuilder(
+            $importRepository,
+            $storageLocator
+        );
+        $importBuilder->build($importConfiguration);
+        $import = $importConfiguration->getImport();
 
         $import->mappings()
             ->add('Anrede', 'salutation', 'upperCase')
@@ -53,13 +68,18 @@ class TestImportRunner extends \PHPUnit_Framework_TestCase
         $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
 
         $expectedResult = array(
-            'StrasseHausnr' => 'Mümmelstr 12',
-            'Plz' => 42349,
-            'name' => 'hans meiser',
-            'salutation' => 'MR.'
+            'name' => 'Jennie Abernathy',
+            'prefix' => 'Ms.',
+            'street' => '866 Hyatt Isle Apt. 888',
+            'zip' => '65982',
+            'city' => 'East Laurie',
+            'phone' => '(551)436-0391',
+            'email' => 'runolfsson.moriah@yahoo.com'
         );
 
-        $previewResult = $importRunner->preview($import, 0);
+        $importRun = $importConfiguration->toRun();
+
+        $previewResult = $importRunner->preview($importRun, 0);
         $this->assertEquals($expectedResult, $previewResult['to']);
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Validation;
 
-use Mathielen\DataImport\Workflow;
+use Ddeboer\DataImport\Workflow;
 
 class DummyValidation implements ValidationInterface
 {

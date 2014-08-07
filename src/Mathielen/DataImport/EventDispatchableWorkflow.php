@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Mathielen\DataImport\Event\ImportProcessEvent;
 use Mathielen\DataImport\Event\ImportItemEvent;
 
-class Workflow extends OriginalWorkflow
+class EventDispatchableWorkflow extends OriginalWorkflow
 {
 
     /**
@@ -21,6 +21,11 @@ class Workflow extends OriginalWorkflow
 
     public function process()
     {
+        //if no eventdispatcher has been set, use original functionality
+        if (!$this->eventDispatcher) {
+            return parent::process();
+        }
+
         $importProcessEvent = new ImportProcessEvent();
         $count = 0;
 

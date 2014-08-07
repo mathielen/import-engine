@@ -14,12 +14,13 @@ class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
         $reader = $localFile->reader();
 
         $info = $localFile->info();
-        $this->assertEquals(array(
+        $this->assertEquals(new StorageInfo(array(
             'name' => 'flatdata.csv',
             'format' => $format,
             'size' => 2846,
-            'count' => 1
-        ), $info);
+            'count' => 1,
+            'hash' => 'efc21cbcbb2f04d5b061f3dbaf32ccfa'
+        )), $info);
 
         $headers = $reader->getColumnHeaders();
         $this->assertEquals(185, count($headers));
@@ -32,12 +33,13 @@ class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
         $reader = $localFile->reader();
 
         $info = $localFile->info();
-        $this->assertEquals(array(
+        $this->assertEquals(new StorageInfo(array(
             'name' => 'flatdata-excel.xls',
             'format' => $format,
             'size' => 23552,
-            'count' => 1
-        ), $info);
+            'count' => 1,
+            'hash' => '3dbea55520f59ebdd08b6ad85ae95005'
+        )), $info);
 
         $headers = $reader->getColumnHeaders();
         $this->assertEquals(2, count($headers));
@@ -50,12 +52,13 @@ class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
         $reader = $localFile->reader();
 
         $info = $localFile->info();
-        $this->assertEquals(array(
+        $this->assertEquals(new StorageInfo(array(
             'name' => 'flatdata-excel-xml.xlsx',
             'format' => $format,
             'size' => 8895,
-            'count' => 2
-        ), $info);
+            'count' => 2,
+            'hash' => 'b297aa9bbc37f9cd51d8472498772474'
+        )), $info);
 
         $headers = $reader->getColumnHeaders();
         $this->assertEquals(2, count($headers));

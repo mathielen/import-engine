@@ -26,6 +26,7 @@
 		"symfony/event-dispatcher" : "*"
 	},
 	"require-dev" : {
+        "phpunit/phpunit" : "*",
 		"symfony/finder" : "*",
 		"symfony/http-foundation" : "*",
 		"jms/serializer" : "*",

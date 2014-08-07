@@ -1,11 +1,12 @@
 <?php
 namespace Mathielen\ImportEngine\Import\Workflow;
 
+use Mathielen\DataImport\EventDispatchableWorkflow;
 use Mathielen\ImportEngine\Import\Import;
 use Ddeboer\DataImport\Writer\ArrayWriter;
 use Ddeboer\DataImport\Filter\OffsetFilter;
 use Mathielen\DataImport\Filter\PriorityCallbackFilter;
-use Mathielen\DataImport\Workflow;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Mathielen\ImportEngine\Import\Run\Statistics\ImportRunStatisticsEventSubscriber;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
@@ -18,9 +19,21 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
      */
     private $eventDispatcher;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher=null)
     {
+        if (!$eventDispatcher) {
+            $eventDispatcher = new EventDispatcher();
+        }
+
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher();
     }
 
     /**
@@ -29,7 +42,7 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     private function buildBaseWorkflow(Import $import)
     {
         //input
-        $workflow = new Workflow($import->getSourceStorage()->reader());
+        $workflow = new EventDispatchableWorkflow($import->getSourceStorage()->reader());
         $workflow->setEventDispatcher($this->eventDispatcher);
 
         //validation

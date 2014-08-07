@@ -13,7 +13,7 @@ class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
     {
         $options = array();
 
-        $file = new \SplFileInfo($uri);
+        $file = new \SplFileObject($uri);
         $delimiter = $this->guessDelimiter(utf8_encode($file->getCurrentLine()));
 
         return new CsvFormat($delimiter);

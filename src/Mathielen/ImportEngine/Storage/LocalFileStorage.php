@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage;
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
 use Ddeboer\DataImport\Reader\ReaderInterface;
+use Ddeboer\DataImport\Writer\CsvWriter;
 use Ddeboer\DataImport\Writer\WriterInterface;
 use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
@@ -86,7 +87,7 @@ class LocalFileStorage implements StorageFormatInterface
         $reader = null;
 
         if ($format instanceof CsvFormat) {
-            $reader = new CsvReader($file, $format->delimiter, $format->enclosure, $format->escape);
+            $reader = new CsvReader($file->openFile(), $format->delimiter, $format->enclosure, $format->escape);
             $reader->setStrict(false);
             if ($format->headerinfirstrow) {
                 $reader->setHeaderRowNumber(0);
@@ -115,10 +116,36 @@ class LocalFileStorage implements StorageFormatInterface
     public function writer()
     {
         if (!$this->writer) {
-           //$this->writer = $this->formatToWriter($this->format, $this->file);
+           $this->writer = $this->formatToWriter($this->format, $this->file);
         }
 
         return $this->writer;
+    }
+
+    private function formatToWriter($format, \SplFileInfo $file)
+    {
+        $reader = null;
+
+        if ($format instanceof CsvFormat) {
+            $reader = new CsvWriter($format->delimiter, $format->enclosure, fopen($file, 'w'));
+            if ($format->headerinfirstrow) {
+
+            }
+
+        } elseif ($format instanceof ExcelFormat) {
+           // $headerRowNumber = $format->headerinfirstrow?0:null;
+            //$reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->activesheet);
+
+        } elseif ($format instanceof ZipFormat && $format->getSubFormat()) {
+            //file_put_contents('/tmp/unpacked', file_get_contents($format->getStreamUri()));
+
+            //$reader = $this->formatToReader($format->getSubFormat(), new \SplFileObject('/tmp/unpacked'));
+
+        } else {
+            throw new InvalidConfigurationException("Cannot build writer. Unknown format: ".$format);
+        }
+
+        return $reader;
     }
 
     /**

@@ -3,6 +3,7 @@ namespace Mathielen\ImportEngine\Import\Run;
 
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\DataImport\Workflow;
+use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 use Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface;
 use Mathielen\ImportEngine\Exception\ImportRunException;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
@@ -15,8 +16,12 @@ class ImportRunner
      */
     private $workflowFactory;
 
-    public function __construct(WorkflowFactoryInterface $workflowFactory = null)
+    public function __construct(WorkflowFactoryInterface $workflowFactory=null)
     {
+        if (!$workflowFactory) {
+            $workflowFactory = new DefaultWorkflowFactory();
+        }
+
         $this->workflowFactory = $workflowFactory;
     }
 

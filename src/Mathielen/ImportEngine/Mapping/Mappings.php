@@ -1,10 +1,10 @@
 <?php
 namespace Mathielen\ImportEngine\Mapping;
 
-use Mathielen\DataImport\Workflow;
 use Ddeboer\DataImport\ValueConverter\ValueConverterInterface;
 use Ddeboer\DataImport\ItemConverter\MappingItemConverter;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
+use Ddeboer\DataImport\Workflow;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class Mappings extends \ArrayObject

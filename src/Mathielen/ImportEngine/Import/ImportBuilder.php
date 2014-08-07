@@ -4,7 +4,6 @@ namespace Mathielen\ImportEngine\Import;
 use Mathielen\ImportEngine\Importer\ImporterRepository;
 use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\Storage\StorageInterface;
-use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Storage\StorageLocator;
 use Mathielen\ImportEngine\Event\ImportConfigureEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -30,7 +29,7 @@ class ImportBuilder
     public function __construct(
         ImporterRepository $importerRepository,
         StorageLocator $storageLocator,
-        EventDispatcherInterface $eventDispatcher)
+        EventDispatcherInterface $eventDispatcher=null)
     {
         $this->importerRepository = $importerRepository;
         $this->storageLocator = $storageLocator;
@@ -56,9 +55,11 @@ class ImportBuilder
         $importConfiguration->applyImport($import, $this->storageLocator);
 
         //notify system
-        $this->eventDispatcher->dispatch(
-            ImportConfigureEvent::AFTER_BUILD.'.'.$importConfiguration->getImporterId(),
-            new ImportConfigureEvent($import));
+        if ($this->eventDispatcher) {
+            $this->eventDispatcher->dispatch(
+                ImportConfigureEvent::AFTER_BUILD.'.'.$importConfiguration->getImporterId(),
+                new ImportConfigureEvent($import));
+        }
 
         return $importConfiguration;
     }

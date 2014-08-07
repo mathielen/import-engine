@@ -42,7 +42,6 @@ class ServiceWriter implements WriterInterface
         $this->objectFactory = $objectFactory;
     }
 
-
     /**
      * {@inheritDoc}
      */

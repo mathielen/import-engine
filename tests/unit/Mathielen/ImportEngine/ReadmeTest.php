@@ -12,7 +12,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         if (strpos($code, '...')) {
             $this->markTestSkipped("Cannot test with insufficient info.");
         }
-
+//echo "$startLine\n";
         ob_start();
         eval($code);
         $output = ob_get_contents();
@@ -43,12 +43,14 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
 
                 $code = str_replace('$ffsp = ...', $this->getBuildFFSP(), $code);
                 $code = str_replace('$targetStorage = ...', $this->getBuildTargetStorage(), $code);
+                $code = str_replace('$importRunner = ...', $this->getBuildImportRunnerCode(), $code);
                 $code = str_replace('$importRun = ...', $this->getBuildImportRunCode(), $code);
                 $code = str_replace('$importer = ...', $this->getBuildImporterCode(), $code);
                 $code = str_replace('$import = ...', $this->getBuildImportCode(), $code);
                 $code = str_replace('$validator = ...', $this->getBuildValidatorCode(), $code);
                 $code = str_replace('$validation = ...', $this->getBuildValidationCode(), $code);
                 $code = str_replace('$jms_serializer = ...', $this->getBuildJmsSerializerCode(), $code);
+                //$code = str_replace('$em = ...', $this->getBuildEntityManagerCode(), $code);
 
                 $chunks[] = array($startLine, $code);
                 $startLine = $endLine = null;
@@ -60,10 +62,17 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         return $chunks;
     }
 
+    private function getBuildEntityManagerCode()
+    {
+        return '
+            $em = $this->getMock("Doctrine\ORM\EntityManagerInterface");
+        ';
+    }
+
     private function getBuildValidationCode()
     {
         return $this->getBuildValidatorCode() . '
-            $validation = new Mathielen\ImportEngine\Validation\Validation($validator);
+            $validation = new Mathielen\ImportEngine\Validation\ValidatorValidation($validator);
         ';
     }
 
@@ -81,11 +90,19 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         ';
     }
 
+    private function getBuildImportRunnerCode()
+    {
+        return '
+            $importRunner = new Mathielen\ImportEngine\Import\Run\ImportRunner(new Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory(new Symfony\Component\EventDispatcher\EventDispatcher()));
+        ';
+    }
+
     private function getBuildImportRunCode()
     {
         return $this->getBuildImportCode() . '
-            $importRunner = new Mathielen\ImportEngine\Import\Run\ImportRunner(new Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory(new Symfony\Component\EventDispatcher\EventDispatcher()));
-            $importRun = $importRunner->run($import);
+            $importConfiguration = new Mathielen\ImportEngine\ValueObject\ImportConfiguration();
+            $importConfiguration->setImport($import);
+            $importRun = $importConfiguration->toRun();
         ';
     }
 
@@ -105,7 +122,6 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
             $this->getBuildFFSP() .
             $this->getBuildTargetStorage() . '
             $importer = Mathielen\ImportEngine\Importer\Importer::build($targetStorage)
-               ->addSourceStorageProvider(\'myLocalFiles\', $ffsp)
                ->setValidation($validation);
         ';
     }

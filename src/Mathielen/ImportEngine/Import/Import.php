@@ -46,6 +46,10 @@ class Import
     {
         $this->importer = $importer;
         $this->transformation = new Transformation();
+
+        if ($importer->getSourceStorage()) {
+            $this->setSourceStorage($importer->getSourceStorage());
+        }
     }
 
     /**
@@ -61,7 +65,7 @@ class Import
      */
     public function mappings()
     {
-        if (!$this->mappings) {
+        if (!$this->mappings && $this->getSourceStorage()) {
             $this->mappings = $this->transformation->buildMapping($this->getSourceStorage()->reader());
         }
 

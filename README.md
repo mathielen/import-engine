@@ -51,8 +51,8 @@ Usage
 The general idea of this library is the following:
 * An [Importer](#importer) is the basic definition of the whole process. It says _what_ may be imported and _where_ to. It consists of:
   * (optional) A [StorageProvider](#storageprovider), that represents a "virtual file system" for selecting a SourceStorage
-  * A SourceStorage that may be a file, a database table, an array, an object-tree, etc 
-  * A TargetStorage that may be a file, a database table, an array, an object-tree, etc
+  * A [SourceStorage](#storage) that may be a file, a database table, an array, an object-tree, etc
+  * A [TargetStorage](#storage) that may be a file, a database table, an array, an object-tree, etc
   * A [Mapping](#mapping), which may contain converters, field-mappings, etc
   * A [Validation](#validation), that may contain validation-rules for data read from the SourceStorage and/or validation-rules for data that will be written to the TargetStorage.
   * An [Eventsystem](#eventsystem) for implementing detailed [Logging](#eventsystem) or other interactions within the process.
@@ -61,7 +61,8 @@ The general idea of this library is the following:
 * Every run of an Import is represented by an [ImportRun](#importrun)
 
 
-### StorageProvider 
+### StorageProvider
+StorageProviders represents a "virtual file system" for selecting a [SourceStorage](#storage) that can be used as a source or target of the import.
 
 #### FinderFileStorageProvider
 Using the [Symfony Finder Component](http://symfony.com/doc/current/components/finder.html) as a collection of possible files that can be imported.
@@ -128,23 +129,41 @@ $ffsp->setStorageFactory(
 ```
 This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterFormatFactory to determine the delimiter.
 
+### Storage
+A storage is a container of data. Storages provide a reader and writer implementation for itself.
+
+```php
+use Mathielen\ImportEngine\Storage\ArrayStorage;
+use Mathielen\ImportEngine\Storage\DoctrineStorage;
+use Mathielen\ImportEngine\Storage\LocalFileStorage;
+use Mathielen\ImportEngine\Storage\Format\CsvFormat;
+
+$em = ... //Doctrine2 EntityManager
+
+$array = array(1,2,3);
+$storage = new ArrayStorage($array);
+$storage = new DoctrineStorage($em, 'MyEntities\Entity');
+$storage = new LocalFileStorage('tests/metadata/testfiles/flatdata.csv', new CsvFormat());
+$storage = new ServiceStorage(array($service, 'myMethod')); //callable
+```
+
 ### Validation
 You can get the source and target validation errors with:
 ```php
 $import = ...
-$import->validation()->getViolations();
+$import->importer()->validation()->getViolations();
 ```
 
 #### Source data validation
 ```php
-use Mathielen\ImportEngine\Validation\Validation;
+use Mathielen\ImportEngine\Validation\ValidatorValidation;
 use Mathielen\DataImport\Filter\ClassValidatorFilter;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
 $validator = ... //Symfony Validator
 
-$validation = Validation::build($validator)
+$validation = ValidatorValidation::build($validator)
   ->addSourceConstraint('salutation', new NotBlank()) //source field 'salutation' should not be empty
   ->addSourceConstraint('zipcode', new Regex("/[0-9]{5}/")) //source field 'zipcode' should be 5 digits
 ;
@@ -156,7 +175,7 @@ $validation = Validation::build($validator)
 You can use the ClassValidatorFilter to map the data to an object-tree and validate the objects (using annotations, or [differently configurated validation rules](http://symfony.com/doc/current/book/validation.html#constraint-configuration)). Therefore you must provide an ObjectFactory. There is a JmsSerializerObjectFactory you may want to use.
 
 ```php
-use Mathielen\ImportEngine\Validation\Validation;
+use Mathielen\ImportEngine\Validation\ValidatorValidation;
 use Mathielen\DataImport\Filter\ClassValidatorFilter;
 use Mathielen\DataImport\Writer\ObjectWriter\JmsSerializerObjectFactory;
 
@@ -167,7 +186,7 @@ $objectFactory = new JmsSerializerObjectFactory(
   'Entity\Address',
   $jms_serializer);
 
-$validation = Validation::build($validator)
+$validation = ValidatorValidation::build($validator)
   ->setTargetValidatorFilter(new ClassValidatorFilter($validator, $objectFactory));
 ```
 
@@ -175,16 +194,15 @@ $validation = Validation::build($validator)
 ```php
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
-use Mathielen\ImportEngine\Storage\Provider\UploadFileStorageProvider;
 
 $ffsp = ...
 $validation = ...
 $targetStorage = ...
 
+$array = array(1,2,3);
 $importer = Importer::build($targetStorage)
-  ->addSourceStorageProvider('uploadedFile', new UploadFileStorageProvider('/tmp'))
-  ->addSourceStorageProvider('myLocalFiles', $ffsp)
-  ->setValidation($validation)  
+  ->setSourceStorage(new ArrayStorage($array))
+  ->setValidation($validation)
 ;
 ```
 
@@ -194,10 +212,7 @@ use Mathielen\ImportEngine\Import\Import;
 
 $importer = ...
 
-$import = Import::build($importer)
-  ->setSourceStorageProviderId('myLocalFiles') //use this storageProvider
-  ->setSourceStorageId('tests/metadata/testfiles/flatdata.csv') //use this storage-id
-;
+$import = Import::build($importer);
 ```
 
 ### Source Storage
@@ -209,8 +224,8 @@ use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
-$targetArray = ...
-$importer = Importer::build($targetArray);
+$targetArray = array();
+$importer = Importer::build(new ArrayStorage($targetArray));
 $import = Import::build($importer)
   ->setSourceStorage(new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvFormat()));
 
@@ -249,8 +264,8 @@ use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
 use Mathielen\ImportEngine\Importer\Importer;
 
-$mappingConverterProvider = new DefaultConverterProvider();
-$mappingConverterProvider
+$converterProvider = new DefaultConverterProvider();
+$converterProvider
   ->add('salutationToGender', new CallbackValueConverter(function ($item) {
       switch ($item) {
         case 'Mr.': return 'male';
@@ -261,8 +276,10 @@ $mappingConverterProvider
 
 $targetStorage = ...
 
-$importer = Importer::build($targetStorage)
-  ->setMappingConverterProvider($mappingConverterProvider);
+$importer = Importer::build($targetStorage);
+$importer
+  ->transformation()
+  ->setConverterProvider($converterProvider);
 
 $array = array();
 $import = Import::build($importer)
@@ -281,8 +298,8 @@ use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
 use Mathielen\ImportEngine\Importer\Importer;
 
-$mappingConverterProvider = new DefaultConverterProvider();
-$mappingConverterProvider
+$converterProvider = new DefaultConverterProvider();
+$converterProvider
   ->add('splitNames', new CallbackItemConverter(function ($item) {
       list($firstname, $lastname) = explode(' ', $item['name']);
 
@@ -294,8 +311,10 @@ $mappingConverterProvider
 
 $targetStorage = ...
 
-$importer = Importer::build($targetStorage)
-  ->setMappingConverterProvider($mappingConverterProvider);
+$importer = Importer::build($targetStorage);
+$importer
+  ->transformation()
+  ->setConverterProvider($converterProvider);
 
 $array = array();
 $import = Import::build($importer)
@@ -308,33 +327,41 @@ $import = Import::build($importer)
 ### ImportRunner
 For running a configured Import you need an ImportRunner. Internally the ImportRunner builds a workflow and runs it.
 You can change the way how the workflow is built by supplying a different WorkflowFactory.
+
 ```php
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Mathielen\ImportEngine\Import\Run\ImportRunner;
 use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
-
-$workflowFactory = new DefaultWorkflowFactory(new EventDispatcher());
-$importRunner = new ImportRunner($workflowFactory);
+use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
+use Mathielen\ImportEngine\Storage\LocalFileStorage;
+use Mathielen\ImportEngine\Storage\Format\CsvFormat;
+use Mathielen\ImportEngine\Importer\ImporterRepository;
 
 $import = ...
 
+$importConfiguration = new ImportConfiguration();
+$importConfiguration->setImport($import);
+$importRun = $importConfiguration->toRun();
+
+$importRunner = new ImportRunner(new DefaultWorkflowFactory(new EventDispatcher()));
+
 //sneak peak a row
-$previewData = $importRunner->preview($import);
+$previewData = $importRunner->preview($importRun);
 
 //dont really write, just validate
-$importRun = $importRunner->dryRun($import);
+$importRun = $importRunner->dryRun($importRun);
 
 //do the import
-$importRun = $importRunner->run($import);
+$importRun = $importRunner->run($importRun);
 ```
 
 ### ImportRun statistics
-If you use the DefaultWorkflowFactory with your ImportRunner you get basic statistics from dryRun() and run() invocations. 
+If you use the DefaultWorkflowFactory with your ImportRunner you get basic statistics from dryRun() and run() invocations.
 ```php
-$import = ...
+$importRun = ...
 $importRunner = ...
 
-$importRun = $importRunner->dryRun($import);
+$importRunner->dryRun($importRun);
 $stats = $importRun->getStatistics();
 
 /*
@@ -377,8 +404,8 @@ $eventDispatcher->addListener(ImportProcessEvent::AFTER_FINISH, $myListener);
 $workflowFactory = new DefaultWorkflowFactory($eventDispatcher);
 $importRunner = new ImportRunner($workflowFactory);
 
-$import = ...
-$importRun = $importRunner->run($import);
+$importRun = ...
+$importRunner->run($importRun);
 ```
 
 License

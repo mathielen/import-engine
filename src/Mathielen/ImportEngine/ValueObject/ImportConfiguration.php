@@ -6,7 +6,7 @@ use Mathielen\ImportEngine\Storage\StorageLocator;
 class ImportConfiguration
 {
 
-    private $importerId;
+    private $importerId = 'defaultImporter';
 
     /**
      * @var StorageSelection
@@ -68,12 +68,14 @@ class ImportConfiguration
     /**
      * @return ImportConfiguration
      */
-    public function applyImport(Import $import, StorageLocator $storageLocator)
+    public function applyImport(Import $import, StorageLocator $storageLocator=null)
     {
         $this->import = $import;
 
-        $storage = $storageLocator->getStorage($this->sourceStorageSelection);
-        $import->setSourceStorage($storage);
+        if ($storageLocator && $this->sourceStorageSelection) {
+            $storage = $storageLocator->getStorage($this->sourceStorageSelection);
+            $import->setSourceStorage($storage);
+        }
 
         return $this;
     }
@@ -86,6 +88,11 @@ class ImportConfiguration
         return $this->import;
     }
 
+    public function setImport(Import $import)
+    {
+        $this->import = $import;
+    }
+
     public function toArray()
     {
         return array(
@@ -95,6 +102,14 @@ class ImportConfiguration
                 'id' => $this->sourceStorageSelection->getId()
             ):null
         );
+    }
+
+    /**
+     * @return ImportRun
+     */
+    public function toRun()
+    {
+        return new ImportRun($this);
     }
 
 }

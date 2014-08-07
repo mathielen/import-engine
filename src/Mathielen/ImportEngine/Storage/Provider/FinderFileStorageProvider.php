@@ -41,7 +41,11 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
     {
         $selection = $id;
         if (is_string($id)) {
+            if (!file_exists($id)) {
+                throw new \InvalidArgumentException("id is not a valid file path: ".$id);
+            }
             $selection = new StorageSelection(new \SplFileInfo($id), $id, $id);
+
             return $selection;
         }
 
