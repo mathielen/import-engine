@@ -6,6 +6,4 @@ interface ObjectFactoryInterface
 
     public function factor(array $item);
 
-    public function getClassname();
-
 }

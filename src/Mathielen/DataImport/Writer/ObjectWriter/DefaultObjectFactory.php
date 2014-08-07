@@ -18,11 +18,6 @@ class DefaultObjectFactory implements ObjectFactoryInterface
         $this->classname = $classname;
     }
 
-    public function getClassname()
-    {
-        return $this->classname;
-    }
-
     public function factor(array $item)
     {
         $stdClassObject = (object) $item;

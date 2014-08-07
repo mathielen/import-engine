@@ -40,7 +40,10 @@ class ValidatorFilter extends OriginalValidatorFilter
         EventDispatcherInterface $eventDispatcher=null)
     {
         $this->validator = $validator;
-        $this->eventDispatcher = $eventDispatcher;
+
+        if ($eventDispatcher) {
+            $this->setEventDispatcher($eventDispatcher);
+        }
     }
 
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)

@@ -23,16 +23,22 @@ class ServiceWriter implements WriterInterface
 
     public function __construct(callable $callable, $classOrObjectFactory=null)
     {
-        $this->setObjectFactory($classOrObjectFactory);
-        $this->callable = $callable;
-
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Cannot call callable");
+        }
+        $this->callable = $callable;
+
+        if (!empty($classOrObjectFactory)) {
+            $this->setObjectFactory($classOrObjectFactory);
         }
     }
 
     public function setObjectFactory($classOrObjectFactory)
     {
+        if (empty($classOrObjectFactory)) {
+            throw new \InvalidArgumentException("classOrObjectFactory must not be empty");
+        }
+
         if (is_object($classOrObjectFactory) && $classOrObjectFactory instanceof ObjectFactoryInterface) {
             $objectFactory = $classOrObjectFactory;
         } elseif (is_string($classOrObjectFactory)) {

@@ -20,11 +20,6 @@ class JmsSerializerObjectFactory implements ObjectFactoryInterface
         $this->serializer = $serializer;
     }
 
-    public function getClassname()
-    {
-        return $this->classname;
-    }
-
     public function factor(array $item)
     {
         //lowercase properties because the naming-strategy of jms serializer depends on lowercase'd prop's

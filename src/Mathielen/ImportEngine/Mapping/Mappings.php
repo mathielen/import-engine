@@ -96,7 +96,9 @@ class Mappings extends \ArrayObject
             }
         }
 
-        $workflow->addItemConverter(new MappingItemConverter($fieldMapping));
+        if (!empty($fieldMapping)) {
+            $workflow->addItemConverter(new MappingItemConverter($fieldMapping));
+        }
     }
 
 }

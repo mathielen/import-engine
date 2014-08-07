@@ -20,13 +20,13 @@ class ServiceReader implements ReaderInterface
      */
     private $callable;
 
-    public function __construct(callable $callable, $objectTransformer)
+    public function __construct(callable $callable)
     {
-        $this->callable = $callable;
-
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Cannot call callable");
         }
+
+        $this->callable = $callable;
     }
 
     /**
@@ -90,6 +90,10 @@ class ServiceReader implements ReaderInterface
      */
     public function count()
     {
+        if (!$this->iterableResult) {
+            $this->rewind();
+        }
+
         return count($this->iterableResult);
     }
 
