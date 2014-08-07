@@ -22,6 +22,7 @@
         "email" : "markus@logicx.de"
     }],
 	"require" : {
+        "php" : ">=5.4.0",
 		"ddeboer/data-import" : ">=0.12.1",
 		"symfony/event-dispatcher" : "*"
 	},
