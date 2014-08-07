@@ -45,7 +45,9 @@ class StorageLocator
     {
         $provider = $this->get($idProvider);
 
-        return $provider->select($id);
+        return $provider
+            ->select($id)
+            ->setProviderId($idProvider);
     }
 
     /**

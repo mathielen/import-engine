@@ -9,12 +9,20 @@ class StorageSelection
     protected $name;
     protected $impl;
 
-    public function __construct($impl, $id=null, $name=null, $providerId = 'defaultProvider')
+    public function __construct($impl, $id=null, $name=null)
     {
         $this->impl = $impl;
         $this->id = $id;
         $this->name = $name;
+    }
+
+    /**
+     * @return StorageSelection
+     */
+    public function setProviderId($providerId)
+    {
         $this->providerId = $providerId;
+        return $this;
     }
 
     public function getProviderId()
