@@ -1,4 +1,4 @@
-php import-engine
+Mathielen Import Engine
 =============
 
 [![Build Status](https://travis-ci.org/mathielen/import-engine.png?branch=master)](https://travis-ci.org/mathielen/import-engine) 
@@ -13,6 +13,8 @@ Introduction
 ------------
 This library implements some high-level functionality based on the great [Ddeboer Data Import library](https://github.com/ddeboer/data-import).
 As the Data-Import library offers a great toolkit to implement a data import/export process in a quick and clean way, there is still a lot of work to do to have a full blown importer set up for your application. This library helps you with that.
+
+If you are developing a Symfony2 project, you may want to use the comfortable configuration of the [ImportEngineBundle](https://github.com/mathielen/ImportEngineBundle).
 
 Features
 --------
