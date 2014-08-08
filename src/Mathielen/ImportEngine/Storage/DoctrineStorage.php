@@ -29,17 +29,15 @@ class DoctrineStorage implements StorageInterface
             $queryBuilder = $this->entityManager->createQueryBuilder()
                 ->select('o')
                 ->from($queryBuilderOrEntityName, 'o');
-            $entityName = $queryBuilderOrEntityName;
+            $this->entityName = $queryBuilderOrEntityName;
 
         } elseif ($queryBuilderOrEntityName instanceof QueryBuilder) {
             $queryBuilder = $queryBuilderOrEntityName;
-            //TODO entityName??
 
         } else {
             throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
         }
 
-        $this->entityName = $entityName;
         $this->queryBuilder = $queryBuilder;
     }
 
@@ -78,7 +76,6 @@ class DoctrineStorage implements StorageInterface
      */
     public function getFields()
     {
-        return $this->entityManager->getClassMetadata($this->entityName)
-                 ->getFieldNames();
+        return $this->reader()->getFields();
     }
 }

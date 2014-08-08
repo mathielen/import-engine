@@ -3,7 +3,8 @@
 	"type" : "library",
 	"autoload" : {
 		"psr-0" : {
-			"" : "src/"
+			"" : "src/",
+            "TestEntities" : "tests/metadata/"
 		}
 	},
 	"description" : "Full-blown importer stack for importing almost any data into your application",

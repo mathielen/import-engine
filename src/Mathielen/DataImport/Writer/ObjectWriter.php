@@ -5,42 +5,44 @@ use Ddeboer\DataImport\Writer\WriterInterface;
 use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
 use Mathielen\DataImport\Writer\ObjectWriter\DefaultObjectFactory;
 
+/**
+ * Writes data to a given SplObjectStorage
+ */
 class ObjectWriter implements WriterInterface
 {
-
-    private $line = 1;
-    private $violations = array();
-    private $skipOnViolation = true;
-
-    /**
-     * @var callable
-     */
-    private $objectHandler;
 
     /**
      * @var ObjectFactoryInterface
      */
     private $objectFactory;
 
-    public function __construct($classOrObjectFactory)
+    /**
+     * @var \SplObjectStorage
+     */
+    private $objectStorage;
+
+    public function __construct(\SplObjectStorage $objectStorage, $classOrObjectFactory=null)
     {
+        $this->objectStorage = $objectStorage;
+
+        if (!empty($classOrObjectFactory)) {
+            $this->setObjectFactory($classOrObjectFactory);
+        }
+    }
+
+    public function setObjectFactory($classOrObjectFactory)
+    {
+        if (empty($classOrObjectFactory)) {
+            throw new \InvalidArgumentException("classOrObjectFactory must not be empty");
+        }
+
         if (is_object($classOrObjectFactory) && $classOrObjectFactory instanceof ObjectFactoryInterface) {
             $objectFactory = $classOrObjectFactory;
         } elseif (is_string($classOrObjectFactory)) {
             $objectFactory = new DefaultObjectFactory($classOrObjectFactory);
         }
 
-        $this->setObjectFactory($objectFactory);
-    }
-
-    public function setObjectFactory(ObjectFactoryInterface $objectFactory)
-    {
         $this->objectFactory = $objectFactory;
-    }
-
-    public function setObjectHandler(callable $objectHandler)
-    {
-        $this->objectHandler = $objectHandler;
     }
 
     /**
@@ -51,26 +53,6 @@ class ObjectWriter implements WriterInterface
         return $this;
     }
 
-    private function convert(array $item)
-    {
-        if (!$this->objectFactory) {
-            throw new \LogicException("No objectFactory has been set yet!");
-        }
-
-        $object = $this->objectFactory->factor($item);
-
-        return $object;
-    }
-
-    private function write($object)
-    {
-        if (!$this->objectHandler) {
-            return;
-        }
-
-        call_user_func_array($this->objectHandler, array($object));
-    }
-
     /**
      * (non-PHPdoc)
      * @see \Ddeboer\DataImport\Writer\WriterInterface::writeItem()
@@ -78,12 +60,29 @@ class ObjectWriter implements WriterInterface
     public function writeItem(array $item)
     {
         //convert
-        $object = $this->convert($item);
+        $objectOrItem = $this->convert($item);
 
         //write
-        $this->write($object);
+        $this->write($objectOrItem);
 
         return $this;
+    }
+
+    private function convert(array $item)
+    {
+        //dont convert if no object factory
+        if (!$this->objectFactory) {
+            return $item;
+        }
+
+        $object = $this->objectFactory->factor($item);
+
+        return $object;
+    }
+
+    protected function write($object)
+    {
+        $this->objectStorage->attach($object);
     }
 
     /**

@@ -11,7 +11,7 @@ use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /* @medium */
-class TestServiceToService extends \PHPUnit_Framework_TestCase
+class ServiceTest extends \PHPUnit_Framework_TestCase
 {
 
     private $dataWritten;

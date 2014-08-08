@@ -129,14 +129,16 @@ class LocalFileStorage implements StorageFormatInterface
         if ($format instanceof CsvFormat) {
             $reader = new CsvWriter($format->delimiter, $format->enclosure, fopen($file, 'w'));
             if ($format->headerinfirstrow) {
-
+                //TODO how to handle header?
             }
 
         } elseif ($format instanceof ExcelFormat) {
-           // $headerRowNumber = $format->headerinfirstrow?0:null;
+            //TODO
+            // $headerRowNumber = $format->headerinfirstrow?0:null;
             //$reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->activesheet);
 
         } elseif ($format instanceof ZipFormat && $format->getSubFormat()) {
+            //TODO
             //file_put_contents('/tmp/unpacked', file_get_contents($format->getStreamUri()));
 
             //$reader = $this->formatToReader($format->getSubFormat(), new \SplFileObject('/tmp/unpacked'));

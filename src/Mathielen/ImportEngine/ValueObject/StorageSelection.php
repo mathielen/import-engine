@@ -22,6 +22,7 @@ class StorageSelection
     public function setProviderId($providerId)
     {
         $this->providerId = $providerId;
+
         return $this;
     }
 

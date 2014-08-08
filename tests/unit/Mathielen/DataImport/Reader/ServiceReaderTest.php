@@ -11,11 +11,18 @@ class ServiceReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($reader));
         $this->assertEquals(array('field1'), $reader->getFields());
         $this->assertEquals(array('field1'=>'123'), $reader->current());
+
+        $actualData = array();
+        $expectedData = array('key'=>array('field1'=>'123'));
+        foreach ($reader as $key=>$row) {
+            $actualData[$key] = $row;
+        }
+        $this->assertEquals($expectedData, $actualData);
     }
 
     public function read()
     {
-        return array(array('field1'=>'123'));
+        return array('key'=>array('field1'=>'123'));
     }
 
 }

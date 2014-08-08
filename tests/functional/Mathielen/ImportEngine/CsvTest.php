@@ -12,7 +12,7 @@ use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /* @medium */
-class TestCsvToCsv extends \PHPUnit_Framework_TestCase
+class CsvTest extends \PHPUnit_Framework_TestCase
 {
 
     public function test()
