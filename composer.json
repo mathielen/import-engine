@@ -50,8 +50,7 @@
 		"doctrine/orm" : "*",
 		"symfony/console" : ">=2.2",
 		"symfony/validator" : "~2.3.0",
-		"fzaninotto/faker" : "*",
-        "mathielen/benchmark": "dev-master"
+		"fzaninotto/faker" : "*"
 	},
 	"suggest" : {
 		"ext-iconv" : "For the CharsetValueConverter",
