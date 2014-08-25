@@ -24,6 +24,7 @@ class ValidatorFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->validatorFilter = new ValidatorFilter(
             $this->validatorMock,
+            array(),
             $this->eventDispatcherMock);
     }
 

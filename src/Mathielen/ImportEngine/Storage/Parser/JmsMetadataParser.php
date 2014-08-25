@@ -37,24 +37,6 @@ class JmsMetadataParser
     /**
      * {@inheritdoc}
      */
-    public function supports(array $input)
-    {
-        $className = $input['class'];
-
-        try {
-            if ($meta = $this->factory->getMetadataForClass($className)) {
-                return true;
-            }
-        } catch (\ReflectionException $e) {
-            return false;
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function parse(array $input)
     {
         $className = $input['class'];
@@ -104,8 +86,6 @@ class JmsMetadataParser
                 $params[$name] = array(
                     'dataType'     => $dataType['normalized'],
                     'required'     => false,
-                    //TODO: can't think of a good way to specify this one, JMS doesn't have a setting for this
-                    'description'  => $this->getDescription($item),
                     'readonly'     => $item->readOnly,
                     'sinceVersion' => $item->sinceVersion,
                     'untilVersion' => $item->untilVersion,
@@ -212,8 +192,4 @@ class JmsMetadataParser
         return null;
     }
 
-    protected function getDescription(PropertyMetadata $item)
-    {
-        return null;
-    }
 }

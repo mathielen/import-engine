@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\DataImport;
 
+use Ddeboer\DataImport\Result;
 use Ddeboer\DataImport\Workflow as OriginalWorkflow;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Mathielen\DataImport\Event\ImportProcessEvent;
@@ -26,8 +27,10 @@ class EventDispatchableWorkflow extends OriginalWorkflow
             return parent::process();
         }
 
+        $count      = 0;
+        $exceptions = array();
+        $startTime  = new \DateTime;
         $importProcessEvent = new ImportProcessEvent();
-        $count = 0;
 
         //Prepare
         $this->prepare($importProcessEvent);
@@ -37,24 +40,34 @@ class EventDispatchableWorkflow extends OriginalWorkflow
             //only create event once for every item-event for performance reasons
             $event = $importProcessEvent->newItemEvent($item);
 
-            $this->processRead($item, $event);
+            try {
+                $this->processRead($item, $event);
 
-            // Apply filters before conversion
-            if (!$this->processFilter($item, $event)) {
-                continue;
+                // Apply filters before conversion
+                if (!$this->processFilter($item, $event)) {
+                    continue;
+                }
+
+                // Convert item
+                if (!$convertedItem = $this->processConvert($item, $event)) {
+                    continue;
+                }
+
+                // Apply filters after conversion
+                if (!$this->processConvertFilter($convertedItem, $event)) {
+                    continue;
+                }
+
+                $this->processWrite($convertedItem, $item, $event);
+
+            } catch (\ExceptionInterface $e) {
+                if ($this->skipItemOnFailure) {
+                    $exceptions[] = $e;
+                    $this->logger->error($e->getMessage());
+                } else {
+                    throw $e;
+                }
             }
-
-            // Convert item
-            if (!$convertedItem = $this->processConvert($item, $event)) {
-                continue;
-            }
-
-            // Apply filters after conversion
-            if (!$this->processConvertFilter($convertedItem, $event)) {
-                continue;
-            }
-
-            $this->processWrite($convertedItem, $item, $event);
 
             $count++;
         }
@@ -62,7 +75,7 @@ class EventDispatchableWorkflow extends OriginalWorkflow
         //Finish
         $this->finish($importProcessEvent);
 
-        return $count;
+        return new Result($this->name, $startTime, new \DateTime, $count, $exceptions);
     }
 
     private function prepare(ImportProcessEvent $importProcessEvent)

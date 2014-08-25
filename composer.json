@@ -3,10 +3,15 @@
 	"type" : "library",
 	"autoload" : {
 		"psr-0" : {
-			"" : "src/",
-            "TestEntities" : "tests/metadata/"
+			"Mathielen\\DataImport" : "src/",
+            "Mathielen\\ImportEngine" : "src/"
 		}
 	},
+    "autoload-dev": {
+        "psr-0" : {
+            "TestEntities" : "tests/metadata/"
+        }
+    },
 	"description" : "Full-blown importer stack for importing almost any data into your application",
 	"keywords" : [
 		"data",
@@ -22,9 +27,15 @@
         "name" : "Markus Thielen",
         "email" : "markus@logicx.de"
     }],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "/var/www/benchmark"
+        }
+    ],
 	"require" : {
         "php" : ">=5.4.0",
-		"ddeboer/data-import" : ">=0.12.1",
+		"ddeboer/data-import" : ">=0.16.0",
 		"symfony/event-dispatcher" : "*"
 	},
 	"require-dev" : {
@@ -39,7 +50,8 @@
 		"doctrine/orm" : "*",
 		"symfony/console" : ">=2.2",
 		"symfony/validator" : "~2.3.0",
-		"fzaninotto/faker" : "*"
+		"fzaninotto/faker" : "*",
+        "mathielen/benchmark": "dev-master"
 	},
 	"suggest" : {
 		"ext-iconv" : "For the CharsetValueConverter",

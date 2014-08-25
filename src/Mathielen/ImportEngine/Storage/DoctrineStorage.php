@@ -21,21 +21,15 @@ class DoctrineStorage implements StorageInterface
 
     private $entityName;
 
-    public function __construct(EntityManagerInterface $entityManager, $queryBuilderOrEntityName)
+    public function __construct(EntityManagerInterface $entityManager, $entityName, $queryBuilder=null)
     {
         $this->entityManager = $entityManager;
+        $this->entityName = $entityName;
 
-        if (is_string($queryBuilderOrEntityName)) {
+        if (is_null($queryBuilder)) {
             $queryBuilder = $this->entityManager->createQueryBuilder()
                 ->select('o')
-                ->from($queryBuilderOrEntityName, 'o');
-            $this->entityName = $queryBuilderOrEntityName;
-
-        } elseif ($queryBuilderOrEntityName instanceof QueryBuilder) {
-            $queryBuilder = $queryBuilderOrEntityName;
-
-        } else {
-            throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
+                ->from($this->entityName, 'o');
         }
 
         $this->queryBuilder = $queryBuilder;

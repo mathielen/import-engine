@@ -77,11 +77,11 @@ class ImporterPrecondition
             throw new InvalidConfigurationException("Cannot check format when storage does not implement StorageFormatInterface");
         }
 
-        if (!$this->isSatisfiedFilename($storage->info()['name'])) {
+        if (!$this->isSatisfiedFilename(@$storage->info()['name'])) {
             return false;
         }
 
-        if (!$this->isSatisfiedFormat($storage->info()['format'])) {
+        if (!$this->isSatisfiedFormat(@$storage->info()['format'])) {
             return false;
         }
 
@@ -107,7 +107,7 @@ class ImporterPrecondition
         }
 
         foreach ($this->filenames as $pattern) {
-            if (preg_match($pattern, $filename)) {
+            if (preg_match("/$pattern/i", $filename)) {
                 return true;
             }
         }

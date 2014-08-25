@@ -21,7 +21,7 @@ class ValidatorFilter extends OriginalValidatorFilter
 
     protected $line = 1;
 
-    protected $options = array();
+    protected $collectionConstraintOptions = array();
 
     protected $violations = array();
 
@@ -37,20 +37,30 @@ class ValidatorFilter extends OriginalValidatorFilter
 
     public function __construct(
         ValidatorInterface $validator,
+        $collectionConstraintOptions = array(),
         EventDispatcherInterface $eventDispatcher=null)
     {
         $this->validator = $validator;
+        $this->collectionConstraintOptions = $collectionConstraintOptions;
 
         if ($eventDispatcher) {
             $this->setEventDispatcher($eventDispatcher);
         }
     }
 
+    /**
+     * @return ValidatorFilter
+     */
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+
+        return $this;
     }
 
+    /**
+     * @return ValidatorFilter
+     */
     public function setSkipOnViolation($skipOnViolation)
     {
         $this->skipOnViolation = $skipOnViolation;
@@ -58,23 +68,38 @@ class ValidatorFilter extends OriginalValidatorFilter
         return $this;
     }
 
+    /**
+     * @return ValidatorFilter
+     */
     public function setAllowExtraFields($allowExtraFields)
     {
-        $this->options['allowExtraFields'] = $allowExtraFields;
+        $this->collectionConstraintOptions['allowExtraFields'] = $allowExtraFields;
+
+        return $this;
     }
 
+    /**
+     * @return ValidatorFilter
+     */
     public function setAllowMissingFields($allowMissingFields)
     {
-        $this->options['allowMissingFields'] = $allowMissingFields;
+        $this->collectionConstraintOptions['allowMissingFields'] = $allowMissingFields;
+
+        return $this;
     }
 
+    /**
+     * @return ValidatorFilter
+     */
     public function add($field, Constraint $constraint)
     {
-        if (!isset($this->options['fields'][$field])) {
-            $this->options['fields'][$field] = array();
+        if (!isset($this->collectionConstraintOptions['fields'][$field])) {
+            $this->collectionConstraintOptions['fields'][$field] = array();
         }
 
-        $this->options['fields'][$field][] = $constraint;
+        $this->collectionConstraintOptions['fields'][$field][] = $constraint;
+
+        return $this;
     }
 
     public function getViolations()
@@ -106,7 +131,7 @@ class ValidatorFilter extends OriginalValidatorFilter
      */
     protected function validate(array $item)
     {
-        $constraints = new Constraints\Collection($this->options);
+        $constraints = new Constraints\Collection($this->collectionConstraintOptions);
         $list = $this->validator->validateValue($item, $constraints);
 
         return $list;
