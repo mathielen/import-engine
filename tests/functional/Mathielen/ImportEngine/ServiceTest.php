@@ -10,12 +10,14 @@ use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-/* @medium */
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
 
     private $dataWritten;
 
+    /**
+     * @medium
+     */
     public function test()
     {
         $sourceStorage = new ServiceStorage(array($this, 'readData'));

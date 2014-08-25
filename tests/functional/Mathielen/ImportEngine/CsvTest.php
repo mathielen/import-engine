@@ -11,10 +11,12 @@ use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-/* @medium */
 class CsvTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @medium
+     */
     public function test()
     {
         $targetFile = '/tmp/100.csv';

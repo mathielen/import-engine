@@ -16,7 +16,6 @@ use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-/* @medium */
 class DoctrineTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -49,6 +48,9 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         self::$em = NULL;
     }
 
+    /**
+     * @medium
+     */
     public function testImportExport()
     {
         $sourceStorage = new LocalFileStorage(new \SplFileInfo(__DIR__ . '/../../../metadata/testfiles/100.csv'), new CsvFormat());
