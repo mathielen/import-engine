@@ -234,12 +234,14 @@ $import = Import::build($importer)
 ```
 
 ### Mapping
+Also see orginal documentation [here](https://github.com/ddeboer/data-import#mappingitemconverter).
+
 ```php
 $import = ... 
 
 $import->mappings()
-  ->add('SALUTATION_FIELD', 'salutation')
-  ->add('FILE_FIELD0', 'first_name')
+  ->add('foo', 'fooloo')
+  ->add('baz', array('some' => 'else'));
 ;
 ```
 
