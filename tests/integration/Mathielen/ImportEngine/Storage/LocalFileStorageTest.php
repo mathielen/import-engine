@@ -4,7 +4,7 @@ namespace Mathielen\ImportEngine\Storage;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 
-class TestLocalFileStorage extends \PHPUnit_Framework_TestCase
+class LocalFileStorageTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testCsv()

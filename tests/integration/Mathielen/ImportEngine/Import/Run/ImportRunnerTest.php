@@ -18,7 +18,7 @@ use Mathielen\ImportEngine\Storage\Provider\FinderFileStorageProvider;
 use Mathielen\DataImport\Event\ImportItemEvent;
 use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 
-class TestImportRunner extends \PHPUnit_Framework_TestCase
+class ImportRunnerTest extends \PHPUnit_Framework_TestCase
 {
 
     public function test()

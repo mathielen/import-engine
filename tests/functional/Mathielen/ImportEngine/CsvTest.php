@@ -3,13 +3,11 @@ namespace Mathielen\ImportEngine;
 
 use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Import\Run\ImportRunner;
-use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
 use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class CsvTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,9 +32,7 @@ class CsvTest extends \PHPUnit_Framework_TestCase
         $importConfiguration->applyImport($import);
         $importRun = $importConfiguration->toRun();
 
-        $eventDispatcher = new EventDispatcher();
-        $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
-
+        $importRunner = new ImportRunner();
         $importRunner->run($importRun);
 
         $this->assertFileExists($targetFile);

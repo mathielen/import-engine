@@ -26,6 +26,14 @@ class ImportRunner
     }
 
     /**
+     * @return ImportRunner
+     */
+    public static function build(WorkflowFactoryInterface $workflowFactory=null)
+    {
+        return new self($workflowFactory);
+    }
+
+    /**
      * @return array
      */
     public function preview(ImportRun $importRun, $offset = 0)

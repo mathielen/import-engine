@@ -9,9 +9,9 @@ class ArrayStorage implements StorageInterface
 
     private $array;
 
-    public function __construct(&$array)
+    public function __construct(array &$array)
     {
-        $this->array = $array;
+        $this->array = &$array;
     }
 
     public function getFields()
