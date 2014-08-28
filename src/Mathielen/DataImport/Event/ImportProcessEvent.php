@@ -2,7 +2,6 @@
 namespace Mathielen\DataImport\Event;
 
 use Symfony\Component\EventDispatcher\Event;
-use Mathielen\ImportEngine\Import\Import;
 
 class ImportProcessEvent extends Event
 {

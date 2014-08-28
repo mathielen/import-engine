@@ -88,8 +88,6 @@ class LocalFileStorage implements StorageFormatInterface
 
     private function formatToReader(Format $format, \SplFileInfo $file)
     {
-        $reader = null;
-
         if ($format instanceof CsvFormat) {
             $reader = new CsvReader($file->openFile(), $format->getDelimiter(), $format->getEnclosure(), $format->getEscape());
             $reader->setStrict(false);
@@ -129,8 +127,6 @@ class LocalFileStorage implements StorageFormatInterface
 
     private function formatToWriter(Format $format, \SplFileInfo $file)
     {
-        $writer = null;
-
         if ($format instanceof CsvFormat) {
             $writer = new CsvWriter($format->getDelimiter(), $format->getEnclosure(), fopen($file, 'w'));
             if ($format->isHeaderInFirstRow()) {

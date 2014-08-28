@@ -2,7 +2,6 @@
 namespace Mathielen\DataImport\Reader;
 
 use Ddeboer\DataImport\Reader\ReaderInterface;
-use Doctrine\ORM\Internal\Hydration\IterableResult;
 
 /**
  * Reads data from a xml file

@@ -1,8 +1,6 @@
 <?php
 namespace Mathielen\ImportEngine\Import\Run;
 
-use Mathielen\ImportEngine\Import\Import;
-use Mathielen\DataImport\Workflow;
 use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 use Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface;
 use Mathielen\ImportEngine\Exception\ImportRunException;
