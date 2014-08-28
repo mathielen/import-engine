@@ -18,7 +18,7 @@ class ClassValidatorFilter extends ValidatorFilter
         ObjectFactoryInterface $objectFactory,
         EventDispatcherInterface $eventDispatcher=null)
     {
-        parent::__construct($validator, $eventDispatcher);
+        parent::__construct($validator, array(), $eventDispatcher);
         $this->objectFactory = $objectFactory;
     }
 
