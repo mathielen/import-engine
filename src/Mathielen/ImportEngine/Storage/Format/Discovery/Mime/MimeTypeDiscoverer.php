@@ -65,7 +65,7 @@ class MimeTypeDiscoverer
             case 'ppsm': return 'application/vnd.ms-powerpoint.slideshow.macroEnabled.12';
         }
 
-        return 'pplication/vnd.ms-office';
+        return 'application/vnd.ms-office';
     }
 
     private function handleZipFile($filePath)

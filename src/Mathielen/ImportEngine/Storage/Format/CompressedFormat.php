@@ -9,12 +9,16 @@ class CompressedFormat extends Format
      */
     private $subFormat;
 
-    protected $name = 'Compressed File';
-    protected $id = 'zlib';
+    private $uriInsideArchive;
+    private $wrapper;
 
-    public function __construct($streamUri=null, Format $subFormat=null)
+    protected $name = 'Compressed File';
+    protected $id = 'compress';
+
+    public function __construct($uriInsideArchive, $wrapper='zip', Format $subFormat=null)
     {
-        $this->streamUri = $streamUri;
+        $this->uriInsideArchive = $uriInsideArchive;
+        $this->wrapper = $wrapper;
         $this->subFormat = $subFormat;
     }
 
@@ -23,9 +27,13 @@ class CompressedFormat extends Format
         return $this->subFormat;
     }
 
-    public function getStreamUri()
+    public function getInsideStream(\SplFileInfo $file)
     {
-        return $this->streamUri;
+        $streamUri = $this->wrapper . '://' . $file . '#' . $this->uriInsideArchive;
+        $uncompressedUri = tempnam('/tmp', 'compressed');
+        file_put_contents($uncompressedUri, file_get_contents($streamUri));
+
+        return new \SplFileInfo($uncompressedUri);
     }
 
     public function __toString()

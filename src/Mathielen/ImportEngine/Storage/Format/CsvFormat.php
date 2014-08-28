@@ -4,10 +4,10 @@ namespace Mathielen\ImportEngine\Storage\Format;
 class CsvFormat extends Format
 {
 
-    public $delimiter = ';';
-    public $enclosure = '"';
-    public $escape = '\\';
-    public $headerinfirstrow = true;
+    private $delimiter = ';';
+    private $enclosure = '"';
+    private $escape = '\\';
+    private $headerinfirstrow = true;
 
     protected $id = 'csv';
     protected $name = 'CSV File';
@@ -18,6 +18,26 @@ class CsvFormat extends Format
         $this->enclosure = $enclosure;
         $this->escape = $escape;
         $this->headerinfirstrow = $headerinfirstrow;
+    }
+
+    public function isHeaderInFirstRow()
+    {
+        return $this->headerinfirstrow;
+    }
+
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    public function getEscape()
+    {
+        return $this->escape;
     }
 
     public function __toString()

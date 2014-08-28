@@ -23,8 +23,9 @@ class MimeTypeDiscovererTest extends \PHPUnit_Framework_TestCase
             array('flatdata.csv', 'text/plain'),
             array('flatdata-excel-xml.xlsx', $is53?'application/vnd.ms-excel':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
             array('flatdata-excel.xls', 'application/vnd.ms-excel'),
+            array('flatdata-excel-old.xls', 'application/vnd.ms-excel'),
             array('multiplefiles.zip', 'application/zip'),
-            array('testmapping.zip', 'application/zip text/plain@testmapping.csv'),
+            array('flatdata-csv-zip.zip', 'application/zip text/plain@testmapping.csv'),
         );
     }
 

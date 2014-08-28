@@ -44,7 +44,7 @@ class ValidatorValidation implements ValidationInterface
     {
         if (!$this->sourceValidatorFilter) {
             $this->setSourceValidatorFilter(new ValidatorFilter($this->validator));
-            $this->sourceValidatorFilter->setAllowExtraFields(true); //@TODO configureble?
+            $this->sourceValidatorFilter->setAllowExtraFields(true);
         }
 
         $this->sourceValidatorFilter->add($field, $constraint);
@@ -59,6 +59,7 @@ class ValidatorValidation implements ValidationInterface
     {
         if (!$this->targetValidatorFilter) {
             $this->setTargetValidatorFilter(new ValidatorFilter($this->validator));
+            $this->targetValidatorFilter->setAllowExtraFields(true);
         }
 
         $this->targetValidatorFilter->add($field, $constraint);

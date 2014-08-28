@@ -19,6 +19,10 @@
 		"importer",
 		"csv",
 		"excel",
+        "xml",
+        "yaml",
+        "service",
+        "jms",
 		"doctrine",
 		"mapping"
 	],

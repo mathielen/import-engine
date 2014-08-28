@@ -5,7 +5,7 @@ class Format
 {
 
     protected $id = null;
-    protected $name = 'Unkown';
+    protected $name = 'Unknown';
 
     public function getId()
     {

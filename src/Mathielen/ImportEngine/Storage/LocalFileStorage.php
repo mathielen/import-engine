@@ -5,11 +5,15 @@ use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
 use Ddeboer\DataImport\Reader\ReaderInterface;
 use Ddeboer\DataImport\Writer\CsvWriter;
+use Ddeboer\DataImport\Writer\ExcelWriter;
+use Mathielen\DataImport\Writer\XmlWriter;
 use Ddeboer\DataImport\Writer\WriterInterface;
+use Mathielen\DataImport\Reader\XmlReader;
+use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
-use Mathielen\ImportEngine\Storage\Format\ZipFormat;
+use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class LocalFileStorage implements StorageFormatInterface
@@ -82,25 +86,26 @@ class LocalFileStorage implements StorageFormatInterface
         return $this->reader;
     }
 
-    private function formatToReader($format, \SplFileInfo $file)
+    private function formatToReader(Format $format, \SplFileInfo $file)
     {
         $reader = null;
 
         if ($format instanceof CsvFormat) {
-            $reader = new CsvReader($file->openFile(), $format->delimiter, $format->enclosure, $format->escape);
+            $reader = new CsvReader($file->openFile(), $format->getDelimiter(), $format->getEnclosure(), $format->getEscape());
             $reader->setStrict(false);
-            if ($format->headerinfirstrow) {
+            if ($format->isHeaderInFirstRow()) {
                 $reader->setHeaderRowNumber(0);
             }
 
         } elseif ($format instanceof ExcelFormat) {
-            $headerRowNumber = $format->headerinfirstrow?0:null;
-            $reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->activesheet);
+            $headerRowNumber = $format->isHeaderInFirstRow()?0:null;
+            $reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->getActivesheet());
 
-        } elseif ($format instanceof ZipFormat && $format->getSubFormat()) {
-            file_put_contents('/tmp/unpacked', file_get_contents($format->getStreamUri()));
+        } elseif ($format instanceof XmlFormat) {
+            $reader = new XmlReader($file->openFile(), $format->getXpath());
 
-            $reader = $this->formatToReader($format->getSubFormat(), new \SplFileObject('/tmp/unpacked'));
+        } elseif ($format instanceof CompressedFormat && $format->getSubFormat()) {
+            $reader = $this->formatToReader($format->getSubFormat(), $format->getInsideStream($file));
 
         } else {
             throw new InvalidConfigurationException("Cannot build reader. Unknown format: ".$format);
@@ -122,32 +127,33 @@ class LocalFileStorage implements StorageFormatInterface
         return $this->writer;
     }
 
-    private function formatToWriter($format, \SplFileInfo $file)
+    private function formatToWriter(Format $format, \SplFileInfo $file)
     {
-        $reader = null;
+        $writer = null;
 
         if ($format instanceof CsvFormat) {
-            $reader = new CsvWriter($format->delimiter, $format->enclosure, fopen($file, 'w'));
-            if ($format->headerinfirstrow) {
+            $writer = new CsvWriter($format->getDelimiter(), $format->getEnclosure(), fopen($file, 'w'));
+            if ($format->isHeaderInFirstRow()) {
                 //TODO how to handle header?
             }
 
         } elseif ($format instanceof ExcelFormat) {
-            //TODO
-            // $headerRowNumber = $format->headerinfirstrow?0:null;
-            //$reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->activesheet);
+            $writer = new ExcelWriter($file->openFile('w'), $format->getActivesheet(), $format->getExceltype());
+            if ($format->isHeaderInFirstRow()) {
+                //TODO how to handle header?
+            }
 
-        } elseif ($format instanceof ZipFormat && $format->getSubFormat()) {
-            //TODO
-            //file_put_contents('/tmp/unpacked', file_get_contents($format->getStreamUri()));
+        } elseif ($format instanceof XmlFormat) {
+            $writer = new XMLWriter($file->openFile('w'));
 
-            //$reader = $this->formatToReader($format->getSubFormat(), new \SplFileObject('/tmp/unpacked'));
+        } elseif ($format instanceof CompressedFormat) {
+            throw new \LogicException("Not implemented!");
 
         } else {
             throw new InvalidConfigurationException("Cannot build writer. Unknown format: ".$format);
         }
 
-        return $reader;
+        return $writer;
     }
 
     /**

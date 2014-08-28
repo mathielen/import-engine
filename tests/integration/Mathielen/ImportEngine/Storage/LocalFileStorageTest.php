@@ -9,7 +9,7 @@ class LocalFileStorageTest extends \PHPUnit_Framework_TestCase
 
     public function testCsv()
     {
-        $format = new CsvFormat('#');
+        $format = new CsvFormat(';');
         $localFile = new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../../metadata/testfiles/flatdata.csv'), $format);
         $reader = $localFile->reader();
 
@@ -17,13 +17,13 @@ class LocalFileStorageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new StorageInfo(array(
             'name' => 'flatdata.csv',
             'format' => $format,
-            'size' => 2846,
+            'size' => 32,
             'count' => 1,
-            'hash' => 'efc21cbcbb2f04d5b061f3dbaf32ccfa'
+            'hash' => '4f0e1e99eb12d94dc527fedce9eb58d8'
         )), $info);
 
         $headers = $reader->getColumnHeaders();
-        $this->assertEquals(185, count($headers));
+        $this->assertEquals(2, count($headers));
     }
 
     public function testXls()
@@ -38,7 +38,7 @@ class LocalFileStorageTest extends \PHPUnit_Framework_TestCase
             'format' => $format,
             'size' => 23552,
             'count' => 1,
-            'hash' => '3dbea55520f59ebdd08b6ad85ae95005'
+            'hash' => '5c314b3631ef99b39aaaec8146823292'
         )), $info);
 
         $headers = $reader->getColumnHeaders();
