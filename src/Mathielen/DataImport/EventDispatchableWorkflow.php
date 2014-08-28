@@ -6,6 +6,7 @@ use Ddeboer\DataImport\Workflow as OriginalWorkflow;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Mathielen\DataImport\Event\ImportProcessEvent;
 use Mathielen\DataImport\Event\ImportItemEvent;
+use Ddeboer\DataImport\Exception\ExceptionInterface;
 
 class EventDispatchableWorkflow extends OriginalWorkflow
 {
@@ -60,7 +61,7 @@ class EventDispatchableWorkflow extends OriginalWorkflow
 
                 $this->processWrite($convertedItem, $item, $event);
 
-            } catch (\ExceptionInterface $e) {
+            } catch (ExceptionInterface $e) {
                 if ($this->skipItemOnFailure) {
                     $exceptions[] = $e;
                     $this->logger->error($e->getMessage());
