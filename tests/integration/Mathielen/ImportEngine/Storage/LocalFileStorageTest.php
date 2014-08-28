@@ -38,7 +38,7 @@ class LocalFileStorageTest extends \PHPUnit_Framework_TestCase
             'format' => $format,
             'size' => 23552,
             'count' => 1,
-            'hash' => '5c314b3631ef99b39aaaec8146823292'
+            'hash' => '3dbea55520f59ebdd08b6ad85ae95005'
         )), $info);
 
         $headers = $reader->getColumnHeaders();

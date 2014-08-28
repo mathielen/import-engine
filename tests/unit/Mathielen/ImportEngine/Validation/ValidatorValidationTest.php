@@ -1,7 +1,6 @@
 <?php
 namespace Mathielen\ImportEngine\Validation;
 
-use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Symfony\Component\Validator\Constraints\Email;
 use Mathielen\DataImport\Filter\ValidatorFilter;
 use Symfony\Component\Validator\Constraints\NotNull;
