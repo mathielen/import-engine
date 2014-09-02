@@ -12,9 +12,7 @@ class JmsMetadataParserTest extends \PHPUnit_Framework_TestCase
 {
 
     private $parser;
-
-    private $metadataFactoryMock;
-    private $propertyNamingStrategyMock;
+    private $metadataFactory;
 
     protected function setUp()
     {
@@ -28,14 +26,6 @@ class JmsMetadataParserTest extends \PHPUnit_Framework_TestCase
             $this->metadataFactory,
             new IdenticalPropertyNamingStrategy()
         );
-       /* $this->storage
-            ->expects($this->any())
-            ->method('info')
-            ->will($this->returnValue($info));
-        $this->storage
-            ->expects($this->any())
-            ->method('getFields')
-            ->will($this->returnValue(array('A', 'B')));*/
     }
 
     public function testParse()
