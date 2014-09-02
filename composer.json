@@ -31,12 +31,6 @@
         "name" : "Markus Thielen",
         "email" : "markus@logicx.de"
     }],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "/var/www/benchmark"
-        }
-    ],
 	"require" : {
         "php" : ">=5.4.0",
 		"ddeboer/data-import" : ">=0.16.0",
