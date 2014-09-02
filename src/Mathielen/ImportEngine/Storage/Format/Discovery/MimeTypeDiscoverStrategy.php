@@ -19,10 +19,14 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
 
     private $mimeTypeFactories;
 
-    public function __construct(array $mimeTypeFactories = array())
+    public function __construct(array $mimeTypeFactories = array(), $mimetypeDiscoverer = null)
     {
+        if (is_null($mimetypeDiscoverer)) {
+            $mimetypeDiscoverer = new MimeTypeDiscoverer();
+        }
+
         $this->mimeTypeFactories = $mimeTypeFactories;
-        $this->mimetypeDiscoverer = new MimeTypeDiscoverer();
+        $this->mimetypeDiscoverer = $mimetypeDiscoverer;
     }
 
     public function addMimeTypeFactory($mimeType, FormatFactoryInterface $factory)
@@ -39,12 +43,12 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
         $mimeType = $this->mimetypeDiscoverer->discoverMimeType($uri);
         @list($mimeType, $subInformation) = explode(' ', $mimeType);
 
-        $type = $this->mimeTypeToFormat($uri, $mimeType, $subInformation);
+        $type = $this->mimeTypeToFormat($mimeType, $uri, $subInformation);
 
         return $type;
     }
 
-    private function mimeTypeToFormat($uri, $mimeType, $subInformation = null)
+    private function mimeTypeToFormat($mimeType, $uri=null , $subInformation=null)
     {
         if (array_key_exists($mimeType, $this->mimeTypeFactories)) {
             return $this->mimeTypeFactories[$mimeType]->factor($uri);
@@ -55,9 +59,8 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
             case 'application/zip':
                 if ($subInformation) {
                     list($subMimeType, $subFile) = explode('@', $subInformation);
-                    $streamUri = "zip://$uri#$subFile";
 
-                    return new CompressedFormat($streamUri, $this->mimeTypeToFormat($streamUri, $subMimeType));
+                    return new CompressedFormat($subFile, 'zip', $this->mimeTypeToFormat($subMimeType));
                 } else {
                     return new CompressedFormat();
                 }
@@ -70,7 +73,7 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
             case 'application/xml':
                 return new XmlFormat();
             default:
-                throw new InvalidConfigurationException("Unknown mime-type: $mimeType. No registered factory nor any default for $uri");
+                throw new InvalidConfigurationException("Unknown mime-type: '$mimeType'. No registered factory nor any default for '$uri''");
         }
 
         return null;
