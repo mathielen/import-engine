@@ -26,7 +26,7 @@ class ValidatorFilter extends OriginalValidatorFilter
     protected $violations = array();
 
     /* if we skip everything else in the workflow when an error occurs, the "line" property of
-     * the following filters aren correct. so you can disable the skip behavior here.
+     * the following filters arent correct. so you can disable the skip behavior here.
      */
     protected $skipOnViolation = true;
 

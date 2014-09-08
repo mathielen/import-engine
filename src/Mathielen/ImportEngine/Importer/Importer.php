@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Importer;
 
+use Mathielen\ImportEngine\Filter\Filters;
 use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Validation\ValidationInterface;
@@ -30,6 +31,11 @@ class Importer
     private $transformation;
 
     /**
+     * @var Filter
+     */
+    private $filter;
+
+    /**
      * @return \Mathielen\ImportEngine\Importer\Importer
      */
     public static function build(StorageInterface $targetStorage)
@@ -43,6 +49,7 @@ class Importer
 
         $this->validation = new DummyValidation();
         $this->transformation = new Transformation();
+        $this->filters = new Filters();
     }
 
     /**
@@ -77,6 +84,14 @@ class Importer
     public function transformation()
     {
         return $this->transformation;
+    }
+
+    /**
+     * @return \Mathielen\ImportEngine\Filter\Filters
+     */
+    public function filters()
+    {
+        return $this->filters;
     }
 
     /**
