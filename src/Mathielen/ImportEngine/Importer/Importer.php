@@ -31,7 +31,7 @@ class Importer
     private $transformation;
 
     /**
-     * @var Filter
+     * @var Filters
      */
     private $filter;
 
