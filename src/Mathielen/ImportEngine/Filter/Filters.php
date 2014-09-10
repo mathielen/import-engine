@@ -1,11 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Filter;
 
-use Ddeboer\DataImport\ValueConverter\ValueConverterInterface;
-use Ddeboer\DataImport\ItemConverter\MappingItemConverter;
-use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 use Ddeboer\DataImport\Workflow;
-use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class Filters extends \ArrayObject
 {
