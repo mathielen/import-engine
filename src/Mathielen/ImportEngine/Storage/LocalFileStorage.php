@@ -92,14 +92,15 @@ class LocalFileStorage implements StorageFormatInterface
             $reader = new CsvReader($file->openFile(), $format->getDelimiter(), $format->getEnclosure(), $format->getEscape());
             $reader->setStrict(false);
             if ($format->isHeaderInFirstRow()) {
-                $reader->setColumnHeaders(array_map('trim', $reader->current())); //TODO some header-collaborator?
+                $reader->setHeaderRowNumber(0);
+                $reader->setColumnHeaders(array_map('trim', $reader->getColumnHeaders())); //TODO some header-collaborator?
             }
 
         } elseif ($format instanceof ExcelFormat) {
             $headerRowNumber = $format->isHeaderInFirstRow()?0:null;
             $reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->getActivesheet());
             if ($format->isHeaderInFirstRow()) {
-                $reader->setColumnHeaders(array_map('trim', $reader->current())); //TODO some header-collaborator?
+                $reader->setColumnHeaders(array_map('trim', $reader->getColumnHeaders())); //TODO some header-collaborator?
             }
 
         } elseif ($format instanceof XmlFormat) {
