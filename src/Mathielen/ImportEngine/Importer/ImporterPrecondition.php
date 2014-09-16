@@ -146,6 +146,7 @@ class ImporterPrecondition
         }
 
         $fields = array_map('strtolower', $fields);
+        $fields = array_map('trim', $fields);
 
         foreach ($this->anyfields as $anyField) {
            if (!in_array($anyField, $fields)) {
