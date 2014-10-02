@@ -13,17 +13,35 @@ class ImportRun
 
     protected $createdAt;
 
+    protected $createdBy;
+
     protected $finishedAt;
 
     protected $statistics;
 
     protected $info;
 
-    public function __construct(ImportConfiguration $configuration)
+    /**
+     * arbitrary data
+     */
+    protected $context;
+
+    public function __construct(ImportConfiguration $configuration, $createdBy = null)
     {
         $this->id = uniqid();
         $this->createdAt = new \DateTime();
         $this->configuration = $configuration;
+        $this->createdBy = $createdBy;
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 
     public function getId()
