@@ -19,13 +19,19 @@ class ServiceReader implements ReaderInterface
      */
     private $callable;
 
-    public function __construct(callable $callable)
+    /**
+     * @var array
+     */
+    private $arguments;
+
+    public function __construct(callable $callable, array $arguments=array())
     {
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Cannot call callable");
+            throw new \InvalidArgumentException("Given callable is not a callable");
         }
 
         $this->callable = $callable;
+        $this->arguments = $arguments;
     }
 
     /**
@@ -98,7 +104,7 @@ class ServiceReader implements ReaderInterface
 
     private function getDataFromService()
     {
-        return call_user_func($this->callable);
+        return call_user_func_array($this->callable, $this->arguments);
     }
 
 }

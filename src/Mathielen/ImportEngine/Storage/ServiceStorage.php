@@ -12,17 +12,23 @@ class ServiceStorage implements StorageInterface
      */
     private $callable;
 
+    /**
+     * @var array
+     */
+    private $arguments;
+
     private $objectTransformer;
     private $objectFactory;
 
-    public function __construct(callable $callable, $objectMapper=null)
+    public function __construct(callable $callable, $arguments=array(), $objectMapper=null)
     {
         $this->callable = $callable;
+        $this->arguments = $arguments;
         $this->setObjectFactory($objectMapper);
         $this->setObjectTransformer($objectMapper);
 
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Cannot call callable");
+            throw new \InvalidArgumentException("Given callable is not a callable");
         }
     }
 
@@ -43,6 +49,7 @@ class ServiceStorage implements StorageInterface
     {
         $reader = new ServiceReader(
             $this->callable,
+            $this->arguments,
             $this->objectTransformer
         );
 

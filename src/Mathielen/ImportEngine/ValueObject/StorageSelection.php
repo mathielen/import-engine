@@ -44,10 +44,10 @@ class StorageSelection
     public function getImpl()
     {
         //TODO some sort of serializable wrapper?
-        if (is_array($this->impl)) {
+        if (is_array($this->impl) && isset($this->impl['class'])) {
             $reflectionClass = new \ReflectionClass($this->impl['class']);
 
-            return $reflectionClass->newInstanceArgs($this->impl['args']);
+            return $reflectionClass->newInstanceArgs(@$this->impl['args']);
         }
 
         return $this->impl;
