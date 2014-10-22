@@ -49,6 +49,11 @@ class ImportRun
         return $this->id;
     }
 
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
     public function isFinished()
     {
         return false;
