@@ -56,7 +56,7 @@ class ImportRun
 
     public function isFinished()
     {
-        return false;
+        return !empty($this->finishedAt);
     }
 
     /**
