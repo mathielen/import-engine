@@ -12,8 +12,10 @@ class ImportRun
     protected $configuration;
 
     protected $createdAt;
-
     protected $createdBy;
+
+    protected $revokedAt;
+    protected $revokedBy;
 
     protected $finishedAt;
 
@@ -54,6 +56,22 @@ class ImportRun
         return $this->createdBy;
     }
 
+    public function revoke($revokedBy = null)
+    {
+        $this->revokedAt = new \DateTime();
+        $this->revokedBy = $revokedBy;
+    }
+
+    public function isRevoked()
+    {
+        return !empty($this->revokedAt);
+    }
+
+    public function finish()
+    {
+        $this->finishedAt = new \DateTime();
+    }
+
     public function isFinished()
     {
         return !empty($this->finishedAt);
@@ -65,11 +83,6 @@ class ImportRun
     public function getConfiguration()
     {
         return $this->configuration;
-    }
-
-    public function finish()
-    {
-        $this->finishedAt = new \DateTime();
     }
 
     public function setStatistics(array $statistics)
@@ -99,8 +112,11 @@ class ImportRun
         return array(
             'id' => $this->id,
             'configuration' => $this->configuration?$this->configuration->toArray():null,
+            'created_by' => $this->createdBy,
             'created_at' => $this->createdAt->getTimestamp(),
-            'finished_at' => $this->finishedAt?$this->finishedAt->getTimestamp():null
+            'revoked_by' => $this->revokedBy,
+            'revoked_at' => $this->revokedAt?$this->revokedAt->getTimestamp():null,
+            'finished_at' => $this->finishedAt?$this->finishedAt->getTimestamp():null,
         );
     }
 
