@@ -4,6 +4,10 @@ namespace Mathielen\ImportEngine\ValueObject;
 class ImportRun
 {
 
+    const STATE_REVOKED = 'revoked';
+    const STATE_FINISHED = 'finished';
+    const STATE_CREATED = 'created';
+
     protected $id;
 
     /**
@@ -64,7 +68,7 @@ class ImportRun
 
     public function isRevoked()
     {
-        return !empty($this->revokedAt);
+        return $this->getState() == self::STATE_REVOKED;
     }
 
     public function finish()
@@ -74,7 +78,12 @@ class ImportRun
 
     public function isFinished()
     {
-        return !empty($this->finishedAt);
+        return $this->getState() == self::STATE_FINISHED;
+    }
+
+    public function isRunnable()
+    {
+        return !$this->isFinished() && !$this->isRevoked();
     }
 
     /**
@@ -107,16 +116,30 @@ class ImportRun
         return $this->info;
     }
 
+    public function getState()
+    {
+        if (!empty($this->revokedAt)) {
+            return self::STATE_REVOKED;
+        }
+        if (!empty($this->finishedAt)) {
+            return self::STATE_FINISHED;
+        }
+
+        return self::STATE_CREATED;
+    }
+
     public function toArray()
     {
         return array(
             'id' => $this->id,
             'configuration' => $this->configuration?$this->configuration->toArray():null,
+            'statistics' => $this->getStatistics(),
             'created_by' => $this->createdBy,
             'created_at' => $this->createdAt->getTimestamp(),
             'revoked_by' => $this->revokedBy,
             'revoked_at' => $this->revokedAt?$this->revokedAt->getTimestamp():null,
             'finished_at' => $this->finishedAt?$this->finishedAt->getTimestamp():null,
+            'state' => $this->getState()
         );
     }
 

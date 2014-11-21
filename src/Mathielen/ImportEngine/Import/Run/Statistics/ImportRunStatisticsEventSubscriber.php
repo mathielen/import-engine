@@ -30,19 +30,26 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            ImportProcessEvent::AFTER_PREPARE => array('onImportPrepare', 0),
+            ImportProcessEvent::AFTER_PREPARE => array('onImportPrepare', 999999),
             ImportItemEvent::AFTER_READ => array('onAfterRead', 0),
             ImportItemEvent::AFTER_FILTER => array('onAfterFilter', 0),
             ImportItemEvent::AFTER_CONVERSION => array('onAfterConversion', 0),
             ImportItemEvent::AFTER_CONVERSIONFILTER => array('onAfterConversionFilter', 0),
             ImportItemEvent::AFTER_VALIDATION => array('onAfterValidate', 0),
-            ImportItemEvent::AFTER_WRITE => array('onAfterWrite', 0)
+            ImportItemEvent::AFTER_WRITE => array('onAfterWrite', 0),
+            ImportProcessEvent::AFTER_FINISH => array('onImportFinish', 999999),
         );
     }
 
     public function onImportPrepare(ImportProcessEvent $event)
     {
         $event->setContext($this->importrun);
+    }
+
+    public function onImportFinish(ImportProcessEvent $event)
+    {
+        //remove the subscriber when its done
+        $event->getDispatcher()->removeSubscriber($this);
     }
 
     public function onAfterRead(ImportItemEvent $event)
