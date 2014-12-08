@@ -48,6 +48,8 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
 
     public function onImportFinish(ImportProcessEvent $event)
     {
+        $this->importrun->finish();
+
         //remove the subscriber when its done
         $event->getDispatcher()->removeSubscriber($this);
     }
@@ -57,7 +59,6 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         ++$this->statistics['processed'];
 
         $this->importrun->setStatistics($this->statistics);
-        $this->importrun->finish();
     }
 
     public function onAfterFilter(ImportItemEvent $event)
