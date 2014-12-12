@@ -2,6 +2,8 @@
 namespace Mathielen\ImportEngine\Importer;
 
 use Mathielen\ImportEngine\Storage\StorageInterface;
+use Psr\Log\LoggerInterface;
+
 class ImporterRepository
 {
 
@@ -14,6 +16,16 @@ class ImporterRepository
      * @var ImporterPrecondition[]
      */
     private $preconditions = array();
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
 
     public function register($id, Importer $importer, ImporterPrecondition $precondition = null)
     {
@@ -41,8 +53,16 @@ class ImporterRepository
      */
     public function find(StorageInterface $storage)
     {
+        if ($this->logger) {
+            $this->logger->debug("Searching for importer for storage named: '" . $storage->info()['name']."'");
+        }
+
         foreach ($this->preconditions as $importerId => $precondition) {
-            if ($precondition->isSatisfiedBy($storage)) {
+            if ($this->logger) {
+                $this->logger->debug("Checking importer: '" . $importerId."'");
+            }
+
+            if ($precondition->isSatisfiedBy($storage, $this->logger)) {
                 return $importerId;
             }
         }

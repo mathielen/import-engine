@@ -37,4 +37,4 @@ class ContextMergeConverter implements ItemConverterInterface, EventSubscriberIn
         return array_merge($this->currentContext, $input);
     }
 
-} 
+}

@@ -5,6 +5,7 @@ use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 use Mathielen\ImportEngine\Storage\StorageFormatInterface;
+use Psr\Log\LoggerInterface;
 
 class ImporterPrecondition
 {
@@ -71,36 +72,36 @@ class ImporterPrecondition
         return $this;
     }
 
-    public function isSatisfiedBy(StorageInterface $storage)
+    public function isSatisfiedBy(StorageInterface $storage, LoggerInterface $logger = null)
     {
         if (!($storage instanceof StorageFormatInterface) && !empty($this->formats)) {
             throw new InvalidConfigurationException("Cannot check format when storage does not implement StorageFormatInterface");
         }
 
-        if (!$this->isSatisfiedFilename(@$storage->info()['name'])) {
+        if (!$this->isSatisfiedFilename(@$storage->info()['name'], $logger)) {
             return false;
         }
 
-        if (!$this->isSatisfiedFormat(@$storage->info()['format'])) {
+        if (!$this->isSatisfiedFormat(@$storage->info()['format'], $logger)) {
             return false;
         }
 
-        if (!$this->isSatisfiedFieldcount(count($storage->getFields()))) {
+        if (!$this->isSatisfiedFieldcount(count($storage->getFields()), $logger)) {
             return false;
         }
 
-        if (!$this->isSatisfiedAnyFields($storage->getFields())) {
+        if (!$this->isSatisfiedAnyFields($storage->getFields(), $logger)) {
             return false;
         }
 
-        if (!$this->isSatisfiedFieldset($storage->getFields())) {
+        if (!$this->isSatisfiedFieldset($storage->getFields(), $logger)) {
             return false;
         }
 
         return true;
     }
 
-    private function isSatisfiedFilename($filename)
+    private function isSatisfiedFilename($filename, LoggerInterface $logger = null)
     {
         if (empty($this->filenames)) {
             return true;
@@ -112,10 +113,14 @@ class ImporterPrecondition
             }
         }
 
+        if ($logger) {
+            $logger->debug("Storage does not meet Preconditions due to filename restriction. Was $filename, should be one of " . join(',', $this->filenames));
+        }
+
         return false;
     }
 
-    private function isSatisfiedFormat(Format $format)
+    private function isSatisfiedFormat(Format $format, LoggerInterface $logger = null)
     {
         if (empty($this->formats)) {
             return true;
@@ -127,19 +132,31 @@ class ImporterPrecondition
             }
         }
 
+        if ($logger) {
+            $logger->debug("Storage does not meet Preconditions due to format restriction. Was $format, should be one of " . join(',', $this->formats));
+        }
+
         return false;
     }
 
-    private function isSatisfiedFieldcount($fieldCount)
+    private function isSatisfiedFieldcount($fieldCount, LoggerInterface $logger = null)
     {
         if (is_null($this->fieldcount)) {
             return true;
         }
 
-        return $this->fieldcount == $fieldCount;
+        if ($this->fieldcount == $fieldCount) {
+            return true;
+        }
+
+        if ($logger) {
+            $logger->debug("Storage does not meet Preconditions due to fieldcount restriction. Was $fieldCount, should be " . $this->fieldcount);
+        }
+
+        return false;
     }
 
-    private function isSatisfiedAnyFields(array $fields)
+    private function isSatisfiedAnyFields(array $fields, LoggerInterface $logger = null)
     {
         if (empty($this->anyfields)) {
             return true;
@@ -150,6 +167,10 @@ class ImporterPrecondition
 
         foreach ($this->anyfields as $anyField) {
            if (!in_array($anyField, $fields)) {
+               if ($logger) {
+                   $logger->debug("Storage does not meet Preconditions due to fields restriction. Missing field: '$anyField'");
+               }
+
                return false;
            }
         }
@@ -157,13 +178,21 @@ class ImporterPrecondition
         return true;
     }
 
-    private function isSatisfiedFieldset(array $fieldset)
+    private function isSatisfiedFieldset(array $fieldset, LoggerInterface $logger = null)
     {
         if (empty($this->fieldset)) {
             return true;
         }
 
-        return array_map('strtolower', $fieldset) == $this->fieldset;
+        if (array_map('strtolower', $fieldset) == $this->fieldset) {
+            return true;
+        }
+
+        if ($logger) {
+            $logger->debug("Storage does not meet Preconditions due to fieldset restriction. Was ".join(',', $fieldset).", should be " . join(',', $this->fieldset));
+        }
+
+        return false;
     }
 
 }
