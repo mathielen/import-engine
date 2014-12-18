@@ -42,7 +42,6 @@ class ImportRun
     protected $statistics;
     protected $info;
 
-
     /**
      * arbitrary data
      */
