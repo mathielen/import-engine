@@ -29,14 +29,6 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     }
 
     /**
-     * @return EventDispatcherInterface
-     */
-    public function getEventDispatcher()
-    {
-        return $this->eventDispatcher();
-    }
-
-    /**
      * @return \Ddeboer\DataImport\Workflow
      */
     private function buildBaseWorkflow(Import $import)

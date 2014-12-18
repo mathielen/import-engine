@@ -7,6 +7,7 @@ class ImportRun
     const STATE_REVOKED = 'revoked';
     const STATE_FINISHED = 'finished';
     const STATE_CREATED = 'created';
+    const STATE_VALIDATED = 'validated';
 
     protected $id;
 
@@ -15,17 +16,32 @@ class ImportRun
      */
     protected $configuration;
 
+    /**
+     * @var \DateTime
+     */
     protected $createdAt;
     protected $createdBy;
 
+    /**
+     * @var \DateTime
+     */
+    protected $validatedAt;
+    protected $validationMessages;
+
+    /**
+     * @var \DateTime
+     */
+    protected $finishedAt;
+
+    /**
+     * @var \DateTime
+     */
     protected $revokedAt;
     protected $revokedBy;
 
-    protected $finishedAt;
-
     protected $statistics;
-
     protected $info;
+
 
     /**
      * arbitrary data
@@ -81,6 +97,17 @@ class ImportRun
         return $this->getState() == self::STATE_FINISHED;
     }
 
+    public function validated(array $validationMessages=null)
+    {
+        $this->validatedAt = new \DateTime();
+        $this->validationMessages = $validationMessages;
+    }
+
+    public function isValidated()
+    {
+        return $this->getState() == self::STATE_VALIDATED;
+    }
+
     public function isRunnable()
     {
         return !$this->isFinished() && !$this->isRevoked();
@@ -124,8 +151,16 @@ class ImportRun
         if (!empty($this->finishedAt)) {
             return self::STATE_FINISHED;
         }
+        if (!empty($this->validatedAt)) {
+            return self::STATE_VALIDATED;
+        }
 
         return self::STATE_CREATED;
+    }
+
+    public function getValidationMessages()
+    {
+        return $this->validationMessages;
     }
 
     public function toArray()
