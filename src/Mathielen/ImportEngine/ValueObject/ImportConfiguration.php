@@ -107,9 +107,9 @@ class ImportConfiguration
     /**
      * @return ImportRun
      */
-    public function toRun()
+    public function toRun($createdBy=null)
     {
-        return new ImportRun($this);
+        return new ImportRun($this, $createdBy);
     }
 
 }

@@ -6,6 +6,7 @@ use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Storage\StorageLocator;
 use Mathielen\ImportEngine\Event\ImportConfigureEvent;
+use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportBuilder
@@ -45,9 +46,9 @@ class ImportBuilder
     }
 
     /**
-     * @return ImportConfiguration
+     * @return ImportRun
      */
-    public function build(ImportConfiguration $importConfiguration)
+    public function build(ImportConfiguration $importConfiguration, $createdBy=null)
     {
         $importer = $this->importerRepository->get($importConfiguration->getImporterId());
 
@@ -61,7 +62,7 @@ class ImportBuilder
                 new ImportConfigureEvent($import));
         }
 
-        return $importConfiguration;
+        return $importConfiguration->toRun($createdBy);
     }
 
 }
