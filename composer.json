@@ -56,6 +56,7 @@
 		"symfony/validator" : "to use the ValidatorFilter",
 		"phpoffice/phpexcel" : "If you want to use the ExcelReader",
 		"symfony/console" : "If you want to use the ConsoleProgressWriter",
-		"symfony/property-access" : "If you want to use the ObjectConverter"
+		"symfony/property-access" : "If you want to use the ObjectConverter",
+	    "jms/serializer" : "If you want to use the JmsSerializerObjectFactory"
 	}
 }

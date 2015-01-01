@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<node>
+	<node attr1="a">
         <value1>1</value1>
 	</node>
-    <node>
+    <node attr2="b">
         <value1>2</value1>
     </node>
 </root>

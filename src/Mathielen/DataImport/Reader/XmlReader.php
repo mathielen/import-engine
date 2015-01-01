@@ -23,8 +23,6 @@ class XmlReader implements ReaderInterface
 
         if (!is_null($xpath) && !is_string($xpath)) {
             throw new \InvalidArgumentException("xpath must be null or a string");
-        } elseif (is_null($xpath)) {
-            $xpath = '';
         }
 
         $this->xpath = $xpath;
@@ -81,6 +79,10 @@ class XmlReader implements ReaderInterface
     {
         if (!$this->iterableResult) {
             $this->iterableResult = new \SimpleXMLIterator(file_get_contents($this->filename));
+
+            if ($this->xpath) {
+                $this->iterableResult = new \ArrayIterator($this->iterableResult->xpath($this->xpath));
+            }
         }
 
         $this->iterableResult->rewind();
