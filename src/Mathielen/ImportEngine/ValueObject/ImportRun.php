@@ -39,8 +39,8 @@ class ImportRun
     protected $revokedAt;
     protected $revokedBy;
 
-    protected $statistics;
-    protected $info;
+    protected $statistics = array();
+    protected $info = array();
 
     /**
      * arbitrary data
