@@ -8,6 +8,9 @@ use Symfony\Component\Validator\Constraints\NotNull;
 class ValidatorValidationTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @var ValidatorValidation
+     */
     private $validatorValidation;
 
     protected function setUp()

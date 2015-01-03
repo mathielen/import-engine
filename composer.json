@@ -1,62 +1,66 @@
 {
-	"name" : "mathielen/import-engine",
-	"type" : "library",
-	"autoload" : {
-		"psr-0" : {
-			"Mathielen\\DataImport" : "src/",
-            "Mathielen\\ImportEngine" : "src/"
-		}
-	},
-    "autoload-dev": {
-        "psr-0" : {
-            "TestEntities" : "tests/metadata/"
-        }
-    },
-	"description" : "Full-blown importer stack for importing almost any data into your application",
-	"keywords" : [
-		"data",
-		"import",
-		"importer",
-		"csv",
-		"excel",
-        "xml",
-        "yaml",
-        "service",
-        "jms",
-		"doctrine",
-		"mapping"
-	],
-	"license" : "MIT",
-	"authors" : [{
-        "name" : "Markus Thielen",
-        "email" : "markus@logicx.de"
-    }],
-	"require" : {
-        "php" : ">=5.4.0",
-		"ddeboer/data-import" : ">=0.16.0",
-		"symfony/event-dispatcher" : "*"
-	},
-	"require-dev" : {
-        "phpunit/phpunit" : "*",
-		"symfony/finder" : "*",
-		"symfony/http-foundation" : "*",
-		"jms/serializer" : "*",
-		"ext-iconv" : "*",
-		"ext-mbstring" : "*",
-		"symfony/property-access" : "*",
-		"phpoffice/phpexcel" : "*",
-		"doctrine/orm" : "*",
-		"symfony/console" : ">=2.2",
-		"symfony/validator" : "~2.3.0",
-		"fzaninotto/faker" : "*"
-	},
-	"suggest" : {
-		"ext-iconv" : "For the CharsetValueConverter",
-		"ext-mbstring" : "For the CharsetValueConverter",
-		"symfony/validator" : "to use the ValidatorFilter",
-		"phpoffice/phpexcel" : "If you want to use the ExcelReader",
-		"symfony/console" : "If you want to use the ConsoleProgressWriter",
-		"symfony/property-access" : "If you want to use the ObjectConverter",
-	    "jms/serializer" : "If you want to use the JmsSerializerObjectFactory"
-	}
+  "name": "mathielen/import-engine",
+  "type": "library",
+  "autoload": {
+    "psr-0": {
+      "Mathielen\\DataImport": "src/",
+      "Mathielen\\ImportEngine": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "TestEntities": "tests/metadata/"
+    }
+  },
+  "description": "Full-blown importer stack for importing almost any data into your application",
+  "keywords": [
+    "data",
+    "import",
+    "importer",
+    "csv",
+    "excel",
+    "xml",
+    "yaml",
+    "service",
+    "jms",
+    "doctrine",
+    "mapping"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Markus Thielen",
+      "email": "markus@logicx.de"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "ddeboer/data-import": ">=0.16.0",
+    "symfony/event-dispatcher": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "symfony/finder": "*",
+    "symfony/http-foundation": "*",
+    "jms/serializer": "*",
+    "ext-iconv": "*",
+    "ext-mbstring": "*",
+    "symfony/property-access": "*",
+    "phpoffice/phpexcel": "*",
+    "doctrine/orm": "*",
+    "symfony/console": ">=2.2",
+    "symfony/dependency-injection": ">=2.2",
+    "symfony/validator": "~2.3.0",
+    "fzaninotto/faker": "*"
+  },
+  "suggest": {
+    "ext-iconv": "For the CharsetValueConverter",
+    "ext-mbstring": "For the CharsetValueConverter",
+    "symfony/validator": "to use the ValidatorFilter",
+    "phpoffice/phpexcel": "If you want to use the ExcelReader",
+    "symfony/console": "If you want to use the ConsoleProgressWriter",
+    "symfony/dependency-injection": "If you want to use the ServiceStorageProvider",
+    "symfony/property-access": "If you want to use the ObjectConverter",
+    "jms/serializer": "If you want to use the JmsSerializerObjectFactory"
+  }
 }

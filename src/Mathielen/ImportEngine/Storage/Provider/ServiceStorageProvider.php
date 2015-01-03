@@ -32,10 +32,17 @@ class ServiceStorageProvider implements StorageProviderInterface
      */
     public function storage(StorageSelection $selection)
     {
-        $callable_with_arguments = $selection->getImpl();
-        $arguments = array_pop($callable_with_arguments);
+        $callable = $selection->getImpl();
 
-        return new ServiceStorage($callable_with_arguments, $arguments);
+        $arguments = array();
+        if (is_array($callable) && array_key_exists('arguments', $callable)) {
+            $arguments = $callable['arguments'];
+            unset($callable['arguments']);
+        } elseif (!is_callable($callable)) {
+            throw new \InvalidArgumentException("StorageSelection must contain a callable or an extended callable (with arguments) as impl");
+        }
+
+        return new ServiceStorage($callable, $arguments);
     }
 
     /**
@@ -59,7 +66,7 @@ class ServiceStorageProvider implements StorageProviderInterface
         }
 
         $service = $this->container->get($serviceName);
-        $callable_with_arguments = array($service, $method, $id['arguments']);
+        $callable_with_arguments = array($service, $method, array_key_exists('arguments', $id)?$id['arguments']:null);
 
         return new StorageSelection($callable_with_arguments);
     }

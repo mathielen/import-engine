@@ -55,9 +55,14 @@ class ImportRun
         $this->createdBy = $createdBy;
     }
 
+    /**
+     * @return ImportRun
+     */
     public function setContext($context)
     {
         $this->context = $context;
+
+        return $this;
     }
 
     public function getContext()
@@ -75,10 +80,19 @@ class ImportRun
         return $this->createdBy;
     }
 
+    /**
+     * @return ImportRun
+     */
     public function revoke($revokedBy = null)
     {
+        if (!$this->isFinished()) {
+            throw new \LogicException('Cannot revoke import if not already finished.');
+        }
+
         $this->revokedAt = new \DateTime();
         $this->revokedBy = $revokedBy;
+
+        return $this;
     }
 
     public function isRevoked()
@@ -86,9 +100,14 @@ class ImportRun
         return $this->getState() == self::STATE_REVOKED;
     }
 
+    /**
+     * @return ImportRun
+     */
     public function finish()
     {
         $this->finishedAt = new \DateTime();
+
+        return $this;
     }
 
     public function isFinished()
@@ -96,10 +115,24 @@ class ImportRun
         return $this->getState() == self::STATE_FINISHED;
     }
 
+    /**
+     * @return ImportRun
+     */
     public function validated(array $validationMessages=null)
     {
+        if ($this->isFinished() || $this->isRevoked()) {
+            throw new \LogicException('Cannot validate import if already finished or revoked.');
+        }
+
         $this->validatedAt = new \DateTime();
         $this->validationMessages = $validationMessages;
+
+        return $this;
+    }
+
+    public function getValidationMessages()
+    {
+        return $this->validationMessages;
     }
 
     public function isValidated()
@@ -120,6 +153,9 @@ class ImportRun
         return $this->configuration;
     }
 
+    /**
+     * @return ImportRun
+     */
     public function setStatistics(array $statistics)
     {
         $this->statistics = $statistics;
@@ -132,9 +168,14 @@ class ImportRun
         return $this->statistics;
     }
 
+    /**
+     * @return ImportRun
+     */
     public function setInfo(array $info)
     {
         $this->info = $info;
+
+        return $this;
     }
 
     public function getInfo()
@@ -155,11 +196,6 @@ class ImportRun
         }
 
         return self::STATE_CREATED;
-    }
-
-    public function getValidationMessages()
-    {
-        return $this->validationMessages;
     }
 
     public function toArray()

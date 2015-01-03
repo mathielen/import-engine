@@ -25,7 +25,7 @@ class ValidatorValidation implements ValidationInterface
     private $targetValidatorFilter;
 
     /**
-     * @return \Mathielen\ImportEngine\Validation\Validation
+     * @return ValidatorValidation
      */
     public static function build(ValidatorInterface $validator)
     {
@@ -38,7 +38,7 @@ class ValidatorValidation implements ValidationInterface
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Validation\Validation
+     * @return ValidatorValidation
      */
     public function addSourceConstraint($field, Constraint $constraint)
     {
@@ -53,7 +53,7 @@ class ValidatorValidation implements ValidationInterface
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Validation\Validation
+     * @return ValidatorValidation
      */
     public function addTargetConstraint($field, Constraint $constraint)
     {
@@ -67,6 +67,9 @@ class ValidatorValidation implements ValidationInterface
         return $this;
     }
 
+    /**
+     * @return ValidatorValidation
+     */
     public function setSourceValidatorFilter(ValidatorFilter $validatorFilter)
     {
         $this->sourceValidatorFilter = $validatorFilter;
@@ -74,6 +77,9 @@ class ValidatorValidation implements ValidationInterface
         return $this;
     }
 
+    /**
+     * @return ValidatorValidation
+     */
     public function setTargetValidatorFilter(ValidatorFilter $validatorFilter)
     {
         $this->targetValidatorFilter = $validatorFilter;
@@ -81,6 +87,9 @@ class ValidatorValidation implements ValidationInterface
         return $this;
     }
 
+    /**
+     * @return ValidatorValidation
+     */
     public function apply(Workflow $workflow)
     {
         if ($this->sourceValidatorFilter) {
@@ -89,8 +98,13 @@ class ValidatorValidation implements ValidationInterface
         if ($this->targetValidatorFilter) {
             $workflow->addFilterAfterConversion($this->targetValidatorFilter);
         }
+
+        return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getViolations()
     {
         $violations = array('source'=>array(), 'target'=>array());
