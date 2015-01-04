@@ -49,7 +49,7 @@ class ImporterRepository
     }
 
     /**
-     * @return id
+     * @return string
      */
     public function find(StorageInterface $storage)
     {

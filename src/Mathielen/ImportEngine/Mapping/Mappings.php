@@ -21,7 +21,7 @@ class Mappings extends \ArrayObject
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Mapping\Mapping
+     * @return Mappings
      */
     public function add($from, $to, $converter=null)
     {
