@@ -1,7 +1,6 @@
 <?php
 namespace Mathielen\DataImport\Writer\ObjectWriter;
 
-use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerInterface;
 
 class JmsSerializerObjectFactory implements ObjectFactoryInterface

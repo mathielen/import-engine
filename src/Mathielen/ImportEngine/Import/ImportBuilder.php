@@ -38,7 +38,7 @@ class ImportBuilder
     }
 
     /**
-     * @return Id
+     * @return null|string
      */
     public function findImporterForStorage(StorageInterface $storage)
     {
