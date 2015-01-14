@@ -99,7 +99,7 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
         $workflow = $this->buildBaseWorkflow($import);
 
         //collect statistics by default
-        $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun);
+        $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun, true);
         $this->eventDispatcher->addSubscriber($statisticsCollector);
 
         return $workflow;

@@ -16,8 +16,11 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
 
     private $statistics;
 
-    public function __construct(ImportRun $importrun)
+    private $isDryRun;
+
+    public function __construct(ImportRun $importrun, $isDryRun = false)
     {
+        $this->isDryRun = $isDryRun;
         $this->importrun = $importrun;
         $this->statistics = array(
             'processed' => 0,
@@ -48,7 +51,9 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
 
     public function onImportFinish(ImportProcessEvent $event)
     {
-        $this->importrun->finish();
+        if (!$this->isDryRun) {
+            $this->importrun->finish();
+        }
 
         //remove the subscriber when its done
         $event->getDispatcher()->removeSubscriber($this);

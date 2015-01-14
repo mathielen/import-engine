@@ -58,6 +58,14 @@ class ImportRun
     /**
      * @return ImportRun
      */
+    public static function create(ImportConfiguration $configuration, $createdBy = null)
+    {
+        return new self($configuration, $createdBy);
+    }
+
+    /**
+     * @return ImportRun
+     */
     public function setContext($context)
     {
         $this->context = $context;
