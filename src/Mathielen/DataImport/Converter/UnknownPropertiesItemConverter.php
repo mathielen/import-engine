@@ -10,10 +10,13 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
     private $targetProperty;
 
-    public function __construct(array $knownProperties, $targetProperty='ATTRIBUTES')
+    private $skipEmptyKey;
+
+    public function __construct(array $knownProperties, $targetProperty='ATTRIBUTES', $skipEmptyKey=true)
     {
         $this->knownProperties = array_map('strtoupper', $knownProperties);
         $this->targetProperty = strtoupper($targetProperty);
+        $this->skipEmptyKey = $skipEmptyKey;
 
         $this->knownProperties[] = $this->targetProperty;
     }
@@ -32,7 +35,9 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
             //copy unknown properties to target property and remove them from input
             foreach ($unknownProperties as $property) {
-                $input[$this->targetProperty][$property] = $input[$property];
+                if (!$this->skipEmptyKey || !empty($property)) {
+                    $input[$this->targetProperty][$property] = $input[$property];
+                }
                 unset($input[$property]);
             }
         }
