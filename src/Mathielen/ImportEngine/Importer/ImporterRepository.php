@@ -59,10 +59,14 @@ class ImporterRepository
 
         foreach ($this->preconditions as $importerId => $precondition) {
             if ($this->logger) {
-                $this->logger->debug("Checking importer: '" . $importerId."'");
+                $this->logger->debug("Checking preconditions for importer: '" . $importerId."'");
             }
 
             if ($precondition->isSatisfiedBy($storage, $this->logger)) {
+                if ($this->logger) {
+                    $this->logger->debug("Preconditions matched for importer: '" . $importerId."'. Using this import.");
+                }
+
                 return $importerId;
             }
         }

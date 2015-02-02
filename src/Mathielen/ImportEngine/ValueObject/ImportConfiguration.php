@@ -6,7 +6,7 @@ use Mathielen\ImportEngine\Storage\StorageLocator;
 class ImportConfiguration
 {
 
-    private $importerId = 'defaultImporter';
+    private $importerId = null;
 
     /**
      * @var StorageSelection

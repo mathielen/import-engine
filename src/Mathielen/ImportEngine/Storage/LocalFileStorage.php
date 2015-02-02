@@ -16,7 +16,7 @@ use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
-class LocalFileStorage implements StorageFormatInterface
+class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInterface
 {
 
     /**
@@ -45,19 +45,11 @@ class LocalFileStorage implements StorageFormatInterface
         $this->format = $format;
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \Mathielen\ImportEngine\Storage\StorageFormatInterface::getFormat()
-     */
     public function getFormat()
     {
         return $this->format;
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \Mathielen\ImportEngine\Storage\StorageFormatInterface::getAvailableFormats()
-     */
     public function getAvailableFormats()
     {
         return array(
@@ -73,10 +65,6 @@ class LocalFileStorage implements StorageFormatInterface
         return $this->reader()->getFields();
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \Mathielen\ImportEngine\Source\SourceInterface::reader()
-     */
     public function reader()
     {
         if (!$this->reader) {
@@ -116,10 +104,6 @@ class LocalFileStorage implements StorageFormatInterface
         return $reader;
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \Mathielen\ImportEngine\Source\StorageInterface::writer()
-     */
     public function writer()
     {
         if (!$this->writer) {
@@ -156,15 +140,16 @@ class LocalFileStorage implements StorageFormatInterface
         return $writer;
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \Mathielen\ImportEngine\Source\SourceInterface::info()
-     */
+    public function getHash()
+    {
+        return md5_file($this->file->getRealPath());
+    }
+
     public function info()
     {
         return new StorageInfo(array(
             'name' => $this->file->getFilename(),
-            'hash' => md5_file($this->file->getRealPath()),
+            'hash' => $this->getHash(),
             'format' => $this->getFormat(),
             'size' => $this->file->getSize(),
             'count' => count($this->reader())

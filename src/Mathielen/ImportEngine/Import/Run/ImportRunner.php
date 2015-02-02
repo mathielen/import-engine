@@ -43,7 +43,7 @@ class ImportRunner
         $workflow->process();
 
         if (0 == count($previewResult['from'])) {
-            throw new ImportRunException("Unable to preview row with offset '$offset'. EOF?");
+            throw new ImportRunException("Unable to preview row with offset '$offset'. EOF?", $importRun);
         }
 
         //cleanup from writer
