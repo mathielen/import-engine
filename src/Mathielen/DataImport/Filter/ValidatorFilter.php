@@ -48,6 +48,11 @@ class ValidatorFilter extends OriginalValidatorFilter
         }
     }
 
+    public function resetViolations()
+    {
+        $this->violations = array();
+    }
+
     /**
      * @return ValidatorFilter
      */

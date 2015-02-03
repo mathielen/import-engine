@@ -93,9 +93,11 @@ class ValidatorValidation implements ValidationInterface
     public function apply(Workflow $workflow)
     {
         if ($this->sourceValidatorFilter) {
+            $this->sourceValidatorFilter->resetViolations();
             $workflow->addFilter($this->sourceValidatorFilter);
         }
         if ($this->targetValidatorFilter) {
+            $this->targetValidatorFilter->resetViolations();
             $workflow->addFilterAfterConversion($this->targetValidatorFilter);
         }
 
