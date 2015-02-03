@@ -48,8 +48,9 @@ class ValidatorFilter extends OriginalValidatorFilter
         }
     }
 
-    public function resetViolations()
+    public function reset()
     {
+        $this->line = 1;
         $this->violations = array();
     }
 
