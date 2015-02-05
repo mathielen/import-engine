@@ -1,21 +1,14 @@
 <?php
-namespace Mathielen\DataImport\Converter;
+namespace Mathielen\DataImport\ItemConverter;
 
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 use Mathielen\DataImport\Event\ImportProcessEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberInterface
+class ContextMergeConverter implements ItemConverterInterface, EventSubscriberInterface
 {
 
     private $currentContext;
-
-    private $contextFieldname;
-
-    public function __construct($contextFieldname = 'context')
-    {
-        $this->contextFieldname = $contextFieldname;
-    }
 
     public static function getSubscribedEvents()
     {
@@ -28,6 +21,9 @@ class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberI
     public function onImportPrepare(ImportProcessEvent $event)
     {
         $this->currentContext = $event->getContext()->getContext();
+        if (!is_array($this->currentContext)) {
+            throw new \InvalidArgumentException("Context must be an array");
+        }
     }
 
     public function onImportFinish(ImportProcessEvent $event)
@@ -38,11 +34,7 @@ class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberI
 
     public function convert($input)
     {
-        if (isset($this->currentContext)) {
-            $input[$this->contextFieldname] = $this->currentContext;
-        }
-
-        return $input;
+        return array_merge($this->currentContext, $input);
     }
 
 }

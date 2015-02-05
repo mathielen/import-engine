@@ -1,5 +1,5 @@
 <?php
-namespace Mathielen\DataImport\Converter;
+namespace Mathielen\DataImport\ItemConverter;
 
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
