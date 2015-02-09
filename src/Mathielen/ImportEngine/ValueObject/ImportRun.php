@@ -211,7 +211,6 @@ class ImportRun
         return array(
             'id' => $this->id,
             'configuration' => $this->configuration?$this->configuration->toArray():null,
-            'statistics' => $this->getStatistics(),
             'created_by' => $this->createdBy,
             'created_at' => $this->createdAt->getTimestamp(),
             'revoked_by' => $this->revokedBy,
