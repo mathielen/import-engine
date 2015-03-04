@@ -1,26 +1,24 @@
 <?php
 namespace Mathielen\ImportEngine\Storage\Provider;
 
-use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
+use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
-class UploadFileStorageProvider extends AbstractFileStorageProvider
+class UploadFileStorageProvider extends FileStorageProvider
 {
 
     private $targetDirectory;
 
-    public function __construct($targetDirectory)
+    public function __construct($targetDirectory, StorageFactoryInterface $storageFactory=null)
     {
+        parent::__construct($storageFactory);
+
         if (!is_dir($targetDirectory) || !is_writeable($targetDirectory)) {
             throw new \InvalidArgumentException("Targetdirectory $targetDirectory is not writable!");
         }
 
         $this->targetDirectory = realpath($targetDirectory);
-        $this->setStorageFactory(
-            new DefaultLocalFileStorageFactory(
-                new MimeTypeDiscoverStrategy()));
     }
 
     /**

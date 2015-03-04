@@ -1,17 +1,29 @@
 <?php
 namespace Mathielen\ImportEngine\Storage\Provider;
 
+use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
+use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
-abstract class AbstractFileStorageProvider implements StorageProviderInterface
+class FileStorageProvider implements StorageProviderInterface
 {
 
     /**
      * @var StorageFactoryInterface
      */
     private $storageFactory;
+
+    public function __construct(StorageFactoryInterface $storageFactory=null)
+    {
+        //default
+        if (!$storageFactory) {
+            $storageFactory = new DefaultLocalFileStorageFactory(new MimeTypeDiscoverStrategy());
+        }
+
+        $this->setStorageFactory($storageFactory);
+    }
 
     public function setStorageFactory(StorageFactoryInterface $storageFactory)
     {
@@ -49,7 +61,7 @@ abstract class AbstractFileStorageProvider implements StorageProviderInterface
     public function storage(StorageSelection $selection)
     {
         if (!$this->storageFactory) {
-            throw new InvalidConfigurationException('StorageFactory is missing.');
+            throw new InvalidConfigurationException('Cannot factor storage. StorageFactory is missing. Set factory with setStorageFactory()');
         }
 
         return $this->storageFactory->factor($selection);

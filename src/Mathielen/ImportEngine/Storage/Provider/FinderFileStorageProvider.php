@@ -1,12 +1,11 @@
 <?php
 namespace Mathielen\ImportEngine\Storage\Provider;
 
+use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
 use Symfony\Component\Finder\Finder;
-use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
-use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
-class FinderFileStorageProvider extends AbstractFileStorageProvider implements \IteratorAggregate
+class FinderFileStorageProvider extends FileStorageProvider implements \IteratorAggregate
 {
 
     /**
@@ -14,12 +13,11 @@ class FinderFileStorageProvider extends AbstractFileStorageProvider implements \
      */
     private $finder;
 
-    public function __construct(Finder $finder)
+    public function __construct(Finder $finder, StorageFactoryInterface $storageFactory=null)
     {
+        parent::__construct($storageFactory);
+
         $this->finder = $finder;
-        $this->setStorageFactory(
-            new DefaultLocalFileStorageFactory(
-                new MimeTypeDiscoverStrategy()));
     }
 
     public function getIterator()
