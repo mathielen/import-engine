@@ -22,6 +22,8 @@ class MimeTypeDiscoverer
     {
         switch ($mimeType) {
             //TODO handle other compressed mimetypes
+
+            case 'application/octet-stream': //handle octet stream as zip
             case 'application/zip':
                 return $this->handleZipFile($filePath);
 
