@@ -53,7 +53,6 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Mathielen\ImportEngine\Exception\InvalidConfigurationException
-     * @expectedExceptionText Unknown mime-type: ''. No registered factory nor any default for uri ''
      */
     public function testInvalidMimeType()
     {
@@ -68,7 +67,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('factor')
             ->with('uri')
             ->will($this->returnValue('myFormat'));
-        $this->discoverStrategy->addMimeTypeFactory('my/mimetype', $formatFactory);
+        $this->discoverStrategy->addFormatFactory('my/mimetype', $formatFactory);
 
         $this->mimeTypeDiscovererMock
             ->expects($this->once())

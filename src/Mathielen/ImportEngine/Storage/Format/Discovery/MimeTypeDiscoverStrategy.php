@@ -5,11 +5,10 @@ use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\Discovery\Mime\MimeTypeDiscoverer;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
-use Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface;
 use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
-class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
+class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
 {
 
     /**
@@ -17,21 +16,14 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
      */
     private $mimetypeDiscoverer;
 
-    private $mimeTypeFactories;
-
-    public function __construct(array $mimeTypeFactories = array(), $mimetypeDiscoverer = null)
+    public function __construct(array $formatFactories = array(), $mimetypeDiscoverer = null)
     {
         if (is_null($mimetypeDiscoverer)) {
             $mimetypeDiscoverer = new MimeTypeDiscoverer();
         }
 
-        $this->mimeTypeFactories = $mimeTypeFactories;
         $this->mimetypeDiscoverer = $mimetypeDiscoverer;
-    }
-
-    public function addMimeTypeFactory($mimeType, FormatFactoryInterface $factory)
-    {
-        $this->mimeTypeFactories[$mimeType] = $factory;
+        parent::__construct($formatFactories);
     }
 
     /**
@@ -50,8 +42,8 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
 
     private function mimeTypeToFormat($mimeType, $uri=null , $subInformation=null)
     {
-        if (array_key_exists($mimeType, $this->mimeTypeFactories)) {
-            return $this->mimeTypeFactories[$mimeType]->factor($uri);
+        if (array_key_exists($mimeType, $this->formatFactories)) {
+            return $this->formatFactories[$mimeType]->factor($uri);
         }
 
         //defaults
@@ -75,8 +67,6 @@ class MimeTypeDiscoverStrategy implements FormatDiscoverStrategyInterface
             default:
                 throw new InvalidConfigurationException("Unknown mime-type: '$mimeType'. No registered factory nor any default for '$uri''");
         }
-
-        return null;
     }
 
 }

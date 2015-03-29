@@ -8,12 +8,33 @@ class StorageSelection
     protected $id;
     protected $name;
     protected $impl;
+    protected $metadata = array();
 
-    public function __construct($impl, $id=null, $name=null)
+    public function __construct($impl, $id=null, $name=null, array $metadata=array())
     {
         $this->impl = $impl;
         $this->id = $id;
         $this->name = $name;
+        $this->metadata = $metadata;
+    }
+
+    public function addMetadata($key, $value)
+    {
+        $this->metadata[$key] = $value;
+    }
+
+    public function setMetadata(array $metadata)
+    {
+        $this->metadata = $metadata;
+    }
+
+    public function getMetadata($key)
+    {
+        if (!array_key_exists($key, $this->metadata)) {
+            return null;
+        }
+
+        return $this->metadata[$key];
     }
 
     /**
