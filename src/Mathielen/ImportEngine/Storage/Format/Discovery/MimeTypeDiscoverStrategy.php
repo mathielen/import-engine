@@ -7,6 +7,7 @@ use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
 {
@@ -30,12 +31,12 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface::getFormat()
      */
-    public function getFormat($uri)
+    public function getFormat(StorageSelection $selection)
     {
-        $mimeType = $this->mimetypeDiscoverer->discoverMimeType($uri);
+        $mimeType = $this->mimetypeDiscoverer->discoverMimeType($selection->getId());
         @list($mimeType, $subInformation) = explode(' ', $mimeType);
 
-        $type = $this->mimeTypeToFormat($mimeType, $uri, $subInformation);
+        $type = $this->mimeTypeToFormat($mimeType, $selection->getId(), $subInformation);
 
         return $type;
     }

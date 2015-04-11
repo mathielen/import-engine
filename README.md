@@ -29,7 +29,7 @@ Features
 * Source (read) and Target (write) validation using [Symfony Validation](http://symfony.com/doc/current/book/validation.html). Annotations can be used.
 * Integrated Eventsystem using [Symfony EventDispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html)
 * Keeping almost every flexibility that is offered by the Ddeboer Data Import library.
-* Well-tested code. (@TODO)
+* Well-tested code.
 
 Installation
 ------------
@@ -115,16 +115,16 @@ $ufsp = new UploadFileStorageProvider('/tmp'); //path to where the uploaded file
 ```
 
 #### Automatic CSV Delimiter Discovery for FileStorageProviders
-FileStorageProviders may use StorageFactories for constructing Storage objects. By default the DefaultLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
+FileStorageProviders may use StorageFactories for constructing Storage objects. By default the FormatDiscoverLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.
 
 ```php
 use Mathielen\ImportEngine\Storage\Format\Factory\CsvAutoDelimiterFormatFactory;
-use Mathielen\ImportEngine\Storage\Factory\DefaultLocalFileStorageFactory;
+use Mathielen\ImportEngine\Storage\Factory\FormatDiscoverLocalFileStorageFactory;
 use Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy;
 
 $ffsp = ...
 $ffsp->setStorageFactory(
-  new DefaultLocalFileStorageFactory(
+  new FormatDiscoverLocalFileStorageFactory(
     new MimeTypeDiscoverStrategy(array(
       'text/plain' => new CsvAutoDelimiterFormatFactory()
 ))));

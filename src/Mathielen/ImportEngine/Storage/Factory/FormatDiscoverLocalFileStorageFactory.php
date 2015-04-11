@@ -6,7 +6,7 @@ use Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterf
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
-class DefaultLocalFileStorageFactory implements StorageFactoryInterface
+class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
 {
 
     /**
@@ -33,7 +33,7 @@ class DefaultLocalFileStorageFactory implements StorageFactoryInterface
 
         $format = $selection->getMetadata('format');
         if (!$format) {
-            $format = $this->formatDiscoverStrategyInterface->getFormat($file->getRealPath());
+            $format = $this->formatDiscoverStrategyInterface->getFormat($selection);
             if (!$format) {
                 throw new InvalidConfigurationException("Could not discover format!");
             }

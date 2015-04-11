@@ -14,7 +14,7 @@ class GenericDateItemConverter extends DateTimeValueConverter
     public function convert($input)
     {
         if (!$input) {
-            return;
+            return null;
         }
 
         // dd.mm.yyyy, dd-mm-yyyy

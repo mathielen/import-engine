@@ -33,11 +33,9 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
      */
     private function buildBaseWorkflow(Import $import)
     {
-        //input
         $workflow = new EventDispatchableWorkflow($import->getSourceStorage()->reader());
         $workflow->setEventDispatcher($this->eventDispatcher);
 
-        //validation
         $import->importer()->filters()->apply($workflow);
         $import->mappings()->apply($workflow, $import->importer()->transformation()->converterProvider()->getAll());
         $import->importer()->validation()->apply($workflow);

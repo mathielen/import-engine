@@ -33,7 +33,7 @@ class Importer
     /**
      * @var Filters
      */
-    private $filter;
+    private $filters;
 
     /**
      * @return \Mathielen\ImportEngine\Importer\Importer
@@ -81,8 +81,12 @@ class Importer
     /**
      * @return \Mathielen\ImportEngine\Transformation\Transformation
      */
-    public function transformation()
+    public function transformation($transformation = null)
     {
+        if ($transformation && $transformation instanceof Transformation) {
+            $this->transformation = $transformation;
+        }
+
         return $this->transformation;
     }
 

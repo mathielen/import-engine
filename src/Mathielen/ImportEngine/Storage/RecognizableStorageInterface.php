@@ -1,7 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
-interface RecognizableStorageInterface
+interface RecognizableStorageInterface extends StorageInterface
 {
 
     public function getHash();

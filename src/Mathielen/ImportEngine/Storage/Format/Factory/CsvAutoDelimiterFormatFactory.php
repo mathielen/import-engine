@@ -11,8 +11,6 @@ class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
      */
     public function factor($uri)
     {
-        $options = array();
-
         $file = new \SplFileObject($uri);
         $delimiter = $this->guessDelimiter(utf8_encode($file->getCurrentLine()));
 

@@ -5,6 +5,7 @@ use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,7 +34,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('discoverMimeType')
             ->will($this->returnValue($mimeType));
 
-        $actualFormat = $this->discoverStrategy->getFormat('uri');
+        $actualFormat = $this->discoverStrategy->getFormat(new StorageSelection(null));
 
         $this->assertEquals($expectedFormat, $actualFormat);
     }
@@ -56,7 +57,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidMimeType()
     {
-        $this->discoverStrategy->getFormat('uri');
+        $this->discoverStrategy->getFormat(new StorageSelection(null, 'uri'));
     }
 
     public function testMimeFormatFactories()
@@ -74,7 +75,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('discoverMimeType')
             ->will($this->returnValue('my/mimetype'));
 
-        $this->assertEquals('myFormat', $this->discoverStrategy->getFormat('uri'));
+        $this->assertEquals('myFormat', $this->discoverStrategy->getFormat(new StorageSelection(null, 'uri')));
     }
 
 }
