@@ -204,20 +204,11 @@ $targetStorage = ...
 $array = array(1,2,3);
 $importer = Importer::build($targetStorage)
   ->setSourceStorage(new ArrayStorage($array))
-  ->setValidation($validation)
+  ->validation($validation)
 ;
 ```
 
-### Import
-```php
-use Mathielen\ImportEngine\Import\Import;
-
-$importer = ...
-
-$import = Import::build($importer);
-```
-
-### Source Storage
+### Import / Source Storage
 You can either use a StorageProvider (see above) and set the selection-id or you can use a specific Storage-Handler directly:
 ```php
 use Mathielen\ImportEngine\Storage\ArrayStorage;
@@ -228,8 +219,10 @@ use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
 $targetArray = array();
 $importer = Importer::build(new ArrayStorage($targetArray));
-$import = Import::build($importer)
-  ->setSourceStorage(new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvFormat()));
+$import = Import::build(
+    $importer,
+    new LocalFileStorage(new \SplFileObject(__DIR__ . '/../../../metadata/testfiles/flatdata.csv'), new CsvFormat())
+);
 
 ```
 
@@ -286,8 +279,7 @@ $importer
   ->setConverterProvider($converterProvider);
 
 $array = array();
-$import = Import::build($importer)
-  ->setSourceStorage(new ArrayStorage($array))
+$import = Import::build($importer, new ArrayStorage($array))
   ->mappings()
   ->add('salutation', 'gender', 'salutationToGender')
 ;
@@ -321,8 +313,7 @@ $importer
   ->setConverterProvider($converterProvider);
 
 $array = array();
-$import = Import::build($importer)
-  ->setSourceStorage(new ArrayStorage($array))
+$import = Import::build($importer, new ArrayStorage($array))
   ->mappings()
   ->add('fullname', null, 'splitNames')
 ;
@@ -343,20 +334,16 @@ use Mathielen\ImportEngine\Importer\ImporterRepository;
 
 $import = ...
 
-$importConfiguration = new ImportConfiguration();
-$importConfiguration->setImport($import);
-$importRun = $importConfiguration->toRun();
-
 $importRunner = new ImportRunner(new DefaultWorkflowFactory(new EventDispatcher()));
 
 //sneak peak a row
-$previewData = $importRunner->preview($importRun);
+$previewData = $importRunner->preview($import);
 
 //dont really write, just validate
-$importRun = $importRunner->dryRun($importRun);
+$importRun = $importRunner->dryRun($import);
 
 //do the import
-$importRun = $importRunner->run($importRun);
+$importRun = $importRunner->run($import);
 ```
 
 ### ImportRun statistics
@@ -365,7 +352,7 @@ If you use the DefaultWorkflowFactory with your ImportRunner you get basic stati
 $importRun = ...
 $importRunner = ...
 
-$importRunner->dryRun($importRun);
+$importRunner->dryRun($import);
 $stats = $importRun->getStatistics();
 
 /*
@@ -408,8 +395,8 @@ $eventDispatcher->addListener(ImportProcessEvent::AFTER_FINISH, $myListener);
 $workflowFactory = new DefaultWorkflowFactory($eventDispatcher);
 $importRunner = new ImportRunner($workflowFactory);
 
-$importRun = ...
-$importRunner->run($importRun);
+$import = ...
+$importRunner->run($import);
 ```
 
 License

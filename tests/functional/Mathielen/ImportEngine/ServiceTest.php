@@ -6,8 +6,6 @@ use Mathielen\ImportEngine\Import\Run\ImportRunner;
 use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\ServiceStorage;
-use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
-use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ServiceTest extends \PHPUnit_Framework_TestCase
@@ -24,18 +22,13 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $targetStorage = new ServiceStorage(array($this, 'writeData'));
 
         $importer = Importer::build($targetStorage);
-        $importer->setSourceStorage($sourceStorage);
 
-        $import = Import::build($importer);
-
-        $importConfiguration = new ImportConfiguration();
-        $importConfiguration->applyImport($import);
-        $importRun = $importConfiguration->toRun();
+        $import = Import::build($importer, $sourceStorage);
 
         $eventDispatcher = new EventDispatcher();
         $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
 
-        $importRunner->run($importRun);
+        $importRunner->run($import);
 
         $this->assertEquals(array(array('data1'), array('data2')), $this->dataWritten);
     }

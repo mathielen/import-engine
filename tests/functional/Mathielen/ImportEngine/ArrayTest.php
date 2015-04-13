@@ -29,21 +29,19 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $sourceStorage = new ArrayStorage($data);
         $targetStorage = new ArrayStorage($targetData);
 
-        $importer = Importer::build($targetStorage)
-            ->setSourceStorage($sourceStorage);
+        $importer = Importer::build($targetStorage);
 
-        $import = Import::build($importer);
+        $importConfiguration = new ImportConfiguration();
+        $importRun = $importConfiguration->toRun();
+
+        $import = Import::build($importer, $sourceStorage, $importRun);
         $import
             ->mappings()
             ->add('foo', 'fooloo')
             ->add('baz', array('some' => 'else'));
 
-        $importConfiguration = new ImportConfiguration();
-        $importConfiguration->applyImport($import);
-        $importRun = $importConfiguration->toRun();
-
         ImportRunner::build()
-            ->run($importRun);
+            ->run($import);
 
         $expectedData = array(
             array(

@@ -12,7 +12,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         if (strpos($code, '...')) {
             $this->markTestSkipped("Cannot test with insufficient info.");
         }
-//echo "$startLine\n";
+
         ob_start();
         eval($code);
         $output = ob_get_contents();
@@ -25,6 +25,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
 
     public function parseReadme()
     {
+        $chunks = array();
         $readme = file(__DIR__ . '/../../../../README.md');
 
         $startLine = $endLine = null;
@@ -50,7 +51,6 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
                 $code = str_replace('$validator = ...', $this->getBuildValidatorCode(), $code);
                 $code = str_replace('$validation = ...', $this->getBuildValidationCode(), $code);
                 $code = str_replace('$jms_serializer = ...', $this->getBuildJmsSerializerCode(), $code);
-                //$code = str_replace('$em = ...', $this->getBuildEntityManagerCode(), $code);
 
                 $chunks[] = array($startLine, $code);
                 $startLine = $endLine = null;
@@ -60,13 +60,6 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
         }
 
         return $chunks;
-    }
-
-    private function getBuildEntityManagerCode()
-    {
-        return '
-            $em = $this->getMock("Doctrine\ORM\EntityManagerInterface");
-        ';
     }
 
     private function getBuildValidationCode()
@@ -101,7 +94,6 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getBuildImportCode() . '
             $importConfiguration = new Mathielen\ImportEngine\ValueObject\ImportConfiguration();
-            $importConfiguration->setImport($import);
             $importRun = $importConfiguration->toRun();
         ';
     }
@@ -110,8 +102,7 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getBuildImporterCode() . '
             $a = array(array("field1"=>"data1"));
-            $import = Mathielen\ImportEngine\Import\Import::build($importer);
-            $import->setSourceStorage(new Mathielen\ImportEngine\Storage\ArrayStorage($a));
+            $import = Mathielen\ImportEngine\Import\Import::build($importer, new Mathielen\ImportEngine\Storage\ArrayStorage($a));
         ';
     }
 
@@ -121,8 +112,8 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
             $this->getBuildValidationCode() .
             $this->getBuildFFSP() .
             $this->getBuildTargetStorage() . '
-            $importer = Mathielen\ImportEngine\Importer\Importer::build($targetStorage)
-               ->setValidation($validation);
+            $importer = Mathielen\ImportEngine\Importer\Importer::build($targetStorage);
+            $importer->validation($validation);
         ';
     }
 

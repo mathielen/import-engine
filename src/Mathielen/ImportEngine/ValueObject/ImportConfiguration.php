@@ -1,8 +1,6 @@
 <?php
 namespace Mathielen\ImportEngine\ValueObject;
 
-use Mathielen\ImportEngine\Import\Import;
-use Mathielen\ImportEngine\Storage\StorageLocator;
 class ImportConfiguration
 {
 
@@ -12,11 +10,6 @@ class ImportConfiguration
      * @var StorageSelection
      */
     private $sourceStorageSelection;
-
-    /**
-     * @var Import
-     */
-    private $import;
 
     public function __construct(StorageSelection $sourceStorageSelection=null, $importerId=null)
     {
@@ -63,34 +56,6 @@ class ImportConfiguration
     public function getImporterId()
     {
         return $this->importerId;
-    }
-
-    /**
-     * @return ImportConfiguration
-     */
-    public function applyImport(Import $import, StorageLocator $storageLocator=null)
-    {
-        $this->import = $import;
-
-        if ($storageLocator && $this->sourceStorageSelection) {
-            $storage = $storageLocator->getStorage($this->sourceStorageSelection);
-            $import->setSourceStorage($storage);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Import
-     */
-    public function getImport()
-    {
-        return $this->import;
-    }
-
-    public function setImport(Import $import)
-    {
-        $this->import = $import;
     }
 
     public function toArray()

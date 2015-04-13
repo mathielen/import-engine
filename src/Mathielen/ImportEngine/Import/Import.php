@@ -5,6 +5,7 @@ use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Mapping\Mappings;
+use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class Import
 {
@@ -22,11 +23,6 @@ class Import
     /**
      * @var StorageInterface
      */
-    private $targetStorage;
-
-    /**
-     * @var StorageInterface
-     */
     private $sourceStorage;
 
     /**
@@ -35,21 +31,24 @@ class Import
     private $mappings;
 
     /**
+     * @var ImportRun
+     */
+    private $importRun;
+
+    /**
      * @return Import
      */
-    public static function build(Importer $importer)
+    public static function build(Importer $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
     {
-        return new self($importer);
+        return new self($importer, $sourceStorage, $importRun);
     }
 
-    public function __construct(Importer $importer)
+    public function __construct(Importer $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
     {
         $this->importer = $importer;
+        $this->sourceStorage = $sourceStorage;
+        $this->importRun = $importRun;
         $this->transformation = new Transformation();
-
-        if ($importer->getSourceStorage()) {
-            $this->setSourceStorage($importer->getSourceStorage());
-        }
     }
 
     /**
@@ -75,7 +74,7 @@ class Import
     /**
      * @return \Mathielen\ImportEngine\Storage\StorageInterface
      */
-    public function targetStorage()
+    public function getTargetStorage()
     {
         return $this->importer->targetStorage();
     }
@@ -89,13 +88,11 @@ class Import
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Import\Import
+     * @return ImportRun
      */
-    public function setSourceStorage(StorageInterface $storage)
+    public function getRun()
     {
-        $this->sourceStorage = $storage;
-
-        return $this;
+        return $this->importRun;
     }
 
 }

@@ -33,16 +33,14 @@ class LocalFileTest extends \PHPUnit_Framework_TestCase
         $targetStorage = new LocalFileStorage(new \SplFileInfo($targetFile), $targetFormat);
 
         $importer = Importer::build($targetStorage);
-        $importer->setSourceStorage($sourceStorage);
-
-        $import = Import::build($importer);
 
         $importConfiguration = new ImportConfiguration();
-        $importConfiguration->applyImport($import);
         $importRun = $importConfiguration->toRun();
 
+        $import = Import::build($importer, $sourceStorage, $importRun);
+
         $importRunner = new ImportRunner();
-        $importRunner->run($importRun);
+        $importRunner->run($import);
 
         $this->assertFileExists($targetFile);
         //$this->assertFileEquals($sourceFile, $targetFile); excel files have binary differences :/

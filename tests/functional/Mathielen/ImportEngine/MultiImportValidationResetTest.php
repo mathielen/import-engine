@@ -6,8 +6,6 @@ use Mathielen\ImportEngine\Import\Run\ImportRunner;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\ArrayStorage;
 use Mathielen\ImportEngine\Validation\ValidatorValidation;
-use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
-use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Validation;
 
@@ -29,30 +27,18 @@ class MultiImportValidationResetTest extends \PHPUnit_Framework_TestCase
         $validation = new ValidatorValidation($validator);
         $validation->addSourceConstraint('foo', new Choice(['choices'=>['a']]));
 
-        $importer = Importer::build($targetStorage)
-            ->setValidation($validation);
+        $importer = Importer::build($targetStorage);
+        $importer->validation($validation);
 
-        $import = Import::build($importer);
         $importRunner = ImportRunner::build();
 
-        $import->setSourceStorage(new ArrayStorage($data1));
-        $importRun1 = $this->createImportRun($data1, $import);
-        $importRunner->dryRun($importRun1);
+        $import = Import::build($importer, new ArrayStorage($data1));
+        $importRunner->dryRun($import);
         $this->assertEquals(1, count($importer->validation()->getViolations()['source']));
 
-        $import->setSourceStorage(new ArrayStorage($data2));
-        $importRun2 = $this->createImportRun($data2, $import);
-        $importRunner->dryRun($importRun2);
+        $import = Import::build($importer, new ArrayStorage($data2));
+        $importRunner->dryRun($import);
         $this->assertEquals(1, count($importer->validation()->getViolations()['source']));
-    }
-
-    private function createImportRun(array $data, Import $import)
-    {
-        $importConfiguration = new ImportConfiguration();
-        $importConfiguration->applyImport($import);
-        $importRun = $importConfiguration->toRun();
-
-        return $importRun;
     }
 
 }

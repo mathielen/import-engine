@@ -72,17 +72,19 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface::buildRunWorkflow()
      */
-    public function buildRunWorkflow(Import $import, ImportRun $importRun)
+    public function buildRunWorkflow(Import $import, ImportRun $importRun=null)
     {
         //build basics
         $workflow = $this->buildBaseWorkflow($import);
 
         //output
-        $workflow->addWriter($import->targetStorage()->writer());
+        $workflow->addWriter($import->getTargetStorage()->writer());
 
         //collect statistics by default
-        $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun);
-        $this->eventDispatcher->addSubscriber($statisticsCollector);
+        if ($importRun) {
+            $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun);
+            $this->eventDispatcher->addSubscriber($statisticsCollector);
+        }
 
         return $workflow;
     }
@@ -91,14 +93,16 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface::buildDryrunWorkflow()
      */
-    public function buildDryrunWorkflow(Import $import, ImportRun $importRun)
+    public function buildDryrunWorkflow(Import $import, ImportRun $importRun=null)
     {
         //build basics
         $workflow = $this->buildBaseWorkflow($import);
 
         //collect statistics by default
-        $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun, true);
-        $this->eventDispatcher->addSubscriber($statisticsCollector);
+        if ($importRun) {
+            $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun, true);
+            $this->eventDispatcher->addSubscriber($statisticsCollector);
+        }
 
         return $workflow;
     }

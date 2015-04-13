@@ -5,6 +5,7 @@ use Mathielen\ImportEngine\Import\ImportBuilder;
 use Mathielen\ImportEngine\Importer\ImporterRepository;
 use Mathielen\ImportEngine\Storage\StorageLocator;
 use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
+use Mathielen\ImportEngine\ValueObject\ImportRequest;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Finder\Finder;
@@ -51,15 +52,13 @@ class ImportRunnerTest extends \PHPUnit_Framework_TestCase
         $importRepository = new ImporterRepository();
         $importRepository->register('defaultImporter', $importer);
 
-        $storageSelection = $lfsp->select($fileDir . '/100.csv');
-        $importConfiguration = new ImportConfiguration($storageSelection, 'defaultImporter');
+        $importRequest = new ImportRequest($fileDir . '/100.csv', 'defaultProvider', 'defaultImporter');
 
         $importBuilder = new ImportBuilder(
             $importRepository,
             $storageLocator
         );
-        $importBuilder->build($importConfiguration);
-        $import = $importConfiguration->getImport();
+        $import = $importBuilder->build($importRequest);
 
         $import->mappings()
             ->add('Anrede', 'salutation', 'upperCase')
@@ -77,9 +76,7 @@ class ImportRunnerTest extends \PHPUnit_Framework_TestCase
             'email' => 'runolfsson.moriah@yahoo.com'
         );
 
-        $importRun = $importConfiguration->toRun();
-
-        $previewResult = $importRunner->preview($importRun, 0);
+        $previewResult = $importRunner->preview($import, 0);
         $this->assertEquals($expectedResult, $previewResult['to']);
     }
 

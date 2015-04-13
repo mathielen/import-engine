@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Import\Run;
 
+use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 use Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface;
 use Mathielen\ImportEngine\Exception\ImportRunException;
@@ -34,9 +35,9 @@ class ImportRunner
     /**
      * @return array
      */
-    public function preview(ImportRun $importRun, $offset = 0)
+    public function preview(Import $import, $offset = 0)
     {
-        $import = $importRun->getConfiguration()->getImport();
+        $importRun = $import->getRun();
         $previewResult = array('from'=>array(), 'to'=>array());
 
         $workflow = $this->workflowFactory->buildPreviewWorkflow($import, $previewResult, $offset);
@@ -57,11 +58,11 @@ class ImportRunner
     }
 
     /**
-     * @return ImportRun
+     * @return Import
      */
-    public function dryRun(ImportRun $importRun)
+    public function dryRun(Import $import)
     {
-        $import = $importRun->getConfiguration()->getImport();
+        $importRun = $import->getRun();
         $workflow = $this->workflowFactory->buildDryrunWorkflow($import, $importRun);
         $workflow->process();
 
@@ -69,11 +70,11 @@ class ImportRunner
     }
 
     /**
-     * @return ImportRun
+     * @return Import
      */
-    public function run(ImportRun $importRun)
+    public function run(Import $import)
     {
-        $import = $importRun->getConfiguration()->getImport();
+        $importRun = $import->getRun();
         $workflow = $this->workflowFactory->buildRunWorkflow($import, $importRun);
         $workflow->process();
 

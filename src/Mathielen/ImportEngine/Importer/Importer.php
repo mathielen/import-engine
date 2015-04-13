@@ -47,19 +47,9 @@ class Importer
     {
         $this->targetStorage = $targetStorage;
 
-        $this->validation = new DummyValidation();
-        $this->transformation = new Transformation();
-        $this->filters = new Filters();
-    }
-
-    /**
-     * @return \Mathielen\ImportEngine\Importer\Importer
-     */
-    public function setValidation(ValidationInterface $validation)
-    {
-        $this->validation = $validation;
-
-        return $this;
+        $this->validation(new DummyValidation());
+        $this->transformation(new Transformation());
+        $this->filters(new Filters());
     }
 
     /**
@@ -73,17 +63,21 @@ class Importer
     /**
      * @return ValidationInterface
      */
-    public function validation()
+    public function validation(ValidationInterface $validation = null)
     {
+        if ($validation) {
+            $this->validation = $validation;
+        }
+
         return $this->validation;
     }
 
     /**
      * @return \Mathielen\ImportEngine\Transformation\Transformation
      */
-    public function transformation($transformation = null)
+    public function transformation(Transformation $transformation = null)
     {
-        if ($transformation && $transformation instanceof Transformation) {
+        if ($transformation) {
             $this->transformation = $transformation;
         }
 
@@ -93,8 +87,12 @@ class Importer
     /**
      * @return \Mathielen\ImportEngine\Filter\Filters
      */
-    public function filters()
+    public function filters(Filters $filters = null)
     {
+        if ($filters) {
+            $this->filters = $filters;
+        }
+
         return $this->filters;
     }
 

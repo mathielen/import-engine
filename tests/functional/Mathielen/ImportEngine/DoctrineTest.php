@@ -57,18 +57,16 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         $targetStorage = new DoctrineStorage(self::$em, 'TestEntities\Address');
 
         $importer = Importer::build($targetStorage);
-        $importer->setSourceStorage($sourceStorage);
-
-        $import = Import::build($importer);
 
         $importConfiguration = new ImportConfiguration();
-        $importConfiguration->applyImport($import);
         $importRun = $importConfiguration->toRun();
+
+        $import = Import::build($importer, $sourceStorage, $importRun);
 
         $eventDispatcher = new EventDispatcher();
         $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
 
-        $importRunner->run($importRun);
+        $importRunner->run($import);
 
         $entities = self::$em
             ->getRepository('TestEntities\Address')
@@ -82,18 +80,16 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         $targetStorage = new LocalFileStorage(new  \SplFileInfo($exportFile), new CsvFormat());
 
         $importer = Importer::build($targetStorage);
-        $importer->setSourceStorage($sourceStorage);
-
-        $import = Import::build($importer);
 
         $importConfiguration = new ImportConfiguration();
-        $importConfiguration->applyImport($import);
         $importRun = $importConfiguration->toRun();
+
+        $import = Import::build($importer, $sourceStorage, $importRun);
 
         $eventDispatcher = new EventDispatcher();
         $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
 
-        $importRunner->run($importRun);
+        $importRunner->run($import);
 
         $this->assertFileExists($exportFile);
     }
