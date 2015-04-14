@@ -36,6 +36,10 @@ class Mappings extends \ArrayObject
 
     public function setConverter($converter, $from=null)
     {
+        if (!(is_string($converter) || $converter instanceof ValueConverterInterface || $converter instanceof ItemConverterInterface)) {
+            throw new \InvalidArgumentException("Converter must be an id (string) or of type ValueConverterInterface or ItemConverterInterface");
+        }
+
         if ($from) {
             $this->getOrCreateMapping($from)->converter = $converter;
         } else {
@@ -82,14 +86,16 @@ class Mappings extends \ArrayObject
             }
 
             if ($converter) {
-                if (!array_key_exists($converter, $converters)) {
-                    throw new InvalidConfigurationException("Converter with id '$converter' not found in configured converters.");
+                if (is_string($converter)) {
+                    if (!array_key_exists($converter, $converters)) {
+                        throw new InvalidConfigurationException("Converter with id '$converter' not found in configured converters.");
+                    }
+
+                    $converter = $converters[$converter];
                 }
 
-                $converter = $converters[$converter];
                 if ($converter instanceof ValueConverterInterface) {
                     $workflow->addValueConverter($from, $converter);
-
                 } elseif ($converter instanceof ItemConverterInterface) {
                     $workflow->addItemConverter($converter);
                 }

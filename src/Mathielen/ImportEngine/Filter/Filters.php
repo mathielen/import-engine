@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Filter;
 
+use Ddeboer\DataImport\Filter\FilterInterface;
 use Ddeboer\DataImport\Workflow;
 
 class Filters extends \ArrayObject
@@ -9,7 +10,7 @@ class Filters extends \ArrayObject
     /**
      * @return \Mathielen\ImportEngine\Filter\Filters
      */
-    public function add($filter)
+    public function add(FilterInterface $filter)
     {
         $this->append($filter);
 

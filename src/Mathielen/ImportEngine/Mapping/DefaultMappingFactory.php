@@ -7,17 +7,26 @@ class DefaultMappingFactory implements MappingFactoryInterface
 {
 
     /**
+     * @var Mappings
+     */
+    private $mappings;
+
+    public function __construct(Mappings $mappings=null)
+    {
+        if (is_null($mappings)) {
+            $mappings = new Mappings();
+        }
+
+        $this->mappings = $mappings;
+    }
+
+    /**
      * (non-PHPdoc)
      * @see \Mathielen\ImportEngine\Mapping\MappingFactoryInterface::factor()
      */
     public function factor(ReaderInterface $reader)
     {
-        $mapping = new Mappings();
-
-        //foreach ($reader->getFields() as $field) {
-            //$mapping->addMapping($field, 'to', 'convert');
-        //}
-        return $mapping;
+        return $this->mappings;
     }
 
 }

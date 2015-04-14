@@ -48,7 +48,7 @@ class Import
         $this->importer = $importer;
         $this->sourceStorage = $sourceStorage;
         $this->importRun = $importRun;
-        $this->transformation = new Transformation();
+        $this->transformation = $importer->transformation();
     }
 
     /**
