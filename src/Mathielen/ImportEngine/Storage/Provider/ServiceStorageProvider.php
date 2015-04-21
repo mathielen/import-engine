@@ -35,7 +35,7 @@ class ServiceStorageProvider implements StorageProviderInterface
         $callable = $selection->getImpl();
 
         $arguments = array();
-        if (is_array($callable) && array_key_exists('arguments', $callable)) {
+        if (is_array($callable) && isset($callable['arguments'])) {
             $arguments = $callable['arguments'];
             unset($callable['arguments']);
         } elseif (!is_callable($callable)) {
@@ -56,7 +56,7 @@ class ServiceStorageProvider implements StorageProviderInterface
         }
 
         $serviceName = $id['service'];
-        if (!array_key_exists($serviceName, $this->services)) {
+        if (!isset($this->services[$serviceName])) {
             throw new \InvalidArgumentException("Service '$serviceName' is not registered in StorageProvider.");
         }
 
@@ -66,7 +66,7 @@ class ServiceStorageProvider implements StorageProviderInterface
         }
 
         $service = $this->container->get($serviceName);
-        $callable_with_arguments = array($service, $method, array_key_exists('arguments', $id)?$id['arguments']:null);
+        $callable_with_arguments = array($service, $method, isset($id['arguments'])?$id['arguments']:null);
 
         return new StorageSelection($callable_with_arguments);
     }

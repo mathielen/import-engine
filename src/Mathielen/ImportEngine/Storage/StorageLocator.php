@@ -32,7 +32,7 @@ class StorageLocator
      */
     public function get($idProvider)
     {
-        if (!array_key_exists($idProvider, $this->providers)) {
+        if (!isset($this->providers[$idProvider])) {
             throw new \InvalidArgumentException("Provider with id '$idProvider' does not exist!");
         }
 

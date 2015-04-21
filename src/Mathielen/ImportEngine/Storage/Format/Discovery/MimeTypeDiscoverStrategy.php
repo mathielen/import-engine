@@ -43,7 +43,7 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
 
     private function mimeTypeToFormat($mimeType, $uri=null , $subInformation=null)
     {
-        if (array_key_exists($mimeType, $this->formatFactories)) {
+        if (isset($this->formatFactories[$mimeType])) {
             return $this->formatFactories[$mimeType]->factor($uri);
         }
 

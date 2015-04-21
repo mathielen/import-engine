@@ -6,6 +6,7 @@ use Ddeboer\DataImport\ItemConverter\MappingItemConverter;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 use Ddeboer\DataImport\Workflow;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
+use Mathielen\ImportEngine\Mapping\Converter\Provider\ConverterProviderInterface;
 
 class Mappings extends \ArrayObject
 {
@@ -52,7 +53,7 @@ class Mappings extends \ArrayObject
      */
     private function getOrCreateMapping($from)
     {
-        if (!array_key_exists($from, $this)) {
+        if (!isset($this[$from])) {
             $this[$from] = new Mapping($from);
         }
 
@@ -61,14 +62,14 @@ class Mappings extends \ArrayObject
 
     public function get($from)
     {
-        if (!array_key_exists($from, $this)) {
+        if (!isset($this[$from])) {
             return null;
         }
 
         return $this[$from];
     }
 
-    public function apply(Workflow $workflow, array $converters)
+    public function apply(Workflow $workflow, ConverterProviderInterface $converterProvider)
     {
         $fieldMapping = array();
 
@@ -87,11 +88,11 @@ class Mappings extends \ArrayObject
 
             if ($converter) {
                 if (is_string($converter)) {
-                    if (!array_key_exists($converter, $converters)) {
+                    if (!$converterProvider->has($converter)) {
                         throw new InvalidConfigurationException("Converter with id '$converter' not found in configured converters.");
                     }
 
-                    $converter = $converters[$converter];
+                    $converter = $converterProvider->get($converter);
                 }
 
                 if ($converter instanceof ValueConverterInterface) {

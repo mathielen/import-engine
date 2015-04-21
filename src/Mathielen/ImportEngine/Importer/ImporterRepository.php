@@ -41,7 +41,7 @@ class ImporterRepository
      */
     public function get($id)
     {
-        if (!array_key_exists($id, $this->importers)) {
+        if (!isset($this->importers[$id])) {
             throw new \InvalidArgumentException("Unknown importer: $id. Register first.");
         }
 

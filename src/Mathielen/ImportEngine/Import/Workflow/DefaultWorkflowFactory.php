@@ -37,7 +37,7 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
         $workflow->setEventDispatcher($this->eventDispatcher);
 
         $import->importer()->filters()->apply($workflow);
-        $import->mappings()->apply($workflow, $import->importer()->transformation()->converterProvider()->getAll());
+        $import->mappings()->apply($workflow, $import->importer()->transformation()->converterProvider());
         $import->importer()->validation()->apply($workflow);
 
         return $workflow;

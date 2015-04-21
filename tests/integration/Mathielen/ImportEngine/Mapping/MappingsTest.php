@@ -3,6 +3,7 @@ namespace Mathielen\ImportEngine\Mapping;
 
 use Ddeboer\DataImport\ItemConverter\MappingItemConverter;
 use Ddeboer\DataImport\Workflow;
+use Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
 
 class MappingsTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,7 +26,7 @@ class MappingsTest extends \PHPUnit_Framework_TestCase
             ->method('addItemConverter')
             ->with($expectedMappingItemConverter);
 
-        $mappings->apply($workflow, array());
+        $mappings->apply($workflow, new DefaultConverterProvider());
     }
 
 }

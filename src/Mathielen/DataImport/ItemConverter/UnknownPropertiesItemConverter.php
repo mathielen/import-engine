@@ -29,7 +29,7 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
         //has unknown properties
         if (count($unknownProperties) > 0) {
             //target property does not exist => make it an array
-            if (!array_key_exists($this->targetProperty, $input)) {
+            if (!isset($input[$this->targetProperty])) {
                 $input[$this->targetProperty] = [];
             }
 

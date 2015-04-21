@@ -28,7 +28,7 @@ class DefaultConverterProvider implements ConverterProviderInterface
     public function add($id, $converter)
     {
         if (!($converter instanceof ValueConverterInterface || $converter instanceof ItemConverterInterface)) {
-            throw new \InvalidArgumentException("Convert must implement ValueConverterInterface or ItemConverterInterface");
+            throw new \InvalidArgumentException("Converter must implement ValueConverterInterface or ItemConverterInterface");
         }
         if (empty($id)) {
             throw new \InvalidArgumentException("Id cannot be empty");
@@ -39,14 +39,15 @@ class DefaultConverterProvider implements ConverterProviderInterface
         return $this;
     }
 
-    public function getAll()
+    public function has($id)
     {
-        return $this->converters;
+        return isset($this->converters[$id]);
     }
 
     public function get($id)
     {
-        return $this->converters[$id];
+        //do not use $this->has() - it will be overwritten
+        return isset($this->converters[$id]) ? $this->converters[$id] : null;
     }
 
 }

@@ -30,7 +30,7 @@ class StorageSelection
 
     public function getMetadata($key)
     {
-        if (!array_key_exists($key, $this->metadata)) {
+        if (!isset($this->metadata[$key])) {
             return null;
         }
 

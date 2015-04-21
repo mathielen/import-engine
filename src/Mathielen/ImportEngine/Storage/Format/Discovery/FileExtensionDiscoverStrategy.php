@@ -26,7 +26,7 @@ class FileExtensionDiscoverStrategy extends AbstractDiscoverStrategy
 
     private function discoverFormat($ext, $uri)
     {
-        if (array_key_exists($ext, $this->formatFactories)) {
+        if (isset($this->formatFactories[$ext])) {
             return $this->formatFactories[$ext]->factor($uri);
         }
 
