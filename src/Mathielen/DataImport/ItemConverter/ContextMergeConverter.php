@@ -20,10 +20,12 @@ class ContextMergeConverter implements ItemConverterInterface, EventSubscriberIn
 
     public function onImportPrepare(ImportProcessEvent $event)
     {
-        $this->currentContext = $event->getContext()->getContext();
-        if (!is_array($this->currentContext)) {
-            throw new \InvalidArgumentException("Context must be an array");
+        //merge converter only works if context is an array
+        if (!is_array($event->getContext()->getContext())) {
+            return;
         }
+
+        $this->currentContext = $event->getContext()->getContext();
     }
 
     public function onImportFinish(ImportProcessEvent $event)
@@ -34,6 +36,10 @@ class ContextMergeConverter implements ItemConverterInterface, EventSubscriberIn
 
     public function convert($input)
     {
+        if (!$this->currentContext) {
+            return $input;
+        }
+
         return array_merge($this->currentContext, $input);
     }
 

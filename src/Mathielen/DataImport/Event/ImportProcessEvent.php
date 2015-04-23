@@ -11,6 +11,13 @@ class ImportProcessEvent extends Event
 
     private $context;
 
+    public function __construct($context=null)
+    {
+        if ($context) {
+            $this->setContext($context);
+        }
+    }
+
     public function setContext($context)
     {
         $this->context = $context;
