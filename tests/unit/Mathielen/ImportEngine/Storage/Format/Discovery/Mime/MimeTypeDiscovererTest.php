@@ -21,6 +21,7 @@ class MimeTypeDiscovererTest extends \PHPUnit_Framework_TestCase
 
         return array(
             array('octet-stream.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+            array('data.json', 'application/json'),
             array('flatdata.csv', 'text/plain'),
             array('flatdata-excel-xml.xlsx', $is53?'application/vnd.ms-excel':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
             array('flatdata-excel.xls', 'application/vnd.ms-excel'),

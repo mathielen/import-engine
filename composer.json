@@ -35,7 +35,7 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "ddeboer/data-import": ">=0.16.0",
+    "ddeboer/data-import": ">=0.18.0",
     "symfony/event-dispatcher": "*"
   },
   "require-dev": {

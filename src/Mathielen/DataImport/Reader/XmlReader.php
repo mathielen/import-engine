@@ -1,12 +1,11 @@
 <?php
 namespace Mathielen\DataImport\Reader;
-
-use Ddeboer\DataImport\Reader\ReaderInterface;
+use Ddeboer\DataImport\Reader\CountableReaderInterface;
 
 /**
  * Reads data from a xml file
  */
-class XmlReader implements ReaderInterface
+class XmlReader implements CountableReaderInterface
 {
 
     /**
@@ -33,7 +32,7 @@ class XmlReader implements ReaderInterface
      */
     public function getFields()
     {
-        return array_keys($this->current()); //TODO
+        return array_keys($this->current()['@attributes']); //TODO
     }
 
     /**

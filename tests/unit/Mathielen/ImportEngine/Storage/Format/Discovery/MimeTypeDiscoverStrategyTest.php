@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Format\Discovery;
 use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
+use Mathielen\ImportEngine\Storage\Format\JsonFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
@@ -45,6 +46,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
             array('application/zip text/csv@subfile.csv', new CompressedFormat('subfile.csv', 'zip', new CsvFormat())),
             array('application/zip', new CompressedFormat()),
             array('text/csv', new CsvFormat()),
+            array('application/json', new JsonFormat()),
             array('text/plain', new CsvFormat()),
             array('application/vnd.ms-excel', new ExcelFormat()),
             array('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', new ExcelFormat()),

@@ -30,6 +30,15 @@ class MimeTypeDiscoverer
             //all old office files may return this mimetype
             case 'application/vnd.ms-office':
                 return $this->handleOldOfficeFile($filePath);
+
+            case 'text/plain':
+                $contents = file_get_contents($filePath);
+                $firstChar = trim($contents)[0];
+
+                if (in_array($firstChar, ['{', '['])) {
+                    return 'application/json';
+                }
+            break;
         }
 
         return $mimeType;

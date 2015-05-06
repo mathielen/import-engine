@@ -2,12 +2,14 @@
 namespace Mathielen\ImportEngine\Import;
 
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
+use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Importer\ImporterRepository;
 use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Storage\StorageLocator;
 use Mathielen\ImportEngine\Event\ImportConfigureEvent;
 use Mathielen\ImportEngine\ValueObject\ImportRequest;
+use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportBuilder
@@ -49,6 +51,23 @@ class ImportBuilder
     /**
      * @return Import
      */
+    public function rebuild(ImportRun $importRun)
+    {
+        $importerId = $importRun->getConfiguration()->getImporterId();
+
+        $importer = $this->importerRepository->get($importerId);
+        if ($importer->getSourceStorage()) {
+            $sourceStorage = $importer->getSourceStorage();
+        } else {
+            $sourceStorage = $this->storageLocator->getStorage($importRun->getConfiguration()->getSourceStorageSelection());
+        }
+
+        return $this->factorImport($importer, $sourceStorage, $importRun);
+    }
+
+    /**
+     * @return Import
+     */
     public function build(ImportRequest $importRequest)
     {
         $importerId = $importRequest->getImporterId();
@@ -83,12 +102,20 @@ class ImportBuilder
         $importRun = $importConfiguration->toRun($importRequest->getCreatedBy());
         $importRun->setInfo((array) $sourceStorage->info());
 
+        return $this->factorImport($importer, $sourceStorage, $importRun);
+    }
+
+    /**
+     * @return Import
+     */
+    private function factorImport(Importer $importer, StorageInterface $sourceStorage, ImportRun $importRun)
+    {
         $import = Import::build($importer, $sourceStorage, $importRun);
 
         //notify system
         if ($this->eventDispatcher) {
             $this->eventDispatcher->dispatch(
-                ImportConfigureEvent::AFTER_BUILD.'.'.$importConfiguration->getImporterId(),
+                ImportConfigureEvent::AFTER_BUILD.'.'.$importRun->getConfiguration()->getImporterId(),
                 new ImportConfigureEvent($import));
         }
 

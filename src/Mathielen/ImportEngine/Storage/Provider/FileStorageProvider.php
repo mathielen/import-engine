@@ -51,7 +51,7 @@ class FileStorageProvider implements StorageProviderInterface
             return $id;
         }
 
-        throw new \InvalidArgumentException("Id must be a string, an instance of SplFileInfo or a StorageSelection");
+        throw new \InvalidArgumentException("Id must be a string, an instance of SplFileInfo or a StorageSelection. Was: ".$id);
     }
 
     /**

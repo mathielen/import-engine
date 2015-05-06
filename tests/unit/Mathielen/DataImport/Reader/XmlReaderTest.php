@@ -9,7 +9,7 @@ class XmlReaderTest extends \PHPUnit_Framework_TestCase
         $reader = new XmlReader(new \SplFileObject('tests/metadata/testfiles/hierarchicaldata-xml.xml'));
 
         $this->assertEquals(2, count($reader));
-        //$this->assertEquals(array('field1'), $reader->getFields());
+        $this->assertEquals(array('attr1'), $reader->getFields());
         $this->assertEquals(array('value1'=>'1', '@attributes'=>array('attr1'=>'a')), $reader->current());
 
         $actualData = array();
@@ -28,7 +28,7 @@ class XmlReaderTest extends \PHPUnit_Framework_TestCase
         $reader = new XmlReader(new \SplFileObject('tests/metadata/testfiles/hierarchicaldata-xml.xml'), "/root/node[@attr2='b']");
 
         $this->assertEquals(1, count($reader));
-        //$this->assertEquals(array('field1'), $reader->getFields());
+        $this->assertEquals(array('attr2'), $reader->getFields());
         $this->assertEquals(array('value1'=>'2', '@attributes'=>array('attr2'=>'b')), $reader->current());
 
         $actualData = array();

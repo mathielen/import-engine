@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Format\Discovery;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\Discovery\Mime\MimeTypeDiscoverer;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
+use Mathielen\ImportEngine\Storage\Format\JsonFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
@@ -60,6 +61,8 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
             case 'text/csv':
             case 'text/plain':
                 return new CsvFormat();
+            case 'application/json':
+                return new JsonFormat();
             case 'application/vnd.ms-excel':
             case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
                 return new ExcelFormat();

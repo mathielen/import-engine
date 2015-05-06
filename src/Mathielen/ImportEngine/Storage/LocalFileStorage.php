@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
+use Ddeboer\DataImport\Reader\ArrayReader;
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
 use Ddeboer\DataImport\Reader\ReaderInterface;
@@ -13,6 +14,7 @@ use Mathielen\ImportEngine\Storage\Format\CompressedFormat;
 use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
+use Mathielen\ImportEngine\Storage\Format\JsonFormat;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
@@ -56,6 +58,7 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
             'csv',
             'excel',
             'xml',
+            'json',
             'zlib'
         );
     }
@@ -90,6 +93,10 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
             if ($format->isHeaderInFirstRow()) {
                 $reader->setColumnHeaders(array_map('trim', $reader->getColumnHeaders())); //TODO some header-collaborator?
             }
+
+        } elseif ($format instanceof JsonFormat) {
+            $array = json_decode(file_get_contents($file), true);
+            $reader = new ArrayReader($array);
 
         } elseif ($format instanceof XmlFormat) {
             $reader = new XmlReader($file->openFile(), $format->getXpath());

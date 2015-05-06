@@ -1,12 +1,12 @@
 <?php
 namespace Mathielen\DataImport\Reader;
 
-use Ddeboer\DataImport\Reader\ReaderInterface;
+use Ddeboer\DataImport\Reader\CountableReaderInterface;
 
 /**
  * Reads data from a given service
  */
-class ServiceReader implements ReaderInterface
+class ServiceReader implements CountableReaderInterface
 {
 
     /**
