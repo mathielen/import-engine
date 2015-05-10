@@ -145,7 +145,7 @@ class ImportRun
 
     public function isValidated()
     {
-        return $this->getState() == self::STATE_VALIDATED;
+        return $this->isFinished() || $this->getState() == self::STATE_VALIDATED;
     }
 
     public function isRunnable()

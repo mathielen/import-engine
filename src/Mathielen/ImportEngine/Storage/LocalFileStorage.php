@@ -41,6 +41,11 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
      */
     private $writer;
 
+    /**
+     * @var StorageInfo
+     */
+    private $info;
+
     public function __construct(\SplFileInfo $file, Format $format)
     {
         $this->file = $file;
@@ -154,13 +159,17 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
 
     public function info()
     {
-        return new StorageInfo(array(
-            'name' => $this->file->getFilename(),
-            'hash' => $this->getHash(),
-            'format' => $this->getFormat(),
-            'size' => $this->file->getSize(),
-            'count' => count($this->reader())
-        ));
+        if (!isset($this->info)) {
+            $this->info = new StorageInfo(array(
+                'name' => $this->file->getFilename(),
+                'hash' => $this->getHash(),
+                'format' => $this->getFormat(),
+                'size' => $this->file->getSize(),
+                'count' => count($this->reader())
+            ));
+        }
+
+        return $this->info;
     }
 
 }

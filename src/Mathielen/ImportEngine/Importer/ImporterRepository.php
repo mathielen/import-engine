@@ -54,17 +54,17 @@ class ImporterRepository
     public function find(StorageInterface $storage)
     {
         if ($this->logger) {
-            $this->logger->debug("Searching for importer for storage named: '" . $storage->info()['name']."'");
+            $this->logger->debug("Searching for importer for storage");
         }
 
         foreach ($this->preconditions as $importerId => $precondition) {
             if ($this->logger) {
-                $this->logger->debug("Checking preconditions for importer: '" . $importerId."'");
+                $this->logger->debug("Checking preconditions for importer: '" . $importerId . "'");
             }
 
             if ($precondition->isSatisfiedBy($storage, $this->logger)) {
                 if ($this->logger) {
-                    $this->logger->debug("Preconditions matched for importer: '" . $importerId."'. Using this import.");
+                    $this->logger->debug("Preconditions matched for importer: '" . $importerId . "'. Using this import.");
                 }
 
                 return $importerId;
