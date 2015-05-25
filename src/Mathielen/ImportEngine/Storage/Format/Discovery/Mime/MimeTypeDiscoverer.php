@@ -106,7 +106,7 @@ class MimeTypeDiscoverer
     private function getMimetypeFromMultifileZip(\ZipArchive $zip)
     {
         //check for ms office xml filetypes
-        for ($i=0; $i<$zip->numFiles; $i++) {
+        for ($i=0; $i<$zip->numFiles; ++$i) {
             $stat = $zip->statIndex($i);
             $fileName = $stat['name'];
 

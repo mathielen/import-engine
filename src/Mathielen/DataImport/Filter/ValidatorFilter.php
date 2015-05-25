@@ -121,7 +121,7 @@ class ValidatorFilter extends OriginalValidatorFilter
             $this->violations[$this->line] = $list;
         }
 
-        $this->line++;
+        ++$this->line;
 
         $validationResult = 0 === count($list);
 

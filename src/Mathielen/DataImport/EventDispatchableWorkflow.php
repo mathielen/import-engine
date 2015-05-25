@@ -70,7 +70,7 @@ class EventDispatchableWorkflow extends OriginalWorkflow
                 }
             }
 
-            $count++;
+            ++$count;
         }
 
         //Finish
