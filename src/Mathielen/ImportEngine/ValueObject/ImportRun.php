@@ -128,10 +128,6 @@ class ImportRun
      */
     public function validated(array $validationMessages=null)
     {
-        if ($this->isFinished() || $this->isRevoked()) {
-            throw new \LogicException('Cannot validate import if already finished or revoked.');
-        }
-
         $this->validatedAt = new \DateTime();
         $this->validationMessages = $validationMessages;
 
