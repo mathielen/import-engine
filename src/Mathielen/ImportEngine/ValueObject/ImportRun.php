@@ -128,7 +128,7 @@ class ImportRun
      */
     public function validated(array $validationMessages=null)
     {
-        $this->validatedAt = new \DateTime();
+        $this->validatedAt = empty($this->validatedAt)?new \DateTime():$this->validatedAt;
         $this->validationMessages = $validationMessages;
 
         return $this;
