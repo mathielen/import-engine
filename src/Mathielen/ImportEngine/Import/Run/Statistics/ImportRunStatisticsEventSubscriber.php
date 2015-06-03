@@ -2,6 +2,7 @@
 namespace Mathielen\ImportEngine\Import\Run\Statistics;
 
 use Mathielen\DataImport\Event\ImportProcessEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Mathielen\DataImport\Event\ImportItemEvent;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
@@ -49,14 +50,14 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         $event->setContext($this->importrun);
     }
 
-    public function onImportFinish(ImportProcessEvent $event)
+    public function onImportFinish(ImportProcessEvent $event, $eventName, EventDispatcherInterface $eventDispatcher)
     {
         if (!$this->isDryRun) {
             $this->importrun->finish();
         }
 
         //remove the subscriber when its done
-        $event->getDispatcher()->removeSubscriber($this);
+        $eventDispatcher->removeSubscriber($this);
     }
 
     public function onAfterRead(ImportItemEvent $event)

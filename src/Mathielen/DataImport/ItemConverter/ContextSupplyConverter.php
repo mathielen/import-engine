@@ -3,6 +3,7 @@ namespace Mathielen\DataImport\ItemConverter;
 
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 use Mathielen\DataImport\Event\ImportProcessEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberInterface
@@ -30,10 +31,10 @@ class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberI
         $this->currentContext = $event->getContext()->getContext();
     }
 
-    public function onImportFinish(ImportProcessEvent $event)
+    public function onImportFinish(ImportProcessEvent $event, $eventName, EventDispatcherInterface $eventDispatcher)
     {
         //remove the subscriber when its done
-        $event->getDispatcher()->removeSubscriber($this);
+        $eventDispatcher->removeSubscriber($this);
     }
 
     public function convert($input)
