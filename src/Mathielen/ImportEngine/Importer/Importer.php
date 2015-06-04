@@ -7,7 +7,7 @@ use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Validation\ValidationInterface;
 use Mathielen\ImportEngine\Validation\DummyValidation;
 
-class Importer
+class Importer implements ImporterInterface
 {
 
     /**

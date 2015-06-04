@@ -2,6 +2,7 @@
 namespace Mathielen\ImportEngine\Import;
 
 use Mathielen\ImportEngine\Importer\Importer;
+use Mathielen\ImportEngine\Importer\ImporterInterface;
 use Mathielen\ImportEngine\Storage\StorageInterface;
 use Mathielen\ImportEngine\Transformation\Transformation;
 use Mathielen\ImportEngine\Mapping\Mappings;
@@ -11,7 +12,7 @@ class Import
 {
 
     /**
-     * @var Importer
+     * @var ImporterInterface
      */
     private $importer;
 
@@ -38,13 +39,17 @@ class Import
     /**
      * @return Import
      */
-    public static function build(Importer $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
+    public static function build(ImporterInterface $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
     {
         return new self($importer, $sourceStorage, $importRun);
     }
 
-    public function __construct(Importer $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
+    public function __construct(ImporterInterface $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
     {
+        if (!$importRun) {
+            $importRun = new ImportRun();
+        }
+
         $this->importer = $importer;
         $this->sourceStorage = $sourceStorage;
         $this->importRun = $importRun;
@@ -52,7 +57,7 @@ class Import
     }
 
     /**
-     * @return \Mathielen\ImportEngine\Importer\Importer
+     * @return \Mathielen\ImportEngine\Importer\ImporterInterface
      */
     public function importer()
     {

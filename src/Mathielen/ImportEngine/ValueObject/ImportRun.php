@@ -47,7 +47,7 @@ class ImportRun
      */
     protected $context;
 
-    public function __construct(ImportConfiguration $configuration, $createdBy = null)
+    public function __construct(ImportConfiguration $configuration=null, $createdBy = null)
     {
         $this->id = uniqid();
         $this->createdAt = new \DateTime();
@@ -58,7 +58,7 @@ class ImportRun
     /**
      * @return ImportRun
      */
-    public static function create(ImportConfiguration $configuration, $createdBy = null)
+    public static function create(ImportConfiguration $configuration=null, $createdBy = null)
     {
         return new self($configuration, $createdBy);
     }

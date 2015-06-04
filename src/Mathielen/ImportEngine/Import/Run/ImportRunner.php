@@ -41,16 +41,21 @@ class ImportRunner
         return new self($workflowFactory);
     }
 
-    private function process(Workflow $workflow, ImportRun $importRun=null)
+    private function process(Workflow $workflow, Import $import)
     {
-        if ($this->eventDispatcher && $importRun) {
-            $e = new ImportProcessEvent($importRun);
+        $e = null;
+        $importRun = null;
+        if ($this->eventDispatcher && $importRun = $import->getRun()) {
+            $e = new ImportProcessEvent($import);
+        }
+
+        if ($e) {
             $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE.'.'.$importRun->getConfiguration()->getImporterId(), $e);
         }
 
         $workflow->process();
 
-        if ($this->eventDispatcher && $importRun) {
+        if ($e) {
             $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH.'.'.$importRun->getConfiguration()->getImporterId(), $e);
         }
     }
@@ -64,7 +69,7 @@ class ImportRunner
         $previewResult = array('from'=>array(), 'to'=>array());
 
         $workflow = $this->workflowFactory->buildPreviewWorkflow($import, $previewResult, $offset);
-        $this->process($workflow, $importRun);
+        $this->process($workflow, $import);
 
         if (0 == count($previewResult['from'])) {
             throw new ImportRunException("Unable to preview row with offset '$offset'. EOF?", $importRun);
@@ -87,7 +92,7 @@ class ImportRunner
     {
         $importRun = $import->getRun();
         $workflow = $this->workflowFactory->buildDryrunWorkflow($import, $importRun);
-        $this->process($workflow, $importRun);
+        $this->process($workflow, $import);
 
         return $importRun;
     }
@@ -99,7 +104,7 @@ class ImportRunner
     {
         $importRun = $import->getRun();
         $workflow = $this->workflowFactory->buildRunWorkflow($import, $importRun);
-        $this->process($workflow, $importRun);
+        $this->process($workflow, $import);
 
         return $importRun;
     }

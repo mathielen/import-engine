@@ -14,8 +14,8 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
     public function __construct(array $knownProperties, $targetProperty='ATTRIBUTES', $skipEmptyKey=true)
     {
-        $this->knownProperties = array_map('strtoupper', $knownProperties);
-        $this->targetProperty = strtoupper($targetProperty);
+        $this->knownProperties = $knownProperties;
+        $this->targetProperty = $targetProperty;
         $this->skipEmptyKey = $skipEmptyKey;
 
         $this->knownProperties[] = $this->targetProperty;
@@ -23,8 +23,7 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
     public function convert($input)
     {
-        $input = array_change_key_case($input, CASE_UPPER);
-        $unknownProperties = array_diff(array_keys($input), $this->knownProperties);
+        $unknownProperties = array_udiff(array_keys($input), $this->knownProperties, 'strcasecmp');
 
         //has unknown properties
         if (count($unknownProperties) > 0) {

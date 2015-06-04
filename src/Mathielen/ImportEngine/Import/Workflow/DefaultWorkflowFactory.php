@@ -8,7 +8,7 @@ use Ddeboer\DataImport\Filter\OffsetFilter;
 use Mathielen\DataImport\Filter\PriorityCallbackFilter;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Mathielen\ImportEngine\Import\Run\Statistics\ImportRunStatisticsEventSubscriber;
+use Mathielen\ImportEngine\Import\Run\ImportRunEventSubscriber;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class DefaultWorkflowFactory implements WorkflowFactoryInterface
@@ -81,10 +81,8 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
         $workflow->addWriter($import->getTargetStorage()->writer());
 
         //collect statistics by default
-        if ($importRun) {
-            $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun);
-            $this->eventDispatcher->addSubscriber($statisticsCollector);
-        }
+        $statisticsCollector = new ImportRunEventSubscriber($import);
+        $this->eventDispatcher->addSubscriber($statisticsCollector);
 
         return $workflow;
     }
@@ -99,10 +97,8 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
         $workflow = $this->buildBaseWorkflow($import);
 
         //collect statistics by default
-        if ($importRun) {
-            $statisticsCollector = new ImportRunStatisticsEventSubscriber($importRun, true);
-            $this->eventDispatcher->addSubscriber($statisticsCollector);
-        }
+        $statisticsCollector = new ImportRunEventSubscriber($import, true);
+        $this->eventDispatcher->addSubscriber($statisticsCollector);
 
         return $workflow;
     }

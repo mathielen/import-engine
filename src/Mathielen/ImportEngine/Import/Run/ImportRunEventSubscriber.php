@@ -1,28 +1,28 @@
 <?php
-namespace Mathielen\ImportEngine\Import\Run\Statistics;
+namespace Mathielen\ImportEngine\Import\Run;
 
 use Mathielen\DataImport\Event\ImportProcessEvent;
+use Mathielen\ImportEngine\Import\Import;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Mathielen\DataImport\Event\ImportItemEvent;
-use Mathielen\ImportEngine\ValueObject\ImportRun;
 
-class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
+class ImportRunEventSubscriber implements EventSubscriberInterface
 {
 
     /**
-     * @var ImportRun
+     * @var Import
      */
-    private $importrun;
+    private $import;
 
     private $statistics;
 
     private $isDryRun;
 
-    public function __construct(ImportRun $importrun, $isDryRun = false)
+    public function __construct(Import $import, $isDryRun = false)
     {
         $this->isDryRun = $isDryRun;
-        $this->importrun = $importrun;
+        $this->import = $import;
         $this->statistics = array(
             'processed' => 0,
             'written' => 0,
@@ -47,13 +47,13 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
 
     public function onImportPrepare(ImportProcessEvent $event)
     {
-        $event->setContext($this->importrun);
+        $event->setContext($this->import);
     }
 
     public function onImportFinish(ImportProcessEvent $event, $eventName, EventDispatcherInterface $eventDispatcher)
     {
         if (!$this->isDryRun) {
-            $this->importrun->finish();
+            $this->import->getRun()->finish();
         }
 
         //remove the subscriber when its done
@@ -64,7 +64,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     {
         ++$this->statistics['processed'];
 
-        $this->importrun->setStatistics($this->statistics);
+        $this->import->getRun()->setStatistics($this->statistics);
     }
 
     public function onAfterFilter(ImportItemEvent $event)
@@ -72,7 +72,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
 
-            $this->importrun->setStatistics($this->statistics);
+            $this->import->getRun()->setStatistics($this->statistics);
         }
     }
 
@@ -81,7 +81,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
 
-            $this->importrun->setStatistics($this->statistics);
+            $this->import->getRun()->setStatistics($this->statistics);
         }
     }
 
@@ -90,7 +90,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         if (!$event->getCurrentResult()) {
             ++$this->statistics['skipped'];
 
-            $this->importrun->setStatistics($this->statistics);
+            $this->import->getRun()->setStatistics($this->statistics);
         }
     }
 
@@ -99,7 +99,7 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
         if (!$event->getCurrentResult()) {
             ++$this->statistics['invalid'];
 
-            $this->importrun->setStatistics($this->statistics);
+            $this->import->getRun()->setStatistics($this->statistics);
         }
     }
 
@@ -107,6 +107,6 @@ class ImportRunStatisticsEventSubscriber implements EventSubscriberInterface
     {
         ++$this->statistics['written'];
 
-        $this->importrun->setStatistics($this->statistics);
+        $this->import->getRun()->setStatistics($this->statistics);
     }
 }
