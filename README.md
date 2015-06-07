@@ -38,7 +38,7 @@ This library is available on [Packagist](https://packagist.org/packages/mathiele
 The recommended way to install it is through [Composer](http://getcomposer.org):
 
 ```bash
-$ composer require mathielen/import-engine:dev-master
+$ composer require mathielen/import-engine
 ```
 
 Then include Composer’s autoloader:
