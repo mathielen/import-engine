@@ -56,12 +56,12 @@ class ImportRequest
 
     public function hasImporterId()
     {
-        return !empty($this->importerId);
+        return !is_null($this->importerId);
     }
 
     public function hasSource()
     {
-        return !empty($this->sourceId);
+        return !is_null($this->sourceId);
     }
 
 }

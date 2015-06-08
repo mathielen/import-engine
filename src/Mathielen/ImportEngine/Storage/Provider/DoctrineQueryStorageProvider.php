@@ -29,7 +29,7 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
     private function resolveQueries(array $classNamesOrQueries)
     {
         $this->queries = array();
-        foreach ($classNamesOrQueries as &$classNameOrQuery) {
+        foreach ($classNamesOrQueries as $k=>$classNameOrQuery) {
             if (is_string($classNameOrQuery)) {
                 $queryBuilder = $this->entityManager->createQueryBuilder()
                     ->select('o')
@@ -43,7 +43,7 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
                 throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
             }
 
-            $this->queries[] = $query;
+            $this->queries[$k] = $query;
         }
     }
 
@@ -67,7 +67,11 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      */
     public function select($id = null)
     {
-        return $id;
+        if ($id instanceof StorageSelection) {
+            return $id;
+        } else {
+            return $this->queries[$id];
+        }
     }
 
 }
