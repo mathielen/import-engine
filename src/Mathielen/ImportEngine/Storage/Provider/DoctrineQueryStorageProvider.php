@@ -58,7 +58,7 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      */
     public function storage(StorageSelection $selection)
     {
-        return new DoctrineStorage($this->entityManager, $selection->getImpl());
+        return new DoctrineStorage($this->entityManager, $selection->getName(), $selection->getImpl());
     }
 
     /**

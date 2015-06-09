@@ -5,6 +5,7 @@ use Mathielen\DataImport\Reader\DoctrineQueryReader;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Ddeboer\DataImport\Writer\DoctrineWriter;
+use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class DoctrineStorage implements StorageInterface
 {
@@ -21,7 +22,7 @@ class DoctrineStorage implements StorageInterface
 
     private $entityName;
 
-    public function __construct(EntityManagerInterface $entityManager, $entityName, $queryBuilder=null)
+    public function __construct(EntityManagerInterface $entityManager, $entityName=null, QueryBuilder $queryBuilder=null)
     {
         $this->entityManager = $entityManager;
         $this->entityName = $entityName;
@@ -48,6 +49,10 @@ class DoctrineStorage implements StorageInterface
      */
     public function writer()
     {
+        if (empty($this->entityName)) {
+            throw new InvalidConfigurationException("Can only use doctrine for writing if entityName is given.");
+        }
+
         return new DoctrineWriter($this->entityManager, $this->entityName);
     }
 
