@@ -1,6 +1,7 @@
 <?php
 namespace Mathielen\ImportEngine\Import;
 
+use Mathielen\ImportEngine\Event\ImportRequestEvent;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Importer\ImporterRepository;
@@ -84,10 +85,14 @@ class ImportBuilder
 
             if (!$importRequest->hasImporterId()) {
                 $importerId = $this->findImporterForStorage($sourceStorage);
-
                 if (!$importerId) {
                     throw new InvalidConfigurationException("No importerId was given and there is not importer that could automatically match the storage.");
                 }
+
+                $importRequest->setImporterId($importerId);
+                $this->eventDispatcher->dispatch(
+                    ImportRequestEvent::DISCOVERED,
+                    new ImportRequestEvent($importRequest));
             }
         }
 
@@ -114,6 +119,10 @@ class ImportBuilder
 
         //notify system
         if ($this->eventDispatcher) {
+            $this->eventDispatcher->dispatch(
+                ImportConfigureEvent::AFTER_BUILD,
+                new ImportConfigureEvent($import));
+
             $this->eventDispatcher->dispatch(
                 ImportConfigureEvent::AFTER_BUILD.'.'.$importRun->getConfiguration()->getImporterId(),
                 new ImportConfigureEvent($import));

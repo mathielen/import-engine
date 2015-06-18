@@ -23,6 +23,16 @@ class ImportRequest
     }
 
     /**
+     * @return ImportRequest
+     */
+    public function setImporterId($importerId)
+    {
+        $this->importerId = $importerId;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getSourceId()
