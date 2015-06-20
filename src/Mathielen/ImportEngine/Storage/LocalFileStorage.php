@@ -88,7 +88,7 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
             $reader = new CsvReader($file->openFile(), $format->getDelimiter(), $format->getEnclosure(), $format->getEscape());
             $reader->setStrict(false);
             if ($format->isHeaderInFirstRow()) {
-                $reader->setHeaderRowNumber(0);
+                $reader->setHeaderRowNumber(0, CsvReader::DUPLICATE_HEADERS_MERGE);
                 $reader->setColumnHeaders(array_map('trim', $reader->getColumnHeaders())); //TODO some header-collaborator?
             }
 

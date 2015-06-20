@@ -59,14 +59,14 @@ class ImportRunnerTest extends \PHPUnit_Framework_TestCase
         $import = $importBuilder->build($importRequest);
 
         $import->mappings()
-            ->add('Anrede', 'salutation', 'upperCase')
-            ->add('Name', 'name', 'lowerCase');
+            ->add('prefix', 'Anrede', 'upperCase')
+            ->add('name', 'Name', 'lowerCase');
 
         $importRunner = new ImportRunner(new DefaultWorkflowFactory($eventDispatcher));
 
         $expectedResult = array(
-            'name' => 'Jennie Abernathy',
-            'prefix' => 'Ms.',
+            'Name' => 'jennie abernathy',
+            'Anrede' => 'MS.',
             'street' => '866 Hyatt Isle Apt. 888',
             'zip' => '65982',
             'city' => 'East Laurie',

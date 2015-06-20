@@ -96,7 +96,7 @@ class Mappings extends \ArrayObject
                 }
 
                 if ($converter instanceof ValueConverterInterface) {
-                    $workflow->addValueConverter($from, $converter);
+                    $workflow->addValueConverter($to, $converter);
                 } elseif ($converter instanceof ItemConverterInterface) {
                     $workflow->addItemConverter($converter);
                 }
