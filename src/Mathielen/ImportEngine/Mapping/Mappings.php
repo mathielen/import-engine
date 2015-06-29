@@ -74,6 +74,10 @@ class Mappings extends \ArrayObject
         $fieldMapping = array();
 
         foreach ($this as $mapping) {
+            $to = null;
+            $from = null;
+            $converter = null;
+
             if ($mapping instanceof Mapping) {
                 $to = $mapping->to;
                 $from = $mapping->from;
@@ -82,7 +86,7 @@ class Mappings extends \ArrayObject
                 $converter = $mapping;
             }
 
-            if (!empty($to)) {
+            if (!empty($to) && !empty($from)) {
                 $fieldMapping[$from] = $to;
             }
 
@@ -96,7 +100,13 @@ class Mappings extends \ArrayObject
                 }
 
                 if ($converter instanceof ValueConverterInterface) {
-                    $workflow->addValueConverter($to, $converter);
+                    $targetField = empty($to)?$from:$to;
+
+                    if (empty($targetField)) {
+                        throw new InvalidConfigurationException('Cannot use ValueConverter '.get_class($converter).' without target-field.');
+                    }
+
+                    $workflow->addValueConverter($targetField, $converter);
                 } elseif ($converter instanceof ItemConverterInterface) {
                     $workflow->addItemConverter($converter);
                 }

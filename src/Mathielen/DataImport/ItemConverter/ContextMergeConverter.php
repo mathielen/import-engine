@@ -30,7 +30,7 @@ class ContextMergeConverter implements ItemConverterInterface, EventSubscriberIn
         $this->currentContext = $event->getContext()->getRun()->getContext();
     }
 
-    public function onImportFinish(ImportProcessEvent $event, $eventName=null, EventDispatcherInterface $eventDispatcher=null)
+    public function onImportFinish(ImportProcessEvent $event, $eventName, EventDispatcherInterface $eventDispatcher)
     {
         //remove the subscriber when its done
         $eventDispatcher->removeSubscriber($this);

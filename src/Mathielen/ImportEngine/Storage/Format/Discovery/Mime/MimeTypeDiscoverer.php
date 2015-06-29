@@ -44,6 +44,9 @@ class MimeTypeDiscoverer
         return $mimeType;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function handleOldOfficeFile($filePath)
     {
         $ext = pathinfo($filePath, PATHINFO_EXTENSION);

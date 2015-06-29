@@ -5,6 +5,7 @@ use Mathielen\ImportEngine\Storage\LocalFileStorage;
 use Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
+use Psr\Log\LoggerInterface;
 
 class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
 {
@@ -14,9 +15,15 @@ class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
      */
     private $formatDiscoverStrategyInterface;
 
-    public function __construct(FormatDiscoverStrategyInterface $formatDiscoverStrategyInterface)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(FormatDiscoverStrategyInterface $formatDiscoverStrategyInterface, LoggerInterface $logger=null)
     {
         $this->formatDiscoverStrategyInterface = $formatDiscoverStrategyInterface;
+        $this->logger = $logger;
     }
 
     /**
@@ -36,6 +43,10 @@ class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
             $format = $this->formatDiscoverStrategyInterface->getFormat($selection);
             if (!$format) {
                 throw new InvalidConfigurationException("Could not discover format!");
+            }
+
+            if ($this->logger) {
+                $this->logger->info("File $file was discovered as format '$format''");
             }
         }
 

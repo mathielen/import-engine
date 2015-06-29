@@ -78,11 +78,11 @@ class ImporterPrecondition
             throw new InvalidConfigurationException("Cannot check format when storage does not implement StorageFormatInterface");
         }
 
-        if (!$this->isSatisfiedFilename(@$storage->info()['name'], $logger)) {
+        if (!$this->isSatisfiedFilename($storage->info()['name'], $logger)) {
             return false;
         }
 
-        if (!$this->isSatisfiedFormat(@$storage->info()['format'], $logger)) {
+        if (!$this->isSatisfiedFormat($storage->info()['format'], $logger)) {
             return false;
         }
 

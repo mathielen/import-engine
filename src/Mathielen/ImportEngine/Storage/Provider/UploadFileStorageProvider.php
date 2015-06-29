@@ -27,7 +27,11 @@ class UploadFileStorageProvider extends FileStorageProvider
      */
     public function select($id = null)
     {
-        if ($id instanceof UploadedFile && $id->isValid()) {
+        if ($id instanceof UploadedFile) {
+            if (!$id->isValid()) {
+                throw new \InvalidArgumentException("Upload was not successful");
+            }
+
             $newFile = $id->move($this->targetDirectory, $this->generateTargetFilename($id));
 
             $selection = new StorageSelection(
