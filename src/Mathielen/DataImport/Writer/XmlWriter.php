@@ -15,12 +15,19 @@ class XmlWriter implements WriterInterface
     private $xml;
     private $filename;
 
-    private $nodeName;
+    /**
+     * @var \DOMNode
+     */
+    private $rootNode;
 
-    public function __construct(\SplFileObject $file, $nodeName='node')
+    private $rowNodeName;
+    private $rootNodeName;
+
+    public function __construct(\SplFileObject $file, $rowNodeName='node', $rootNodeName = 'root')
     {
         $this->filename = $file->getRealPath();
-        $this->nodeName = $nodeName;
+        $this->rowNodeName = $rowNodeName;
+        $this->rootNodeName = $rootNodeName;
     }
 
     /**
@@ -29,6 +36,8 @@ class XmlWriter implements WriterInterface
     public function prepare()
     {
         $this->xml = new \DOMDocument();
+        $this->rootNode = $this->xml->createElement($this->rootNodeName);
+        $this->xml->appendChild($this->rootNode);
 
         return $this;
     }
@@ -39,10 +48,10 @@ class XmlWriter implements WriterInterface
      */
     public function writeItem(array $item)
     {
-        $newNode = $this->xml->createElement($this->nodeName);
+        $newNode = $this->xml->createElement($this->rowNodeName);
 
         //attributes
-        if (array_key_exists('@attributes', $item) && is_array($item['@attributes'])) {
+        if (isset($item['@attributes']) && is_array($item['@attributes'])) {
             foreach ($item['@attributes'] as $key => $value) {
                 $attr = $this->xml->createAttribute($key);
                 $attr->value = $value;
@@ -58,7 +67,7 @@ class XmlWriter implements WriterInterface
             $newNode->appendChild($node);
         }
 
-        $this->xml->appendChild( $newNode );
+        $this->rootNode->appendChild( $newNode );
 
         return $this;
     }

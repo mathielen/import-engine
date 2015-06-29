@@ -43,13 +43,18 @@ class LocalFileTest extends \PHPUnit_Framework_TestCase
         $importRunner->run($import);
 
         $this->assertFileExists($targetFile);
-        //$this->assertFileEquals($sourceFile, $targetFile); excel files have binary differences :/
+
+        if ($format instanceof XmlFormat) {
+            $this->assertXmlFileEqualsXmlFile($sourceFile, $targetFile);
+        } elseif ($format instanceof CsvFormat) {
+            $this->assertFileEquals($sourceFile, $targetFile);
+        }
     }
 
     public function getStorages()
     {
         return array(
-            array(__DIR__ . '/../../../metadata/testfiles/flatdata.csv', new CsvFormat(';', '"', '\\', false)),
+            array(__DIR__ . '/../../../metadata/testfiles/flatdata.csv', new CsvFormat()),
             array(__DIR__ . '/../../../metadata/testfiles/flatdata-excel.xls', new ExcelFormat(false)),
             array(__DIR__ . '/../../../metadata/testfiles/flatdata-excel-xml.xlsx', new ExcelFormat(false)),
             array(__DIR__ . '/../../../metadata/testfiles/flatdata-csv-zip.zip', new CompressedFormat('testmapping.csv', 'zip', new CsvFormat()), new CsvFormat()),

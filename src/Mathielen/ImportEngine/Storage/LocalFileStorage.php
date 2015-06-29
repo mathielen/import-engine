@@ -5,8 +5,8 @@ use Ddeboer\DataImport\Reader\ArrayReader;
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
 use Ddeboer\DataImport\Reader\ReaderInterface;
-use Ddeboer\DataImport\Writer\CsvWriter;
-use Ddeboer\DataImport\Writer\ExcelWriter;
+use Mathielen\DataImport\Writer\CsvWriter;
+use Mathielen\DataImport\Writer\ExcelWriter;
 use Mathielen\DataImport\Writer\XmlWriter;
 use Ddeboer\DataImport\Writer\WriterInterface;
 use Mathielen\DataImport\Reader\XmlReader;
@@ -128,19 +128,13 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
     private function formatToWriter(Format $format, \SplFileInfo $file)
     {
         if ($format instanceof CsvFormat) {
-            $writer = new CsvWriter($format->getDelimiter(), $format->getEnclosure(), fopen($file, 'w'));
-            if ($format->isHeaderInFirstRow()) {
-                //TODO how to handle header?
-            }
+            $writer = new CsvWriter($format->getDelimiter(), $format->getEnclosure(), fopen($file, 'a'), false, $format->isHeaderInFirstRow());
 
         } elseif ($format instanceof ExcelFormat) {
-            $writer = new ExcelWriter($file->openFile('w'), $format->getActivesheet(), $format->getExceltype());
-            if ($format->isHeaderInFirstRow()) {
-                //TODO how to handle header?
-            }
+            $writer = new ExcelWriter($file->openFile('a'), $format->getActivesheet(), $format->getExceltype(), $format->isHeaderInFirstRow());
 
         } elseif ($format instanceof XmlFormat) {
-            $writer = new XMLWriter($file->openFile('w'));
+            $writer = new XMLWriter($file->openFile('a'));
 
         } elseif ($format instanceof CompressedFormat) {
             throw new \LogicException("Not implemented!");
