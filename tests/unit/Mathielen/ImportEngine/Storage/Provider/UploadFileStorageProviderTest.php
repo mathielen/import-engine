@@ -20,14 +20,16 @@ class UploadFileStorageProviderTest extends \PHPUnit_Framework_TestCase
     public function testSelectNotValid()
     {
         $ufsp = new UploadFileStorageProvider(sys_get_temp_dir());
-        $ufsp->select($this->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')->disableOriginalConstructor()->getMock());
+        $uploadedFile = __DIR__.'/../../../../../metadata/testfiles/testSelectNotValid.csv';
+        copy(__DIR__.'/../../../../../metadata/testfiles/100.csv', $uploadedFile);
+        $ufsp->select(new UploadedFile($uploadedFile, 'original.csv'));
     }
 
     public function testSelect()
     {
         $ufsp = new UploadFileStorageProvider(sys_get_temp_dir());
 
-        $uploadedFile = __DIR__.'/../../../../../metadata/testfiles/'.uniqid();
+        $uploadedFile = __DIR__.'/../../../../../metadata/testfiles/testSelectNotValid.csv';
         copy(__DIR__.'/../../../../../metadata/testfiles/100.csv', $uploadedFile);
         $selection = $ufsp->select(new UploadedFile($uploadedFile, 'original.csv', null, null, null, true));
 
