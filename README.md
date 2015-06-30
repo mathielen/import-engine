@@ -19,10 +19,11 @@ If you are developing a Symfony2 project, you may want to use the comfortable co
 Features
 --------
 * A Storage Abstraction-layer that supports nice features like [automatic delimiter-discovering](#automatic-csv-delimiter-discovery-for-filestorageproviders) or processing compressed files. Currently these storages are supported:
-  * CSV files
-  * Excel files
+  * Structured Files
+    * CSV, XML, JSON, Excel
+    * File may be compressed
   * Doctrine2 queries
-  * Compressed files support (with a single file inside)
+  * Service endpoints
 * Storage Provisioning. Provide a list of possible storage-containers for your import. I.e. local files, remote files, uploaded files, database connections, service endpoints and more.
 * A mapping sub-system, for building various mappings for your import: field-field, field-converter-field, field-converter-object and more.
 * Automatic mapping into object tree's using the [JMSSerializer](http://jmsyst.com/libs/serializer)
@@ -47,21 +48,44 @@ Then include Composer’s autoloader:
 require_once 'vendor/autoload.php';
 ```
 
+Quickstart
+----
+
+#### Import an arbitrary file into your system
+Using the *Provider facilities enables you to let the importer-system figure out what format the file has and what abstraction-classes should be used. 
+```php
+$service = new TestEntities\Dummy(); //your domain service
+
+$fileStorageProvider = new Mathielen\ImportEngine\Storage\Provider\FileStorageProvider();
+$storageSelection = $fileStorageProvider->select('tests/metadata/testfiles/flatdata.csv');
+$sourceStorage = $fileStorageProvider->storage($storageSelection);
+
+$targetStorage = new Mathielen\ImportEngine\Storage\ServiceStorage(array($service, 'onNewData'));
+$importer = Mathielen\ImportEngine\Importer\Importer::build($targetStorage);
+
+$import = Mathielen\ImportEngine\Import\Import::build($importer, $sourceStorage);
+
+$importRunner = new Mathielen\ImportEngine\Import\Run\ImportRunner();
+$importRunner->run($import);
+```
+
+#### More examples
+Have a look at: https://github.com/mathielen/import-engine/tree/master/tests/functional/Mathielen/ImportEngine
+
 Usage
 -----
 
-The general idea of this library is the following:
-* An [Importer](#importer) is the basic definition of the whole process. It says _what_ may be imported and _where_ to. It consists of:
+### Terminology
+* An [Importer](#importer) is the basic definition of the whole import-process. It says _what_ may be imported and _where_ to. It consists of:
   * (optional) A [StorageProvider](#storageprovider), that represents a "virtual file system" for selecting a SourceStorage
-  * A [SourceStorage](#storage) that may be a file, a database table, an array, an object-tree, etc
+  * (optional) A [SourceStorage](#storage) that may be a file, a database table, an array, an object-tree, etc
   * A [TargetStorage](#storage) that may be a file, a database table, an array, an object-tree, etc
   * A [Mapping](#mapping), which may contain converters, field-mappings, etc
   * A [Validation](#validation), that may contain validation-rules for data read from the SourceStorage and/or validation-rules for data that will be written to the TargetStorage.
   * An [Eventsystem](#eventsystem) for implementing detailed [Logging](#eventsystem) or other interactions within the process.
-* An [Import](#import) is a specific definition of the process. It uses the [Importer](#importer) and has the specific informations that is mandatory for processing the data. That is a SourceStorage, a TargetStorage and a [Mapping](#mapping).
+* An [Import](#import) is a specific definition of the import-process. It uses the [Importer](#importer) and has all the specific informations that is mandatory for processing the data. That is a specific SourceStorage and a [Mapping](#mapping).
 * The [ImportRunner](#importrunner) is used to process the Import.
 * Every run of an Import is represented by an [ImportRun](#importrun)
-
 
 ### StorageProvider
 StorageProviders represents a "virtual file system" for selecting a [SourceStorage](#storage) that can be used as a source or target of the import.
