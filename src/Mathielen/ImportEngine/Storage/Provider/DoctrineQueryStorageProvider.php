@@ -2,6 +2,7 @@
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Storage\DoctrineStorage;
@@ -30,20 +31,25 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
     {
         $this->queries = array();
         foreach ($classNamesOrQueries as $k=>$classNameOrQuery) {
-            if (is_string($classNameOrQuery)) {
-                $queryBuilder = $this->entityManager->createQueryBuilder()
+            if (is_string($classNameOrQuery) && class_exists($classNameOrQuery)) {
+                $query = $this->entityManager->createQueryBuilder()
                     ->select('o')
-                    ->from($classNameOrQuery, 'o');
-                $query = new StorageSelection($queryBuilder, $classNameOrQuery, $classNameOrQuery);
+                    ->from($classNameOrQuery, 'o')
+                    ->getQuery();
+                $selection = new StorageSelection($query, $classNameOrQuery, $classNameOrQuery);
 
-            } elseif ($classNameOrQuery instanceof QueryBuilder) {
-                $query = new StorageSelection($classNameOrQuery, $classNameOrQuery->getDQL(), $classNameOrQuery->getDQL());
+            } elseif (is_string($classNameOrQuery)) {
+                $query = $this->entityManager->createQuery($classNameOrQuery);
+                $selection = new StorageSelection($query, $query->getDQL(), $query->getDQL());
+
+            } elseif ($classNameOrQuery instanceof Query) {
+                $selection = new StorageSelection($classNameOrQuery, $classNameOrQuery->getDQL(), $classNameOrQuery->getDQL());
 
             } else {
                 throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
             }
 
-            $this->queries[$k] = $query;
+            $this->queries[$k] = $selection;
         }
     }
 

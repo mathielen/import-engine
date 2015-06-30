@@ -12,6 +12,7 @@ use Mathielen\ImportEngine\Importer\Importer;
 use Mathielen\ImportEngine\Storage\DoctrineStorage;
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
+use Mathielen\ImportEngine\Storage\StorageInfo;
 use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -55,6 +56,7 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
     {
         $sourceStorage = new LocalFileStorage(new \SplFileInfo(__DIR__ . '/../../../metadata/testfiles/100.csv'), new CsvFormat());
         $targetStorage = new DoctrineStorage(self::$em, 'TestEntities\Address');
+        $this->assertEquals(new StorageInfo(['name'=>'SELECT o FROM TestEntities\Address o', 'count'=>0, 'type'=>'DQL Query']), $targetStorage->info());
 
         $importer = Importer::build($targetStorage);
 
@@ -76,9 +78,11 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, count($entities));
 
         $exportFile = '/tmp/doctrine_test.csv';
-        $sourceStorage = new DoctrineStorage(self::$em, 'TestEntities\Address');
-        $targetStorage = new LocalFileStorage(new  \SplFileInfo($exportFile), new CsvFormat());
+        @unlink($exportFile);
+        $sourceStorage = new DoctrineStorage(self::$em, null, self::$em->createQuery("SELECT A FROM TestEntities\Address A WHERE A.zip LIKE '2%'"));
+        $this->assertEquals(new StorageInfo(['name'=>"SELECT A FROM TestEntities\Address A WHERE A.zip LIKE '2%'", 'count'=>10, 'type'=>'DQL Query']), $sourceStorage->info());
 
+        $targetStorage = new LocalFileStorage(new \SplFileInfo($exportFile), new CsvFormat());
         $importer = Importer::build($targetStorage);
 
         $importConfiguration = new ImportConfiguration();
@@ -92,6 +96,8 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         $importRunner->run($import);
 
         $this->assertFileExists($exportFile);
+        $this->assertEquals(11, count(file($exportFile))); //+header
+        $this->assertEquals(10, $import->getRun()->toArray()['statistics']['processed']);
     }
 
 }

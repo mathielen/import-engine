@@ -1,8 +1,8 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
+use Doctrine\ORM\Query;
 use Mathielen\DataImport\Reader\DoctrineQueryReader;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Ddeboer\DataImport\Writer\DoctrineWriter;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
@@ -16,24 +16,25 @@ class DoctrineStorage implements StorageInterface
     private $entityManager;
 
     /**
-     * @var QueryBuilder
+     * @var Query
      */
-    private $queryBuilder;
+    private $query;
 
     private $entityName;
 
-    public function __construct(EntityManagerInterface $entityManager, $entityName=null, QueryBuilder $queryBuilder=null)
+    public function __construct(EntityManagerInterface $entityManager, $entityName=null, Query $query=null)
     {
         $this->entityManager = $entityManager;
         $this->entityName = $entityName;
 
-        if (is_null($queryBuilder)) {
-            $queryBuilder = $this->entityManager->createQueryBuilder()
+        if (is_null($query) && is_string($entityName) && class_exists($entityName)) {
+            $query = $this->entityManager->createQueryBuilder()
                 ->select('o')
-                ->from($this->entityName, 'o');
+                ->from($this->entityName, 'o')
+                ->getQuery();
         }
 
-        $this->queryBuilder = $queryBuilder;
+        $this->query = $query;
     }
 
     /**
@@ -41,7 +42,7 @@ class DoctrineStorage implements StorageInterface
      */
     public function reader()
     {
-        return new DoctrineQueryReader($this->queryBuilder);
+        return new DoctrineQueryReader($this->query);
     }
 
     /**
@@ -64,7 +65,7 @@ class DoctrineStorage implements StorageInterface
         $count = count($this->reader());
 
         return new StorageInfo(array(
-            'name' => $this->queryBuilder->getDQL(),
+            'name' => $this->query->getDQL(),
             'type' => 'DQL Query',
             'count' => $count
         ));
