@@ -1,10 +1,10 @@
 <?php
 namespace Mathielen\ImportEngine\Storage;
 
+use Ddeboer\DataImport\Writer\DoctrineWriter;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Mathielen\DataImport\Reader\DoctrineQueryReader;
-use Doctrine\ORM\EntityManagerInterface;
-use Ddeboer\DataImport\Writer\DoctrineWriter;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class DoctrineStorage implements StorageInterface
@@ -38,14 +38,6 @@ class DoctrineStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::reader()
-     */
-    public function reader()
-    {
-        return new DoctrineQueryReader($this->query);
-    }
-
-    /**
      * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer()
      */
     public function writer()
@@ -54,7 +46,10 @@ class DoctrineStorage implements StorageInterface
             throw new InvalidConfigurationException("Can only use doctrine for writing if entityName is given.");
         }
 
-        return new DoctrineWriter($this->entityManager, $this->entityName);
+        $writer = new DoctrineWriter($this->entityManager, $this->entityName);
+        $writer->setTruncate(false);
+
+        return $writer;
     }
 
     /**
@@ -69,6 +64,14 @@ class DoctrineStorage implements StorageInterface
             'type' => 'DQL Query',
             'count' => $count
         ));
+    }
+
+    /**
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::reader()
+     */
+    public function reader()
+    {
+        return new DoctrineQueryReader($this->query);
     }
 
     /**
