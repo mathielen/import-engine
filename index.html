@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Import-engine by mathielen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Import-engine</h1>
+      <h2 class="project-tagline">Full-blown importer stack for importing almost any data into your application</h2>
+      <a href="https://github.com/mathielen/import-engine" class="btn">View on GitHub</a>
+      <a href="https://github.com/mathielen/import-engine/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mathielen/import-engine/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="mathielen-import-engine" class="anchor" href="#mathielen-import-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mathielen Import Engine</h1>
+
+<p><a href="https://travis-ci.org/mathielen/import-engine"><img src="https://travis-ci.org/mathielen/import-engine.png?branch=master" alt="Build Status"></a> 
+<a href="https://scrutinizer-ci.com/g/mathielen/import-engine/"><img src="https://scrutinizer-ci.com/g/mathielen/import-engine/badges/quality-score.png?s=c0a55ac5381a3f8fdacd95eeacc5e5ad8926695f" alt="Scrutinizer Code Quality"></a>
+<a href="https://scrutinizer-ci.com/g/mathielen/import-engine/"><img src="https://scrutinizer-ci.com/g/mathielen/import-engine/badges/coverage.png?s=5f083d5500d3ec956d5fc86a8570a97e2bb9c6dd" alt="Code Coverage"></a>
+<a href="https://insight.sensiolabs.com/projects/985f7541-2ef9-4b92-98d3-8cf7f4144e74"><img src="https://insight.sensiolabs.com/projects/985f7541-2ef9-4b92-98d3-8cf7f4144e74/mini.png" alt="SensioLabsInsight"></a>
+<a href="https://packagist.org/packages/mathielen/import-engine"><img src="https://poser.pugx.org/mathielen/import-engine/v/stable.png" alt="Latest Stable Version"></a></p>
+
+<p>Full-blown importer stack for importing almost any data into your application. Can be used for exports, too.</p>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>This library implements some high-level functionality based on the great <a href="https://github.com/ddeboer/data-import">Ddeboer Data Import library</a>.
+As the Data-Import library offers a great toolkit to implement a data import/export process in a quick and clean way, there is still a lot of work to do to have a full blown importer set up for your application. This library helps you with that.</p>
+
+<p>If you are developing a Symfony2 project, you may want to use the comfortable configuration of the <a href="https://github.com/mathielen/ImportEngineBundle">ImportEngineBundle</a>.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>A Storage Abstraction-layer that supports nice features like <a href="#automatic-csv-delimiter-discovery-for-filestorageproviders">automatic delimiter-discovering</a> or processing compressed files. Currently these storages are supported:
+
+<ul>
+<li>Structured Files
+
+<ul>
+<li>CSV, XML, JSON, Excel</li>
+<li>File may be compressed</li>
+</ul>
+</li>
+<li>Doctrine2 queries</li>
+<li>Service endpoints</li>
+</ul>
+</li>
+<li>Storage Provisioning. Provide a list of possible storage-containers for your import. I.e. local files, remote files, uploaded files, database connections, service endpoints and more.</li>
+<li>A mapping sub-system, for building various mappings for your import: field-field, field-converter-field, field-converter-object and more.</li>
+<li>Automatic mapping into object tree's using the <a href="http://jmsyst.com/libs/serializer">JMSSerializer</a>
+</li>
+<li>Source (read) and Target (write) validation using <a href="http://symfony.com/doc/current/book/validation.html">Symfony Validation</a>. Annotations can be used.</li>
+<li>Integrated Eventsystem using <a href="http://symfony.com/doc/current/components/event_dispatcher/introduction.html">Symfony EventDispatcher</a>
+</li>
+<li>Keeping almost every flexibility that is offered by the Ddeboer Data Import library.</li>
+<li>Well-tested code.</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>This library is available on <a href="https://packagist.org/packages/mathielen/import-engine">Packagist</a>.
+The recommended way to install it is through <a href="http://getcomposer.org">Composer</a>:</p>
+
+<div class="highlight highlight-bash"><pre>$ composer require mathielen/import-engine</pre></div>
+
+<p>Then include Composer’s autoloader:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">require_once</span> <span class="pl-s"><span class="pl-pds">'</span>vendor/autoload.php<span class="pl-pds">'</span></span>;</span></pre></div>
+
+<h2>
+<a id="quickstart" class="anchor" href="#quickstart" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quickstart</h2>
+
+<h4>
+<a id="import-an-arbitrary-file-into-your-system" class="anchor" href="#import-an-arbitrary-file-into-your-system" aria-hidden="true"><span class="octicon octicon-link"></span></a>Import an arbitrary file into your system</h4>
+
+<p>Using the *Provider facilities enables you to let the importer-system figure out what format the file has and what abstraction-classes should be used. </p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$service</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TestEntities\</span><span class="pl-c1">Dummy</span>(); <span class="pl-c">//your domain service</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$fileStorageProvider</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Provider\</span><span class="pl-c1">FileStorageProvider</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$storageSelection</span> <span class="pl-k">=</span> <span class="pl-smi">$fileStorageProvider</span><span class="pl-k">-&gt;</span>select(<span class="pl-s"><span class="pl-pds">'</span>tests/metadata/testfiles/flatdata.csv<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$sourceStorage</span> <span class="pl-k">=</span> <span class="pl-smi">$fileStorageProvider</span><span class="pl-k">-&gt;</span>storage(<span class="pl-smi">$storageSelection</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$targetStorage</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\</span><span class="pl-c1">ServiceStorage</span>(<span class="pl-c1">array</span>(<span class="pl-smi">$service</span>, <span class="pl-s"><span class="pl-pds">'</span>onNewData<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1"><span class="pl-smi">$importer</span> <span class="pl-k">=</span> <span class="pl-c1">Mathielen\ImportEngine\Importer\</span><span class="pl-c1">Importer</span><span class="pl-k">::</span>build(<span class="pl-smi">$targetStorage</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-c1">Mathielen\ImportEngine\Import\</span><span class="pl-c1">Import</span><span class="pl-k">::</span>build(<span class="pl-smi">$importer</span>, <span class="pl-smi">$sourceStorage</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Run\</span><span class="pl-c1">ImportRunner</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span><span class="pl-k">-&gt;</span>run(<span class="pl-smi">$import</span>);</span></pre></div>
+
+<h4>
+<a id="more-examples" class="anchor" href="#more-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>More examples</h4>
+
+<p>Have a look at: <a href="https://github.com/mathielen/import-engine/tree/master/tests/functional/Mathielen/ImportEngine">https://github.com/mathielen/import-engine/tree/master/tests/functional/Mathielen/ImportEngine</a></p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="terminology" class="anchor" href="#terminology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terminology</h3>
+
+<ul>
+<li>An <a href="#importer">Importer</a> is the basic definition of the whole import-process. It says <em>what</em> may be imported and <em>where</em> to. It consists of:
+
+<ul>
+<li>(optional) A <a href="#storageprovider">StorageProvider</a>, that represents a "virtual file system" for selecting a SourceStorage</li>
+<li>(optional) A <a href="#storage">SourceStorage</a> that may be a file, a database table, an array, an object-tree, etc</li>
+<li>A <a href="#storage">TargetStorage</a> that may be a file, a database table, an array, an object-tree, etc</li>
+<li>A <a href="#mapping">Mapping</a>, which may contain converters, field-mappings, etc</li>
+<li>A <a href="#validation">Validation</a>, that may contain validation-rules for data read from the SourceStorage and/or validation-rules for data that will be written to the TargetStorage.</li>
+<li>An <a href="#eventsystem">Eventsystem</a> for implementing detailed <a href="#eventsystem">Logging</a> or other interactions within the process.</li>
+</ul>
+</li>
+<li>An <a href="#import">Import</a> is a specific definition of the import-process. It uses the <a href="#importer">Importer</a> and has all the specific informations that is mandatory for processing the data. That is a specific SourceStorage and a <a href="#mapping">Mapping</a>.</li>
+<li>The <a href="#importrunner">ImportRunner</a> is used to process the Import.</li>
+<li>Every run of an Import is represented by an <a href="#importrun">ImportRun</a>
+</li>
+</ul>
+
+<h3>
+<a id="storageprovider" class="anchor" href="#storageprovider" aria-hidden="true"><span class="octicon octicon-link"></span></a>StorageProvider</h3>
+
+<p>StorageProviders represents a "virtual file system" for selecting a <a href="#storage">SourceStorage</a> that can be used as a source or target of the import.</p>
+
+<h4>
+<a id="finderfilestorageprovider" class="anchor" href="#finderfilestorageprovider" aria-hidden="true"><span class="octicon octicon-link"></span></a>FinderFileStorageProvider</h4>
+
+<p>Using the <a href="http://symfony.com/doc/current/components/finder.html">Symfony Finder Component</a> as a collection of possible files that can be imported.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Symfony\Component\Finder\Finder</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Provider\FinderFileStorageProvider</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$finder</span> <span class="pl-k">=</span> <span class="pl-c1">Finder</span><span class="pl-k">::</span>create()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>in(<span class="pl-s"><span class="pl-pds">'</span>tests/metadata/testfiles<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>name(<span class="pl-s"><span class="pl-pds">'</span>*.csv<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>name(<span class="pl-s"><span class="pl-pds">'</span>*.tab<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>size(<span class="pl-s"><span class="pl-pds">'</span>&gt;0K<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$ffsp</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">FinderFileStorageProvider</span>(<span class="pl-smi">$finder</span>);</span></pre></div>
+
+<h4>
+<a id="doctrinequerystorageprovider" class="anchor" href="#doctrinequerystorageprovider" aria-hidden="true"><span class="octicon octicon-link"></span></a>DoctrineQueryStorageProvider</h4>
+
+<p>You can use specific Doctrine Queries or only Entity-Classnames (the query will be SELECT * FROM  then) as possible Source-Storages.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Symfony\Component\Finder\Finder</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Provider\DoctrineQueryStorageProvider</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$em</span> <span class="pl-k">=</span> <span class="pl-k">...</span> <span class="pl-c">//Doctrine2 EntityManager</span></span>
+<span class="pl-s1"><span class="pl-smi">$qb</span> <span class="pl-k">=</span> <span class="pl-smi">$em</span><span class="pl-k">-&gt;</span>createQueryBuilder()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>select(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>from(<span class="pl-s"><span class="pl-pds">'</span>MySystem\Entity\Address<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>andWhere(<span class="pl-s"><span class="pl-pds">'</span>a.id &gt; 10<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queries</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">  <span class="pl-s"><span class="pl-pds">'</span>MySystem/Entity/MyEntity<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">  <span class="pl-smi">$qb</span></span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$desp</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DoctrineQueryStorageProvider</span>(<span class="pl-smi">$em</span>, <span class="pl-smi">$queries</span>);</span></pre></div>
+
+<h4>
+<a id="uploadfilestorageprovider" class="anchor" href="#uploadfilestorageprovider" aria-hidden="true"><span class="octicon octicon-link"></span></a>UploadFileStorageProvider</h4>
+
+<p>You can use a Provider to facilitate a File-Upload.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Provider\UploadFileStorageProvider</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$ufsp</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">UploadFileStorageProvider</span>(<span class="pl-s"><span class="pl-pds">'</span>/tmp<span class="pl-pds">'</span></span>); <span class="pl-c">//path to where the uploaded files will be transferred to</span></span></pre></div>
+
+<h4>
+<a id="automatic-csv-delimiter-discovery-for-filestorageproviders" class="anchor" href="#automatic-csv-delimiter-discovery-for-filestorageproviders" aria-hidden="true"><span class="octicon octicon-link"></span></a>Automatic CSV Delimiter Discovery for FileStorageProviders</h4>
+
+<p>FileStorageProviders may use StorageFactories for constructing Storage objects. By default the FormatDiscoverLocalFileStorageFactory is used. This StorageFactory uses a MimeTypeDiscoverStrategy to determine the mime-type of the selected file and use it to create the correct storage-handler. You can change this behavior or extend it. There is a CsvAutoDelimiterTypeFactory that you can use to automaticly guess the correct delimiter of a CSV file.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Format\Factory\CsvAutoDelimiterFormatFactory</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Factory\FormatDiscoverLocalFileStorageFactory</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Format\Discovery\MimeTypeDiscoverStrategy</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$ffsp</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-smi">$ffsp</span><span class="pl-k">-&gt;</span>setStorageFactory(</span>
+<span class="pl-s1">  <span class="pl-k">new</span> <span class="pl-c1">FormatDiscoverLocalFileStorageFactory</span>(</span>
+<span class="pl-s1">    <span class="pl-k">new</span> <span class="pl-c1">MimeTypeDiscoverStrategy</span>(<span class="pl-c1">array</span>(</span>
+<span class="pl-s1">      <span class="pl-s"><span class="pl-pds">'</span>text/plain<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-k">new</span> <span class="pl-c1">CsvAutoDelimiterFormatFactory</span>()</span>
+<span class="pl-s1">))));</span></pre></div>
+
+<p>This way any file that has the text/plain mime-type will be passed to the CsvAutoDelimiterFormatFactory to determine the delimiter.</p>
+
+<h3>
+<a id="storage" class="anchor" href="#storage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Storage</h3>
+
+<p>A storage is a container of data. Storages provide a reader and writer implementation for itself.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\ArrayStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\DoctrineStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\LocalFileStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Format\CsvFormat</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$em</span> <span class="pl-k">=</span> <span class="pl-k">...</span> <span class="pl-c">//Doctrine2 EntityManager</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$array</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$storage</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ArrayStorage</span>(<span class="pl-smi">$array</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$storage</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DoctrineStorage</span>(<span class="pl-smi">$em</span>, <span class="pl-s"><span class="pl-pds">'</span>MyEntities\Entity<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$storage</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">LocalFileStorage</span>(<span class="pl-s"><span class="pl-pds">'</span>tests/metadata/testfiles/flatdata.csv<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-c1">CsvFormat</span>());</span>
+<span class="pl-s1"><span class="pl-smi">$storage</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ServiceStorage</span>(<span class="pl-c1">array</span>(<span class="pl-smi">$service</span>, <span class="pl-s"><span class="pl-pds">'</span>myMethod<span class="pl-pds">'</span></span>)); <span class="pl-c">//callable</span></span></pre></div>
+
+<h3>
+<a id="validation" class="anchor" href="#validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Validation</h3>
+
+<p>You can get the source and target validation errors with:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-smi">$import</span><span class="pl-k">-&gt;</span>importer()<span class="pl-k">-&gt;</span>validation()<span class="pl-k">-&gt;</span>getViolations();</span></pre></div>
+
+<h4>
+<a id="source-data-validation" class="anchor" href="#source-data-validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Source data validation</h4>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Validation\ValidatorValidation</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\DataImport\Filter\ClassValidatorFilter</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Symfony\Component\Validator\Constraints\NotBlank</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Symfony\Component\Validator\Constraints\Regex</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validator</span> <span class="pl-k">=</span> <span class="pl-k">...</span> <span class="pl-c">//Symfony Validator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validation</span> <span class="pl-k">=</span> <span class="pl-c1">ValidatorValidation</span><span class="pl-k">::</span>build(<span class="pl-smi">$validator</span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>addSourceConstraint(<span class="pl-s"><span class="pl-pds">'</span>salutation<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-c1">NotBlank</span>()) <span class="pl-c">//source field 'salutation' should not be empty</span></span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>addSourceConstraint(<span class="pl-s"><span class="pl-pds">'</span>zipcode<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-c1">Regex</span>(<span class="pl-sr"><span class="pl-pds">"/</span><span class="pl-pds">[0-9]</span><span class="pl-sra">{5}</span><span class="pl-pds">/"</span></span>)) <span class="pl-c">//source field 'zipcode' should be 5 digits</span></span>
+<span class="pl-s1">;</span></pre></div>
+
+<h4>
+<a id="target-data-validation" class="anchor" href="#target-data-validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Target data Validation</h4>
+
+<h5>
+<a id="classvalidatorfilter" class="anchor" href="#classvalidatorfilter" aria-hidden="true"><span class="octicon octicon-link"></span></a>ClassValidatorFilter</h5>
+
+<p>You can use the ClassValidatorFilter to map the data to an object-tree and validate the objects (using annotations, or <a href="http://symfony.com/doc/current/book/validation.html#constraint-configuration">differently configurated validation rules</a>). Therefore you must provide an ObjectFactory. There is a JmsSerializerObjectFactory you may want to use.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Validation\ValidatorValidation</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\DataImport\Filter\ClassValidatorFilter</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\DataImport\Writer\ObjectWriter\JmsSerializerObjectFactory</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validator</span> <span class="pl-k">=</span> <span class="pl-k">...</span> <span class="pl-c">//Symfony Validator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$jms_serializer</span> <span class="pl-k">=</span> <span class="pl-k">...</span> </span>
+<span class="pl-s1"><span class="pl-smi">$objectFactory</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">JmsSerializerObjectFactory</span>(</span>
+<span class="pl-s1">  <span class="pl-s"><span class="pl-pds">'</span>Entity\Address<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">  <span class="pl-smi">$jms_serializer</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validation</span> <span class="pl-k">=</span> <span class="pl-c1">ValidatorValidation</span><span class="pl-k">::</span>build(<span class="pl-smi">$validator</span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>setTargetValidatorFilter(<span class="pl-k">new</span> <span class="pl-c1">ClassValidatorFilter</span>(<span class="pl-smi">$validator</span>, <span class="pl-smi">$objectFactory</span>));</span></pre></div>
+
+<h3>
+<a id="importer" class="anchor" href="#importer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Importer</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Importer\Importer</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\ArrayStorage</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$ffsp</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-smi">$validation</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-smi">$targetStorage</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$array</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$importer</span> <span class="pl-k">=</span> <span class="pl-c1">Importer</span><span class="pl-k">::</span>build(<span class="pl-smi">$targetStorage</span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>setSourceStorage(<span class="pl-k">new</span> <span class="pl-c1">ArrayStorage</span>(<span class="pl-smi">$array</span>))</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>validation(<span class="pl-smi">$validation</span>)</span>
+<span class="pl-s1">;</span></pre></div>
+
+<h3>
+<a id="import--source-storage" class="anchor" href="#import--source-storage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Import / Source Storage</h3>
+
+<p>You can either use a StorageProvider (see above) and set the selection-id or you can use a specific Storage-Handler directly:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\ArrayStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\LocalFileStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Import</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Importer\Importer</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Format\CsvFormat</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$targetArray</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$importer</span> <span class="pl-k">=</span> <span class="pl-c1">Importer</span><span class="pl-k">::</span>build(<span class="pl-k">new</span> <span class="pl-c1">ArrayStorage</span>(<span class="pl-smi">$targetArray</span>));</span>
+<span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-c1">Import</span><span class="pl-k">::</span>build(</span>
+<span class="pl-s1">    <span class="pl-smi">$importer</span>,</span>
+<span class="pl-s1">    <span class="pl-k">new</span> <span class="pl-c1">LocalFileStorage</span>(<span class="pl-k">new</span> <span class="pl-c1">\SplFileObject</span>(<span class="pl-c1">__DIR__</span> <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>/../../../metadata/testfiles/flatdata.csv<span class="pl-pds">'</span></span>), <span class="pl-k">new</span> <span class="pl-c1">CsvFormat</span>())</span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"></span></pre></div>
+
+<h3>
+<a id="mapping" class="anchor" href="#mapping" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mapping</h3>
+
+<p>Also see orginal documentation <a href="https://github.com/ddeboer/data-import#mappingitemconverter">here</a>.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-k">...</span> </span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$import</span><span class="pl-k">-&gt;</span>mappings()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>fooloo<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>baz<span class="pl-pds">'</span></span>, <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>some<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>else<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">;</span></pre></div>
+
+<h3>
+<a id="converting-fields" class="anchor" href="#converting-fields" aria-hidden="true"><span class="octicon octicon-link"></span></a>Converting fields</h3>
+
+<p>There are a some field-level build-in converters available:</p>
+
+<ul>
+<li>upperCase</li>
+<li>lowerCase</li>
+<li><a href="https://github.com/TODO" class="user-mention">@TODO</a></li>
+</ul>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$import</span><span class="pl-k">-&gt;</span>mappings()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>SALUTATION_FIELD<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>salutation<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>upperCase<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">;</span></pre></div>
+
+<h3>
+<a id="custom-fieldlevel-converting" class="anchor" href="#custom-fieldlevel-converting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Custom fieldlevel-converting</h3>
+
+<p>You have to register more complex converters to the importer for selecting them in your import.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Ddeboer\DataImport\ValueConverter\CallbackValueConverter</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Import</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\ArrayStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Importer\Importer</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$converterProvider</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DefaultConverterProvider</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$converterProvider</span></span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>salutationToGender<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-c1">CallbackValueConverter</span>(<span class="pl-k">function</span> (<span class="pl-smi">$item</span>) {</span>
+<span class="pl-s1">      <span class="pl-k">switch</span> (<span class="pl-smi">$item</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">'</span>Mr.<span class="pl-pds">'</span></span>: <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>male<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">        <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">'</span>Miss<span class="pl-pds">'</span></span>:</span>
+<span class="pl-s1">        <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">'</span>Mrs.<span class="pl-pds">'</span></span>: <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>femaile<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">      }</span>
+<span class="pl-s1">  }));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$targetStorage</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$importer</span> <span class="pl-k">=</span> <span class="pl-c1">Importer</span><span class="pl-k">::</span>build(<span class="pl-smi">$targetStorage</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$importer</span></span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>transformation()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>setConverterProvider(<span class="pl-smi">$converterProvider</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$array</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-c1">Import</span><span class="pl-k">::</span>build(<span class="pl-smi">$importer</span>, <span class="pl-k">new</span> <span class="pl-c1">ArrayStorage</span>(<span class="pl-smi">$array</span>))</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>mappings()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>salutation<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>gender<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>salutationToGender<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">;</span></pre></div>
+
+<h3>
+<a id="custom-rowlevel-converting" class="anchor" href="#custom-rowlevel-converting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Custom rowlevel-converting</h3>
+
+<p>Like the fieldlevel converters, you have to register your converters first.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Ddeboer\DataImport\ItemConverter\CallbackItemConverter</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Import</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\ArrayStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Importer\Importer</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$converterProvider</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DefaultConverterProvider</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$converterProvider</span></span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>splitNames<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-c1">CallbackItemConverter</span>(<span class="pl-k">function</span> (<span class="pl-smi">$item</span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">list</span>(<span class="pl-smi">$firstname</span>, <span class="pl-smi">$lastname</span>) <span class="pl-k">=</span> <span class="pl-c1">explode</span>(<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>, <span class="pl-smi">$item</span>[<span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">      <span class="pl-smi">$item</span>[<span class="pl-s"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>] <span class="pl-k">=</span> <span class="pl-smi">$firstname</span>;</span>
+<span class="pl-s1">      <span class="pl-smi">$item</span>[<span class="pl-s"><span class="pl-pds">'</span>lastname<span class="pl-pds">'</span></span>] <span class="pl-k">=</span> <span class="pl-smi">$lastname</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">      <span class="pl-k">return</span> <span class="pl-smi">$item</span>;</span>
+<span class="pl-s1">  }));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$targetStorage</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$importer</span> <span class="pl-k">=</span> <span class="pl-c1">Importer</span><span class="pl-k">::</span>build(<span class="pl-smi">$targetStorage</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$importer</span></span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>transformation()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>setConverterProvider(<span class="pl-smi">$converterProvider</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$array</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-c1">Import</span><span class="pl-k">::</span>build(<span class="pl-smi">$importer</span>, <span class="pl-k">new</span> <span class="pl-c1">ArrayStorage</span>(<span class="pl-smi">$array</span>))</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>mappings()</span>
+<span class="pl-s1">  <span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>fullname<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span>, <span class="pl-s"><span class="pl-pds">'</span>splitNames<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">;</span></pre></div>
+
+<h3>
+<a id="importrunner" class="anchor" href="#importrunner" aria-hidden="true"><span class="octicon octicon-link"></span></a>ImportRunner</h3>
+
+<p>For running a configured Import you need an ImportRunner. Internally the ImportRunner builds a workflow and runs it.
+You can change the way how the workflow is built by supplying a different WorkflowFactory.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Symfony\Component\EventDispatcher\EventDispatcher</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Run\ImportRunner</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\ValueObject\ImportConfiguration</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\LocalFileStorage</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Storage\Format\CsvFormat</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Importer\ImporterRepository</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ImportRunner</span>(<span class="pl-k">new</span> <span class="pl-c1">DefaultWorkflowFactory</span>(<span class="pl-k">new</span> <span class="pl-c1">EventDispatcher</span>()));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">//sneak peak a row</span></span>
+<span class="pl-s1"><span class="pl-smi">$previewData</span> <span class="pl-k">=</span> <span class="pl-smi">$importRunner</span><span class="pl-k">-&gt;</span>preview(<span class="pl-smi">$import</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">//dont really write, just validate</span></span>
+<span class="pl-s1"><span class="pl-smi">$importRun</span> <span class="pl-k">=</span> <span class="pl-smi">$importRunner</span><span class="pl-k">-&gt;</span>dryRun(<span class="pl-smi">$import</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">//do the import</span></span>
+<span class="pl-s1"><span class="pl-smi">$importRun</span> <span class="pl-k">=</span> <span class="pl-smi">$importRunner</span><span class="pl-k">-&gt;</span>run(<span class="pl-smi">$import</span>);</span></pre></div>
+
+<h3>
+<a id="importrun-statistics" class="anchor" href="#importrun-statistics" aria-hidden="true"><span class="octicon octicon-link"></span></a>ImportRun statistics</h3>
+
+<p>If you use the DefaultWorkflowFactory with your ImportRunner you get basic statistics from dryRun() and run() invocations.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$importRun</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span><span class="pl-k">-&gt;</span>dryRun(<span class="pl-smi">$import</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$stats</span> <span class="pl-k">=</span> <span class="pl-smi">$importRun</span><span class="pl-k">-&gt;</span>getStatistics();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">Array</span></span>
+<span class="pl-s1"><span class="pl-c">(</span></span>
+<span class="pl-s1"><span class="pl-c">    [processed] =&gt; 1</span></span>
+<span class="pl-s1"><span class="pl-c">    [written] =&gt; 1</span></span>
+<span class="pl-s1"><span class="pl-c">    [skipped] =&gt; 0</span></span>
+<span class="pl-s1"><span class="pl-c">    [invalid] =&gt; 0</span></span>
+<span class="pl-s1"><span class="pl-c">)</span></span>
+<span class="pl-s1"><span class="pl-c">*/</span></span></pre></div>
+
+<h3>
+<a id="eventsystem" class="anchor" href="#eventsystem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Eventsystem</h3>
+
+<p>You can interact with the running import via the <a href="http://symfony.com/doc/current/components/event_dispatcher/introduction.html">Symfony Eventdispatcher</a>.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Symfony\Component\EventDispatcher\EventDispatcher</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Run\ImportRunner</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\DataImport\Event\ImportProcessEvent</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\DataImport\Event\ImportItemEvent</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$myListener</span> <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-smi">$event</span>) {</span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$event</span> <span class="pl-k">instanceof</span> <span class="pl-c1">ImportItemEvent</span>) {</span>
+<span class="pl-s1">        <span class="pl-smi">$currentResult</span> <span class="pl-k">=</span> <span class="pl-smi">$event</span><span class="pl-k">-&gt;</span>getCurrentResult(); <span class="pl-c">//readonly access to current result in the process (might be false)</span></span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">};</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">EventDispatcher</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportProcessEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_PREPARE</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportItemEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_READ</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportItemEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_FILTER</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportItemEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_CONVERSION</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportItemEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_CONVERSIONFILTER</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportItemEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_VALIDATION</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportItemEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_WRITE</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$eventDispatcher</span><span class="pl-k">-&gt;</span>addListener(<span class="pl-c1">ImportProcessEvent</span><span class="pl-k">::</span><span class="pl-c1">AFTER_FINISH</span>, <span class="pl-smi">$myListener</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$workflowFactory</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DefaultWorkflowFactory</span>(<span class="pl-smi">$eventDispatcher</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ImportRunner</span>(<span class="pl-smi">$workflowFactory</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$import</span> <span class="pl-k">=</span> <span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-smi">$importRunner</span><span class="pl-k">-&gt;</span>run(<span class="pl-smi">$import</span>);</span></pre></div>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Import-Engine is released under the MIT license. See the <a href="LICENSE">LICENSE</a> file for details.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mathielen/import-engine">Import-engine</a> is maintained by <a href="https://github.com/mathielen">mathielen</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
