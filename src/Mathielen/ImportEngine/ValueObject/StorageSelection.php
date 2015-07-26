@@ -68,7 +68,7 @@ class StorageSelection
         if (is_array($this->impl) && isset($this->impl['class'])) {
             $reflectionClass = new \ReflectionClass($this->impl['class']);
 
-            return $reflectionClass->newInstanceArgs(@$this->impl['args']);
+            return $reflectionClass->newInstanceArgs(isset($this->impl['args'])?$this->impl['args']:null);
         }
 
         return $this->impl;

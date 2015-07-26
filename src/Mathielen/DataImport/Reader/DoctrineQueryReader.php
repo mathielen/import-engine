@@ -50,13 +50,10 @@ class DoctrineQueryReader extends DoctrineReader
      */
     public function count()
     {
-        $dql = $this->query->getDQL();
-        $dql = 'SELECT COUNT(0) FROM' . substr($dql, strpos($dql, 'FROM')+4);
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($this->query);
+        $totalRows = count($paginator);
 
-        $countQuery = clone $this->query;
-        $countQuery->setDQL($dql);
-
-        return $countQuery->getSingleScalarResult();
+        return $totalRows;
     }
 
 }

@@ -1,5 +1,6 @@
 <?php
 namespace Mathielen\DataImport\Writer;
+use Ddeboer\DataImport\Exception\WriterException;
 
 /**
  * Writes data to a given service
@@ -24,7 +25,11 @@ class ServiceWriter extends ObjectWriter
 
     protected function write($objectOrItem)
     {
-        return call_user_func_array($this->callable, array($objectOrItem));
+        try {
+            return call_user_func_array($this->callable, array($objectOrItem));
+        } catch (\Exception $e) {
+            throw new WriterException("Could not write item: ".print_r($objectOrItem, true), 0, $e);
+        }
     }
 
 }

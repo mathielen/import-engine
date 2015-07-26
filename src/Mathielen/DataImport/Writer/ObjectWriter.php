@@ -32,14 +32,12 @@ class ObjectWriter implements WriterInterface
 
     public function setObjectFactory($classOrObjectFactory)
     {
-        if (empty($classOrObjectFactory)) {
-            throw new \InvalidArgumentException("classOrObjectFactory must not be empty");
-        }
-
         if (is_object($classOrObjectFactory) && $classOrObjectFactory instanceof ObjectFactoryInterface) {
             $objectFactory = $classOrObjectFactory;
         } elseif (is_string($classOrObjectFactory)) {
             $objectFactory = new DefaultObjectFactory($classOrObjectFactory);
+        } else {
+            throw new \InvalidArgumentException("classOrObjectFactory must not be empty");
         }
 
         $this->objectFactory = $objectFactory;

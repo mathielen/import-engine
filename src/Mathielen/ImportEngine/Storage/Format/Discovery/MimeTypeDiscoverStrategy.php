@@ -35,7 +35,7 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
     public function getFormat(StorageSelection $selection)
     {
         $mimeType = $this->mimetypeDiscoverer->discoverMimeType($selection->getId());
-        @list($mimeType, $subInformation) = explode(' ', $mimeType);
+        list($mimeType, $subInformation) = array_pad(explode(' ', $mimeType), 2, null);
 
         $type = $this->mimeTypeToFormat($mimeType, $selection->getId(), $subInformation);
 

@@ -53,8 +53,5 @@
     "symfony/dependency-injection": ">=2.2",
     "symfony/validator": "~2.3.0",
     "fzaninotto/faker": "*"
-  },
-  "suggest": {
-    "nuovo/spreadsheet-reader": "If you want to use the SpreadsheetReader"
   }
 }
