@@ -19,7 +19,8 @@ class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
 
     public function guessDelimiter($line)
     {
-        $specialCharString = preg_replace('/[a-z0-9éâëïüÿçêîôûéäöüß \n\r"]/iu', '', $line);
+        $specialCharString = preg_replace('/[a-z0-9éâëïüÿçêîôûéäöüß\n\r"]/iu', '', $line);
+
         $charStats = count_chars($specialCharString, 1);
 
         if (empty($charStats)) {
