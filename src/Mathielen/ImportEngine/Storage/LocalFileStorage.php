@@ -165,12 +165,13 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
     public function info()
     {
         if (!isset($this->info)) {
+            $fileExists = $this->file->isReadable();
             $this->info = new StorageInfo(array(
                 'name' => $this->file->getFilename(),
-                'hash' => $this->getHash(),
+                'hash' => $fileExists?$this->getHash():null,
                 'format' => $this->getFormat(),
-                'size' => $this->file->getSize(),
-                'count' => count($this->reader())
+                'size' => $fileExists?$this->file->getSize():0,
+                'count' => $fileExists?count($this->reader()):0
             ));
         }
 

@@ -10,6 +10,7 @@ use Mathielen\ImportEngine\Storage\Format\ExcelFormat;
 use Mathielen\ImportEngine\Storage\Format\Format;
 use Mathielen\ImportEngine\Storage\Format\XmlFormat;
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
+use Mathielen\ImportEngine\Storage\StorageInfo;
 use Mathielen\ImportEngine\ValueObject\ImportConfiguration;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 
@@ -31,6 +32,14 @@ class LocalFileTest extends \PHPUnit_Framework_TestCase
 
         $sourceStorage = new LocalFileStorage(new \SplFileInfo($sourceFile), $format);
         $targetStorage = new LocalFileStorage(new \SplFileInfo($targetFile), $targetFormat);
+
+        $this->assertEquals(new StorageInfo(array(
+            'name' => basename($targetFile),
+            'hash' => null,
+            'format' => $targetFormat,
+            'size' => 0,
+            'count' => 0
+        )), $targetStorage->info());
 
         $importer = Importer::build($targetStorage);
 
