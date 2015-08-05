@@ -79,18 +79,27 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
         );
     }
 
-    public function getFields()
-    {
-        return $this->reader()->getFields();
-    }
-
     public function reader()
     {
         if (!$this->reader) {
+            if (!$this->isReadable()) {
+                throw new InvalidConfigurationException('Cannot read from file '.$this->file);
+            }
+
             $this->reader = $this->formatToReader($this->format, $this->file);
         }
 
         return $this->reader;
+    }
+
+    public function isReadable()
+    {
+        return $this->file->isReadable() && $this->file->getSize() > 0;
+    }
+
+    public function isWritable()
+    {
+        return is_writable(dirname($this->file));
     }
 
     private function formatToReader(Format $format, \SplFileInfo $file)
@@ -127,9 +136,31 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
         return $reader;
     }
 
+    public function getFields()
+    {
+        if (!$this->isReadable()) {
+            throw new InvalidConfigurationException("Cannot read from file ".$this->file);
+        }
+
+        return $this->reader()->getFields();
+    }
+
+    public function getHash()
+    {
+        if (!$this->isReadable()) {
+            throw new InvalidConfigurationException("Cannot read from file ".$this->file);
+        }
+
+        return md5_file($this->file->getRealPath());
+    }
+
     public function writer()
     {
         if (!$this->writer) {
+            if (!$this->isWritable()) {
+                throw new InvalidConfigurationException('Cannot write to file '.$this->file);
+            }
+
             $this->writer = $this->formatToWriter($this->format, $this->file);
         }
 
@@ -157,21 +188,15 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
         return $writer;
     }
 
-    public function getHash()
-    {
-        return md5_file($this->file->getRealPath());
-    }
-
     public function info()
     {
         if (!isset($this->info)) {
-            $fileExists = $this->file->isReadable();
             $this->info = new StorageInfo(array(
                 'name' => $this->file->getFilename(),
-                'hash' => $fileExists?$this->getHash():null,
+                'hash' => $this->isReadable()?$this->getHash():null,
                 'format' => $this->getFormat(),
-                'size' => $fileExists?$this->file->getSize():0,
-                'count' => $fileExists?count($this->reader()):0
+                'size' => $this->isReadable()?$this->file->getSize():0,
+                'count' => $this->isReadable()?count($this->reader()):0
             ));
         }
 
