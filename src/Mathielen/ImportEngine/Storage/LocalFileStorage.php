@@ -52,6 +52,17 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
         $this->format = $format;
     }
 
+    /**
+     * @return \SplFileInfo
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @return Format
+     */
     public function getFormat()
     {
         return $this->format;
