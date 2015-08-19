@@ -51,7 +51,6 @@
     "doctrine/orm": "*",
     "symfony/console": ">=2.2",
     "symfony/dependency-injection": ">=2.2",
-    "symfony/validator": "~2.3.0",
-    "fzaninotto/faker": "*"
+    "symfony/validator": "~2.3.0"
   }
 }

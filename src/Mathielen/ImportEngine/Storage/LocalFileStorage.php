@@ -3,7 +3,7 @@ namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\ArrayReader;
 use Ddeboer\DataImport\Reader\CsvReader;
-use Ddeboer\DataImport\Reader\ExcelReader;
+use Mathielen\DataImport\Reader\ExcelReader;
 use Ddeboer\DataImport\Reader\ReaderInterface;
 use Mathielen\DataImport\Writer\CsvWriter;
 use Mathielen\DataImport\Writer\ExcelWriter;
