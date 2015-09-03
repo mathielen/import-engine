@@ -44,17 +44,18 @@ class ImportRunner
     {
         $e = null;
         $importRun = null;
+
         if ($this->eventDispatcher && $importRun = $import->getRun()) {
             $e = new ImportProcessEvent($import);
         }
 
-        if ($e) {
+        if ($e && $importRun->getConfiguration()) {
             $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE.'.'.$importRun->getConfiguration()->getImporterId(), $e);
         }
 
         $workflow->process();
 
-        if ($e) {
+        if ($e && $importRun->getConfiguration()) {
             $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH.'.'.$importRun->getConfiguration()->getImporterId(), $e);
         }
     }
