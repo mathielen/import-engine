@@ -46,7 +46,7 @@ class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
             }
 
             if ($this->logger) {
-                $this->logger->info("File $file was discovered as format '$format''");
+                $this->logger->info("File $file was discovered as format '$format'");
             }
         }
 

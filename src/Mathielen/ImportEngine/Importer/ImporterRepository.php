@@ -36,6 +36,16 @@ class ImporterRepository
         }
     }
 
+    public function getIds()
+    {
+        return array_keys($this->importers);
+    }
+
+    public function hasPrecondition($id)
+    {
+        return isset($this->preconditions[$id]);
+    }
+
     /**
      * @return Importer
      */
