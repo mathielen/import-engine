@@ -109,6 +109,8 @@ class Mappings extends \ArrayObject
                     $workflow->addValueConverter($targetField, $converter);
                 } elseif ($converter instanceof ItemConverterInterface) {
                     $workflow->addItemConverter($converter);
+                } else {
+                    throw new \LogicException("Invalid converter supplied: ".get_class($converter));
                 }
             }
         }
