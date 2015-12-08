@@ -35,6 +35,8 @@ class Importer implements ImporterInterface
      */
     private $filters;
 
+    private $context;
+
     /**
      * @return \Mathielen\ImportEngine\Importer\Importer
      */
@@ -50,6 +52,16 @@ class Importer implements ImporterInterface
         $this->validation(new DummyValidation());
         $this->transformation(new Transformation());
         $this->filters(new Filters());
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 
     /**

@@ -86,7 +86,7 @@ class ImportBuilder
             if (!$importRequest->hasImporterId()) {
                 $importerId = $this->findImporterForStorage($sourceStorage);
                 if (!$importerId) {
-                    throw new InvalidConfigurationException("No importerId was given and there is not importer that could automatically match the storage.");
+                    throw new InvalidConfigurationException("No importerId was given and there is no importer that matches the storage.");
                 }
 
                 $importRequest->setImporterId($importerId);
@@ -106,6 +106,11 @@ class ImportBuilder
         $importConfiguration = new ImportConfiguration($storageSelection, $importerId);
         $importRun = $importConfiguration->toRun($importRequest->getCreatedBy());
         $importRun->setInfo((array) $sourceStorage->info());
+
+        //apply static context from importer
+        if (!is_null($importer->getContext())) {
+            $importRun->setContext($importer->getContext());
+        }
 
         return $this->factorImport($importer, $sourceStorage, $importRun);
     }

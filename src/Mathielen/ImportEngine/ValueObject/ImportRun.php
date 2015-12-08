@@ -68,6 +68,11 @@ class ImportRun
      */
     public function setContext($context)
     {
+        //merge existing context with new one, if both are arrays
+        if (is_array($context) && is_array($this->context)) {
+            $context = array_merge($this->context, $context);
+        }
+
         $this->context = $context;
 
         return $this;
