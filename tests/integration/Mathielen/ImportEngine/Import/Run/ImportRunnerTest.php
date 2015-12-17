@@ -56,7 +56,7 @@ class ImportRunnerTest extends \PHPUnit_Framework_TestCase
             $importRepository,
             $storageLocator
         );
-        $import = $importBuilder->build($importRequest);
+        $import = $importBuilder->buildFromRequest($importRequest);
 
         $import->mappings()
             ->add('prefix', 'Anrede', 'upperCase')

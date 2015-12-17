@@ -11,6 +11,7 @@ use Mathielen\ImportEngine\Storage\StorageLocator;
 use Mathielen\ImportEngine\Event\ImportConfigureEvent;
 use Mathielen\ImportEngine\ValueObject\ImportRequest;
 use Mathielen\ImportEngine\ValueObject\ImportRun;
+use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportBuilder
@@ -34,7 +35,7 @@ class ImportBuilder
     public function __construct(
         ImporterRepository $importerRepository,
         StorageLocator $storageLocator,
-        EventDispatcherInterface $eventDispatcher=null)
+        EventDispatcherInterface $eventDispatcher = null)
     {
         $this->importerRepository = $importerRepository;
         $this->storageLocator = $storageLocator;
@@ -68,8 +69,9 @@ class ImportBuilder
 
     /**
      * @return Import
+     * @throws InvalidConfigurationException
      */
-    public function build(ImportRequest $importRequest)
+    public function buildFromRequest(ImportRequest $importRequest)
     {
         $importerId = $importRequest->getImporterId();
         $storageSelection = null;
@@ -96,15 +98,25 @@ class ImportBuilder
             }
         }
 
-        $importer = $this->importerRepository->get($importerId);
+        $importConfiguration = new ImportConfiguration($storageSelection, $importerId);
+
+        return $this->build($importConfiguration, $sourceStorage, $importRequest->getCreatedBy());
+    }
+
+    /**
+     * @return Import
+     * @throws InvalidConfigurationException
+     */
+    public function build(ImportConfiguration $importConfiguration, StorageInterface $sourceStorage = null, $createdBy = null)
+    {
+        $importer = $this->importerRepository->get($importConfiguration->getImporterId());
         if ($importer->getSourceStorage()) {
             $sourceStorage = $importer->getSourceStorage();
         } elseif (!$sourceStorage) {
-            throw new InvalidConfigurationException("Either the importRequest or the importer '$importerId' must have a source storage set.");
+            throw new InvalidConfigurationException("Either the importRequest or the importer '".$importConfiguration->getImporterId()."' must have a source storage set.");
         }
 
-        $importConfiguration = new ImportConfiguration($storageSelection, $importerId);
-        $importRun = $importConfiguration->toRun($importRequest->getCreatedBy());
+        $importRun = $importConfiguration->toRun($createdBy);
         $importRun->setInfo((array) $sourceStorage->info());
 
         //apply static context from importer
@@ -129,7 +141,7 @@ class ImportBuilder
                 new ImportConfigureEvent($import));
 
             $this->eventDispatcher->dispatch(
-                ImportConfigureEvent::AFTER_BUILD.'.'.$importRun->getConfiguration()->getImporterId(),
+                ImportConfigureEvent::AFTER_BUILD . '.' . $importRun->getConfiguration()->getImporterId(),
                 new ImportConfigureEvent($import));
         }
 
