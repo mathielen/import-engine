@@ -1,17 +1,6 @@
 {
   "name": "mathielen/import-engine",
   "type": "library",
-  "autoload": {
-    "psr-0": {
-      "Mathielen\\DataImport": "src/",
-      "Mathielen\\ImportEngine": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-0": {
-      "TestEntities": "tests/metadata/"
-    }
-  },
   "description": "Full-blown importer stack for importing almost any data into your application",
   "keywords": [
     "data",
@@ -46,11 +35,20 @@
     "ext-iconv": "*",
     "ext-mbstring": "*",
     "symfony/property-access": "*",
-    "phpoffice/phpexcel": "*",
-    "nuovo/spreadsheet-reader": "*",
     "doctrine/orm": "*",
     "symfony/console": ">=2.2",
     "symfony/dependency-injection": ">=2.2",
     "symfony/validator": "~2.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mathielen\\DataImport\\": "src/",
+      "Mathielen\\ImportEngine\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TestEntities": "tests/metadata/"
+    }
   }
 }
