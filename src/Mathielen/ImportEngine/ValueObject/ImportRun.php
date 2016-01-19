@@ -108,6 +108,16 @@ class ImportRun
         return $this;
     }
 
+    /**
+     * @return ImportRun
+     */
+    public function reset()
+    {
+        $this->finishedAt = null;
+
+        return $this;
+    }
+
     public function isRevoked()
     {
         return $this->getState() == self::STATE_REVOKED;

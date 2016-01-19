@@ -48,7 +48,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "TestEntities": "tests/metadata/"
+      "TestEntities\\": "tests/metadata/"
     }
   }
 }

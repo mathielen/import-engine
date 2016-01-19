@@ -52,16 +52,31 @@ class ImportRunTest extends \PHPUnit_Framework_TestCase
         $this->importRun->finish();
 
         $this->assertFalse($this->importRun->isRevoked());
+
         $this->assertEquals($this->importRun, $this->importRun->revoke('revokedBy'));
+
         $this->assertTrue($this->importRun->isRevoked());
         $this->assertFalse($this->importRun->isRunnable());
         $this->assertEquals(ImportRun::STATE_REVOKED, $this->importRun->getState());
     }
 
+    public function testReset()
+    {
+        $this->importRun->finish();
+
+        $this->assertEquals($this->importRun, $this->importRun->reset());
+
+        $this->assertFalse($this->importRun->isRevoked());
+        $this->assertTrue($this->importRun->isRunnable());
+        $this->assertEquals(ImportRun::STATE_CREATED, $this->importRun->getState());
+    }
+
     public function testFinish()
     {
         $this->assertFalse($this->importRun->isFinished());
+
         $this->assertEquals($this->importRun, $this->importRun->finish());
+
         $this->assertTrue($this->importRun->isFinished());
         $this->assertFalse($this->importRun->isRunnable());
         $this->assertEquals(ImportRun::STATE_FINISHED, $this->importRun->getState());

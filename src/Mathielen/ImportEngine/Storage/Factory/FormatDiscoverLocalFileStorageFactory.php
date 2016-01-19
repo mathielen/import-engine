@@ -37,6 +37,9 @@ class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
         if (!($file instanceof \SplFileInfo)) {
             throw new InvalidConfigurationException("StorageSelection does not contain a SplFileInfo as impl property but this is mandatory for a LocalFileStorage.");
         }
+        if (!$file->isFile() || !$file->isReadable()) {
+            throw new InvalidConfigurationException("StorageSelection references a File that does not exists or is not readable.");
+        }
 
         $format = $selection->getMetadata('format');
         if (!$format) {
