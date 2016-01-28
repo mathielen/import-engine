@@ -28,6 +28,7 @@
     "symfony/event-dispatcher": "*"
   },
   "require-dev": {
+    "ext-pdo_sqlite": "*",
     "phpunit/phpunit": "*",
     "symfony/finder": "*",
     "symfony/http-foundation": "*",
@@ -38,17 +39,18 @@
     "doctrine/orm": "*",
     "symfony/console": ">=2.2",
     "symfony/dependency-injection": ">=2.2",
-    "symfony/validator": "~2.3.0"
+    "symfony/validator": "~2.3.0",
+    "phpoffice/phpexcel": "*"
   },
   "autoload": {
     "psr-4": {
-      "Mathielen\\DataImport\\": "src/",
-      "Mathielen\\ImportEngine\\": "src/"
+      "Mathielen\\DataImport\\": "src/Mathielen/DataImport/",
+      "Mathielen\\ImportEngine\\": "src/Mathielen/ImportEngine/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "TestEntities\\": "tests/metadata/"
+      "TestEntities\\": "tests/metadata/TestEntities/"
     }
   }
 }
