@@ -32,6 +32,14 @@ class ServiceStorage implements StorageInterface
         }
     }
 
+    /**
+     * @return callable
+     */
+    public function getCallable()
+    {
+        return $this->callable;
+    }
+
     public function setObjectFactory($objectFactory)
     {
         $this->objectFactory = $objectFactory;
