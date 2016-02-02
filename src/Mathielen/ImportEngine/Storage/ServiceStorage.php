@@ -26,18 +26,11 @@ class ServiceStorage implements StorageInterface
         $this->arguments = $arguments;
         $this->setObjectFactory($objectMapper);
         $this->setObjectTransformer($objectMapper);
-
-        if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Given callable is not a callable");
-        }
     }
 
-    /**
-     * @return callable
-     */
-    public function getCallable()
+    public function isCalledService($service)
     {
-        return $this->callable;
+        return $this->callable[0] === $service;
     }
 
     public function setObjectFactory($objectFactory)
@@ -83,9 +76,8 @@ class ServiceStorage implements StorageInterface
     public function info()
     {
         return new StorageInfo(array(
-            'name' => $this->callable.'',
+            'name' => get_class($this->callable[0]).'->'.$this->callable[1],
             'format' => 'Service method',
-            'size' => 0,
             'count' => count($this->reader())
         ));
     }
