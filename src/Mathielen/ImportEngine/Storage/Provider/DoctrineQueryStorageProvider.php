@@ -4,6 +4,7 @@ namespace Mathielen\ImportEngine\Storage\Provider;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Mathielen\ImportEngine\Storage\Provider\Connection\ConnectionFactoryInterface;
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 use Mathielen\ImportEngine\Storage\DoctrineStorage;
 
@@ -12,34 +13,38 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
 
     /**
      *
-     * @var EntityManagerInterface
+     * @var ConnectionFactoryInterface
      */
-    private $entityManager;
+    private $connectionFactory;
 
     /**
      * @var QueryBuilder[]
      */
     private $queries;
 
-    public function __construct(EntityManagerInterface $entityManager, array $classNamesOrQueries)
+    public function __construct(ConnectionFactoryInterface $connectionFactory, \Iterator $classNamesOrQueries)
     {
-        $this->entityManager = $entityManager;
+        $this->connectionFactory = $connectionFactory;
         $this->resolveQueries($classNamesOrQueries);
     }
 
-    private function resolveQueries(array $classNamesOrQueries)
+    private function resolveQueries(\Iterator $classNamesOrQueries)
     {
+        //TODO what about different entity providers ?
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $this->connectionFactory->getConnection();
+
         $this->queries = array();
         foreach ($classNamesOrQueries as $k=>$classNameOrQuery) {
             if (is_string($classNameOrQuery) && class_exists($classNameOrQuery)) {
-                $query = $this->entityManager->createQueryBuilder()
+                $query = $entityManager->createQueryBuilder()
                     ->select('o')
                     ->from($classNameOrQuery, 'o')
                     ->getQuery();
                 $selection = new StorageSelection($query, $classNameOrQuery, $classNameOrQuery);
 
             } elseif (is_string($classNameOrQuery)) {
-                $query = $this->entityManager->createQuery($classNameOrQuery);
+                $query = $entityManager->createQuery($classNameOrQuery);
                 $selection = new StorageSelection($query, $query->getDQL(), $query->getDQL());
 
             } elseif ($classNameOrQuery instanceof Query) {
@@ -64,7 +69,9 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      */
     public function storage(StorageSelection $selection)
     {
-        return new DoctrineStorage($this->entityManager, $selection->getName(), $selection->getImpl());
+        $connection = $this->connectionFactory->getConnection($selection);
+
+        return new DoctrineStorage($connection, $selection->getName(), $selection->getImpl());
     }
 
     /**
