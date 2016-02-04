@@ -27,6 +27,38 @@ class DbalStorage implements StorageInterface
     }
 
     /**
+     * @return null
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param null $query
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+    }
+
+    /**
+     * @return null
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    /**
+     * @param null $tableName
+     */
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+    }
+
+    /**
      * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer()
      */
     public function writer()

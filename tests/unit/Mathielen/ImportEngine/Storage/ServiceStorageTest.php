@@ -11,6 +11,13 @@ class ServiceStorageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($storage->isCalledService($this));
     }
 
+    public function testIsCalledServiceClass()
+    {
+        $storage = new ServiceStorage([$this, 'dummy']);
+
+        $this->assertTrue($storage->isCalledService(self::class));
+    }
+
     public function testInfo()
     {
         $storage = new ServiceStorage([$this, 'dummy']);

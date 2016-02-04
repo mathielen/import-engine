@@ -37,6 +37,26 @@ class DoctrineStorage implements StorageInterface
         $this->query = $query;
     }
 
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    public function setQuery($query)
+    {
+        $this->query = $query;
+    }
+
+    public function getEntityName()
+    {
+        return $this->entityName;
+    }
+
+    public function setEntityName($entityName)
+    {
+        $this->entityName = $entityName;
+    }
+
     /**
      * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer()
      */

@@ -7,6 +7,8 @@ use Mathielen\ImportEngine\Import\Import;
 use Mathielen\ImportEngine\Import\Workflow\DefaultWorkflowFactory;
 use Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface;
 use Mathielen\ImportEngine\Exception\ImportRunException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportRunner
@@ -22,7 +24,12 @@ class ImportRunner
      */
     private $eventDispatcher;
 
-    public function __construct(WorkflowFactoryInterface $workflowFactory=null, EventDispatcherInterface $eventDispatcher=null)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(WorkflowFactoryInterface $workflowFactory = null, EventDispatcherInterface $eventDispatcher = null, LoggerInterface $logger = null)
     {
         if (!$workflowFactory) {
             $workflowFactory = new DefaultWorkflowFactory();
@@ -30,12 +37,13 @@ class ImportRunner
 
         $this->workflowFactory = $workflowFactory;
         $this->eventDispatcher = $eventDispatcher;
+        $this->logger = $logger ? $logger : new NullLogger();
     }
 
     /**
      * @return ImportRunner
      */
-    public static function build(WorkflowFactoryInterface $workflowFactory=null)
+    public static function build(WorkflowFactoryInterface $workflowFactory = null)
     {
         return new self($workflowFactory);
     }
@@ -50,13 +58,13 @@ class ImportRunner
         }
 
         if ($e && $importRun->getConfiguration()) {
-            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE.'.'.$importRun->getConfiguration()->getImporterId(), $e);
+            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE . '.' . $importRun->getConfiguration()->getImporterId(), $e);
         }
 
         $workflow->process();
 
         if ($e && $importRun->getConfiguration()) {
-            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH.'.'.$importRun->getConfiguration()->getImporterId(), $e);
+            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH . '.' . $importRun->getConfiguration()->getImporterId(), $e);
         }
     }
 
@@ -66,7 +74,7 @@ class ImportRunner
     public function preview(Import $import, $offset = 0)
     {
         $importRun = $import->getRun();
-        $previewResult = array('from'=>array(), 'to'=>array());
+        $previewResult = array('from' => array(), 'to' => array());
 
         $workflow = $this->workflowFactory->buildPreviewWorkflow($import, $previewResult, $offset);
         $this->process($workflow, $import);
@@ -102,9 +110,13 @@ class ImportRunner
      */
     public function run(Import $import)
     {
+        $this->logger->info('Starting import run.', $import->getRun()->toArray());
+
         $importRun = $import->getRun();
         $workflow = $this->workflowFactory->buildRunWorkflow($import, $importRun);
         $this->process($workflow, $import);
+
+        $this->logger->info('Import run finished.', $import->getRun()->toArray());
 
         return $importRun;
     }

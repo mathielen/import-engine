@@ -20,7 +20,7 @@ class ServiceStorage implements StorageInterface
     private $objectTransformer;
     private $objectFactory;
 
-    public function __construct(callable $callable, $arguments=array(), $objectMapper=null)
+    public function __construct(callable $callable, $arguments = array(), $objectMapper = null)
     {
         $this->callable = $callable;
         $this->arguments = $arguments;
@@ -28,9 +28,9 @@ class ServiceStorage implements StorageInterface
         $this->setObjectTransformer($objectMapper);
     }
 
-    public function isCalledService($service)
+    public function isCalledService($serviceOrClassname)
     {
-        return $this->callable[0] === $service;
+        return is_a($this->callable[0], is_object($serviceOrClassname) ? get_class($serviceOrClassname) : $serviceOrClassname);
     }
 
     public function setObjectFactory($objectFactory)
@@ -76,7 +76,7 @@ class ServiceStorage implements StorageInterface
     public function info()
     {
         return new StorageInfo(array(
-            'name' => get_class($this->callable[0]).'->'.$this->callable[1],
+            'name' => get_class($this->callable[0]) . '->' . $this->callable[1],
             'format' => 'Service method',
             'count' => count($this->reader())
         ));

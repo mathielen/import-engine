@@ -117,14 +117,20 @@ class ImportBuilder
         }
 
         $importRun = $importConfiguration->toRun($createdBy);
-        $importRun->setInfo((array) $sourceStorage->info());
 
         //apply static context from importer
         if (!is_null($importer->getContext())) {
             $importRun->setContext($importer->getContext());
         }
 
-        return $this->factorImport($importer, $sourceStorage, $importRun);
+        $import = $this->factorImport($importer, $sourceStorage, $importRun);
+
+        //after everthing was build, apply softdata from sourcestorage to importrun
+        //dont do this any earlier, as there might be AFTER_BUILD hooks, that may change
+        //the sourcestorage configuration
+        $importRun->setInfo((array) $sourceStorage->info());
+
+        return $import;
     }
 
     /**
