@@ -22,14 +22,18 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
      */
     private $queries;
 
-    public function __construct(ConnectionFactoryInterface $connectionFactory, \Iterator $classNamesOrQueries)
+    public function __construct(ConnectionFactoryInterface $connectionFactory, $classNamesOrQueries)
     {
         $this->connectionFactory = $connectionFactory;
         $this->resolveQueries($classNamesOrQueries);
     }
 
-    private function resolveQueries(\Iterator $classNamesOrQueries)
+    private function resolveQueries($classNamesOrQueries)
     {
+        if ( !is_array( $classNamesOrQueries ) && !$classNamesOrQueries instanceof \Traversable ) {
+            throw new \InvalidArgumentException("classNamesOrQueries must be an array or Traversable");
+        }
+
         //TODO what about different entity providers ?
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->connectionFactory->getConnection();
