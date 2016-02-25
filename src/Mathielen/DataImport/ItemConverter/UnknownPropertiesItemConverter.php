@@ -21,6 +21,17 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
         $this->knownProperties[] = $this->targetProperty;
     }
 
+    public static function fromClass($cls, $targetProperty='ATTRIBUTES', $skipEmptyKey=true)
+    {
+        $r = new \ReflectionClass($cls);
+        $properties = $r->getProperties();
+        $properties = array_map(function (\ReflectionProperty $e) {
+            return $e->getName();
+        }, $properties);
+
+        return new self($properties, $targetProperty, $skipEmptyKey);
+    }
+
     public function convert($input)
     {
         $unknownProperties = array_udiff(array_keys($input), $this->knownProperties, 'strcasecmp');

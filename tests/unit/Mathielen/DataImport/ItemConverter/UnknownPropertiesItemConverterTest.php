@@ -1,6 +1,8 @@
 <?php
 namespace Mathielen\DataImport\ItemConverter;
 
+use TestEntities\Address;
+
 class UnknownPropertiesItemConverterTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -12,6 +14,13 @@ class UnknownPropertiesItemConverterTest extends \PHPUnit_Framework_TestCase
         $converter = new UnknownPropertiesItemConverter($knownProperties, $targetProperty, $skipEmptyKey);
 
         $this->assertEquals($expectedResult, $converter->convert($inputData));
+    }
+
+    public function testFromClass()
+    {
+        $converter = UnknownPropertiesItemConverter::fromClass(Address::class);
+
+        $this->assertEquals(['name'=>1,'ATTRIBUTES'=>['unknown'=>1]], $converter->convert(['name'=>1, 'unknown'=>1]));
     }
 
     public function getConvertData()
