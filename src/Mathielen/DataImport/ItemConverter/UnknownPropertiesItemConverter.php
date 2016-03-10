@@ -50,7 +50,8 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
             //copy unknown properties to target property and remove them from input
             foreach ($unknownProperties as $property) {
-                if (!$this->skipEmptyKey || !empty($property)) {
+                //if key is not empty and value of key is not empty => copy it to target property-array
+                if (!$this->skipEmptyKey || !empty($property) && !empty($input[$property])) {
                     $input[$this->targetProperty][$property] = $input[$property];
                 }
                 unset($input[$property]);
