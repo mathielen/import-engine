@@ -12,16 +12,18 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
     private $skipEmptyKey;
 
-    public function __construct(array $knownProperties, $targetProperty='ATTRIBUTES', $skipEmptyKey=true)
+    public function __construct(array $knownProperties, $targetProperty = 'ATTRIBUTES', $skipEmptyKey = true)
     {
-        $this->knownProperties = $knownProperties;
+        $this->knownProperties = array_map("strtoupper", $knownProperties);
         $this->targetProperty = $targetProperty;
         $this->skipEmptyKey = $skipEmptyKey;
 
-        $this->knownProperties[] = $this->targetProperty;
+        if (!in_array(strtoupper($this->targetProperty), $this->knownProperties)) {
+            $this->knownProperties[] = strtoupper($this->targetProperty);
+        }
     }
 
-    public static function fromClass($cls, $targetProperty='ATTRIBUTES', $skipEmptyKey=true)
+    public static function fromClass($cls, $targetProperty = 'ATTRIBUTES', $skipEmptyKey = true)
     {
         $r = new \ReflectionClass($cls);
         $properties = $r->getProperties();
@@ -34,7 +36,10 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
     public function convert($input)
     {
-        $unknownProperties = array_udiff(array_keys($input), $this->knownProperties, 'strcasecmp');
+        $currentKeys = array_keys($input);
+        $unknownProperties = array_udiff($currentKeys, $this->knownProperties, function ($a, $b) {
+            return strcasecmp(str_replace('_', '', $a), str_replace('_', '', $b)); //compare the keys, without _
+        });
 
         //has unknown properties
         if (count($unknownProperties) > 0) {

@@ -20,25 +20,25 @@ class UnknownPropertiesItemConverterTest extends \PHPUnit_Framework_TestCase
     {
         $converter = UnknownPropertiesItemConverter::fromClass(Address::class);
 
-        $this->assertEquals(['name'=>1,'ATTRIBUTES'=>['unknown'=>1]], $converter->convert(['name'=>1, 'unknown'=>1]));
+        $this->assertEquals(['name' => 1, 'ATTRIBUTES' => ['unknown' => 1]], $converter->convert(['name' => 1, 'unknown' => 1]));
     }
 
     public function getConvertData()
     {
         return array(
             array(
-                array('a', 'b'),
+                array('a', 'b', 'property_with_underscore'),
                 'target',
                 true,
-                array('a'=>1, 'b'=>2, 'c'=>3, ''=>''),
-                array('a'=>1, 'b'=>2, 'target'=>array('c'=>3))
+                array('a' => 1, 'b' => 2, 'c' => 3, '' => '', 'propertywithunderscore' => 1),
+                array('a' => 1, 'b' => 2, 'target' => array('c' => 3), 'propertywithunderscore' => 1)
             ),
             array(
                 array('a', 'b'),
                 'target',
                 false,
-                array('a'=>1, 'b'=>2, ''=>''),
-                array('a'=>1, 'b'=>2, 'target'=>array(''=>''))
+                array('a' => 1, 'b' => 2, '' => ''),
+                array('a' => 1, 'b' => 2, 'target' => array('' => ''))
             )
         );
     }
