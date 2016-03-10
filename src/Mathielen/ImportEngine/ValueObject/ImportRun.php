@@ -204,13 +204,18 @@ class ImportRun
 
     public function getState()
     {
-        if (!empty($this->revokedAt)) {
+        return self::timestampsToState($this->revokedAt, $this->finishedAt, $this->validatedAt);
+    }
+
+    public static function timestampsToState($revokedAt, $finishedAt, $validatedAt)
+    {
+        if (!empty($revokedAt)) {
             return self::STATE_REVOKED;
         }
-        if (!empty($this->finishedAt)) {
+        if (!empty($finishedAt)) {
             return self::STATE_FINISHED;
         }
-        if (!empty($this->validatedAt)) {
+        if (!empty($validatedAt)) {
             return self::STATE_VALIDATED;
         }
 
