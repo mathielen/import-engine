@@ -8,18 +8,20 @@ class ImportRequest
     private $sourceProviderId = 'default';
     private $importerId = null;
     private $createdBy = null;
+    private $context;
 
     public static function createWithoutSource($importerId, $createdBy=null)
     {
         return new self(null, 'default', $importerId, $createdBy);
     }
 
-    public function __construct($sourceId=null, $sourceProviderId='default', $importerId=null, $createdBy=null)
+    public function __construct($sourceId=null, $sourceProviderId='default', $importerId=null, $createdBy=null, $context=null)
     {
         $this->sourceId = $sourceId;
         $this->sourceProviderId = $sourceProviderId;
         $this->importerId = $importerId;
         $this->createdBy = $createdBy;
+        $this->context = $context;
     }
 
     /**
@@ -72,6 +74,11 @@ class ImportRequest
     public function hasSource()
     {
         return !is_null($this->sourceId);
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 
 }

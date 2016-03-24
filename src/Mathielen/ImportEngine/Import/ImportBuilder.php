@@ -100,28 +100,35 @@ class ImportBuilder
 
         $importConfiguration = new ImportConfiguration($storageSelection, $importerId);
 
-        return $this->build($importConfiguration, $sourceStorage, $importRequest->getCreatedBy());
+        return $this->build($importConfiguration, $sourceStorage, $importRequest->getCreatedBy(), $importRequest->getContext());
     }
 
     /**
      * @return Import
      * @throws InvalidConfigurationException
      */
-    public function build(ImportConfiguration $importConfiguration, StorageInterface $sourceStorage = null, $createdBy = null)
+    public function build(ImportConfiguration $importConfiguration, StorageInterface $sourceStorage = null, $createdBy = null, $requestContext = null)
     {
         $importer = $this->importerRepository->get($importConfiguration->getImporterId());
         if ($importer->getSourceStorage()) {
             $sourceStorage = $importer->getSourceStorage();
         } elseif (!$sourceStorage) {
-            throw new InvalidConfigurationException("Either the importRequest or the importer '".$importConfiguration->getImporterId()."' must have a source storage set.");
+            throw new InvalidConfigurationException("Either the importRequest or the importer '" . $importConfiguration->getImporterId() . "' must have a source storage set.");
         }
 
         $importRun = $importConfiguration->toRun($createdBy);
 
-        //apply static context from importer
+        //apply static context from importer & request
+        $context = $requestContext;
         if (!is_null($importer->getContext())) {
-            $importRun->setContext($importer->getContext());
+            $importerContext = $importer->getContext();
+            if ($importerContext && $requestContext) {
+                $context = array_merge($importerContext, $requestContext);
+            } else {
+                $context = $importerContext;
+            }
         }
+        $importRun->setContext($context);
 
         $import = $this->factorImport($importer, $sourceStorage, $importRun);
 
