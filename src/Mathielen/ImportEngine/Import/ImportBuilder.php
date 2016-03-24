@@ -120,7 +120,7 @@ class ImportBuilder
 
         //apply static context from importer & request
         $context = $requestContext;
-        if (!is_null($importer->getContext())) {
+        if (!is_null($importer->getContext()) && !empty($importer->getContext())) {
             $importerContext = $importer->getContext();
             if ($importerContext && $requestContext) {
                 $context = array_merge($importerContext, $requestContext);
