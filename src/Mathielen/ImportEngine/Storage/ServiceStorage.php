@@ -28,6 +28,14 @@ class ServiceStorage implements StorageInterface
         $this->setObjectTransformer($objectMapper);
     }
 
+    /**
+     * @return callable
+     */
+    public function getCallable()
+    {
+        return $this->callable;
+    }
+
     public function isCalledService($serviceOrClassname)
     {
         return is_a($this->callable[0], is_object($serviceOrClassname) ? get_class($serviceOrClassname) : $serviceOrClassname);
