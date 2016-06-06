@@ -38,7 +38,7 @@ class ServiceStorage implements StorageInterface
 
     public function isCalledService($serviceOrClassname)
     {
-        return is_a($this->callable[0], is_object($serviceOrClassname) ? get_class($serviceOrClassname) : $serviceOrClassname);
+        return $this->callable[0] === $serviceOrClassname;
     }
 
     public function setObjectFactory($objectFactory)
