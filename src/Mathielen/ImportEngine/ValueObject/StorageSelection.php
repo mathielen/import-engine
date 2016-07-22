@@ -91,4 +91,9 @@ class StorageSelection
         return get_object_vars($this);
     }
 
+    public function __toString()
+    {
+        return http_build_query ($this->toArray());
+    }
+
 }
