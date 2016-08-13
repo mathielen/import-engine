@@ -48,6 +48,12 @@ Then include Composer’s autoloader:
 require_once 'vendor/autoload.php';
 ```
 
+If you want to make use of excel files, please also make sure to include phpoffice/phpexcel in your project:
+
+```bash
+$ composer require phpoffice/phpexcel
+```
+
 Quickstart
 ----
 
