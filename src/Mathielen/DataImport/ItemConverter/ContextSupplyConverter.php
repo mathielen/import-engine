@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport\ItemConverter;
 
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
@@ -9,7 +10,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberInterface
 {
-
     private $currentContext;
 
     private $contextFieldname;
@@ -51,5 +51,4 @@ class ContextSupplyConverter implements ItemConverterInterface, EventSubscriberI
 
         return $input;
     }
-
 }

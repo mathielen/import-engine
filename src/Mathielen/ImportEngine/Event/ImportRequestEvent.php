@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Event;
 
 use Mathielen\ImportEngine\ValueObject\ImportRequest;
@@ -6,7 +7,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ImportRequestEvent extends Event
 {
-
     const DISCOVERED = 'import-engine.importer.discovered';
 
     /**
@@ -26,5 +26,4 @@ class ImportRequestEvent extends Event
     {
         return $this->importRequest;
     }
-
 }

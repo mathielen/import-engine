@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\ArrayReader;
@@ -6,7 +7,6 @@ use Ddeboer\DataImport\Writer\ArrayWriter;
 
 class ArrayStorage implements StorageInterface
 {
-
     private $array;
 
     public function __construct(array &$array)
@@ -20,7 +20,8 @@ class ArrayStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Source\SourceInterface::reader()
      */
     public function reader()
@@ -29,7 +30,8 @@ class ArrayStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Source\StorageInterface::writer()
      */
     public function writer()
@@ -38,7 +40,8 @@ class ArrayStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Source\SourceInterface::info()
      */
     public function info()
@@ -46,8 +49,7 @@ class ArrayStorage implements StorageInterface
         return new StorageInfo(array(
             'name' => 'Array Storage',
             'format' => 'Array Storage',
-            'count' => count($this->reader())
+            'count' => count($this->reader()),
         ));
     }
-
 }

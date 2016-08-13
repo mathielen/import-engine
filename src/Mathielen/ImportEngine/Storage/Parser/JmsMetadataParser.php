@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Parser;
 
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
@@ -8,11 +9,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
- * Uses the JMS metadata factory to extract input/output model information
+ * Uses the JMS metadata factory to extract input/output model information.
  */
 class JmsMetadataParser
 {
-
     /**
      * @var \Metadata\MetadataFactoryInterface
      */
@@ -24,7 +24,7 @@ class JmsMetadataParser
     private $namingStrategy;
 
     /**
-     * Constructor, requires JMS Metadata factory
+     * Constructor, requires JMS Metadata factory.
      */
     public function __construct(
         MetadataFactoryInterface $factory,
@@ -40,18 +40,20 @@ class JmsMetadataParser
     public function parse(array $input)
     {
         $className = $input['class'];
-        $groups    = $input['groups'];
+        $groups = $input['groups'];
 
         return $this->doParse($className, array(), $groups);
     }
 
     /**
-     * Recursively parse all metadata for a class
+     * Recursively parse all metadata for a class.
      *
-     * @param  string                    $className Class to get all metadata for
-     * @param  array                     $visited   Classes we've already visited to prevent infinite recursion.
-     * @param  array                     $groups    Serialization groups to include.
-     * @return array                     metadata for given class
+     * @param string $className Class to get all metadata for
+     * @param array  $visited   Classes we've already visited to prevent infinite recursion.
+     * @param array  $groups    Serialization groups to include.
+     *
+     * @return array metadata for given class
+     *
      * @throws \InvalidArgumentException
      */
     protected function doParse($className, $visited = array(), array $groups = array())
@@ -59,10 +61,10 @@ class JmsMetadataParser
         $meta = $this->factory->getMetadataForClass($className);
 
         if (null === $meta) {
-            throw new \InvalidArgumentException(sprintf("No metadata found for class %s", $className));
+            throw new \InvalidArgumentException(sprintf('No metadata found for class %s', $className));
         }
 
-        $exclusionStrategies   = array();
+        $exclusionStrategies = array();
         if ($groups) {
             $exclusionStrategies[] = new GroupsExclusionStrategy($groups);
         }
@@ -84,9 +86,9 @@ class JmsMetadataParser
                 }
 
                 $params[$name] = array(
-                    'dataType'     => $dataType['normalized'],
-                    'required'     => false,
-                    'readonly'     => $item->readOnly,
+                    'dataType' => $dataType['normalized'],
+                    'required' => false,
+                    'readonly' => $item->readOnly,
                     'sinceVersion' => $item->sinceVersion,
                     'untilVersion' => $item->untilVersion,
                 );
@@ -102,7 +104,7 @@ class JmsMetadataParser
 
                 // check for nested classes with JMS metadata
                 if ($dataType['class'] && null !== $this->factory->getMetadataForClass($dataType['class'])) {
-                    $visited[]                 = $dataType['class'];
+                    $visited[] = $dataType['class'];
                     $params[$name]['children'] = $this->doParse($dataType['class'], $visited, $groups);
                 }
             }
@@ -123,16 +125,16 @@ class JmsMetadataParser
         if ($nestedType = $this->getNestedTypeInArray($item)) {
             if ($this->isPrimitive($nestedType)) {
                 return array(
-                    'normalized' => sprintf("array of %ss", $nestedType),
-                    'class' => null
+                    'normalized' => sprintf('array of %ss', $nestedType),
+                    'class' => null,
                 );
             }
 
-            $exp = explode("\\", $nestedType);
+            $exp = explode('\\', $nestedType);
 
             return array(
-                'normalized' => sprintf("array of objects (%s)", end($exp)),
-                'class' => $nestedType
+                'normalized' => sprintf('array of objects (%s)', end($exp)),
+                'class' => $nestedType,
             );
         }
 
@@ -142,24 +144,24 @@ class JmsMetadataParser
         if ($this->isPrimitive($type)) {
             return array(
                 'normalized' => $type,
-                'class' => null
+                'class' => null,
             );
         }
 
         // we can use type property also for custom handlers, then we don't have here real class name
         if (!class_exists($type)) {
             return array(
-                'normalized' => sprintf("custom handler result for (%s)", $type),
-                'class' => null
+                'normalized' => sprintf('custom handler result for (%s)', $type),
+                'class' => null,
             );
         }
 
         // if we got this far, it's a general class name
-        $exp = explode("\\", $type);
+        $exp = explode('\\', $type);
 
         return array(
-            'normalized' => sprintf("object (%s)", end($exp)),
-            'class' => $type
+            'normalized' => sprintf('object (%s)', end($exp)),
+            'class' => $type,
         );
     }
 
@@ -170,9 +172,10 @@ class JmsMetadataParser
 
     /**
      * Check the various ways JMS describes values in arrays, and
-     * get the value type in the array
+     * get the value type in the array.
      *
-     * @param  PropertyMetadata $item
+     * @param PropertyMetadata $item
+     *
      * @return string|null
      */
     protected function getNestedTypeInArray(PropertyMetadata $item)
@@ -188,7 +191,6 @@ class JmsMetadataParser
             }
         }
 
-        return null;
+        return;
     }
-
 }

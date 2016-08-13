@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format;
 
 class ExcelFormat extends Format
 {
-
     private $headerinfirstrow = true;
     private $activesheet = null;
     private $exceltype = 'Excel2007';
@@ -30,5 +30,4 @@ class ExcelFormat extends Format
     {
         return $this->exceltype;
     }
-
 }

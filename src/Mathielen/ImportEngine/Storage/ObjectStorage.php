@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Mathielen\DataImport\Writer\ObjectWriter;
@@ -8,7 +9,6 @@ use Mathielen\DataImport\Writer\ObjectWriter\DefaultObjectFactory;
 
 class ObjectStorage extends \SplObjectStorage implements StorageInterface
 {
-
     /**
      * @var ObjectFactoryInterface
      */
@@ -26,7 +26,7 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
         } elseif (is_string($classOrObjectFactory)) {
             $objectFactory = new DefaultObjectFactory($classOrObjectFactory);
         } else {
-            throw new \InvalidArgumentException("classOrObjectFactory must be of type string or ObjectFactoryInterface");
+            throw new \InvalidArgumentException('classOrObjectFactory must be of type string or ObjectFactoryInterface');
         }
 
         $this->objectFactory = $objectFactory;
@@ -41,7 +41,8 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Source\SourceInterface::reader()
      */
     public function reader()
@@ -50,7 +51,8 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Source\StorageInterface::writer()
      */
     public function writer()
@@ -66,7 +68,8 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Source\SourceInterface::info()
      */
     public function info()
@@ -74,5 +77,4 @@ class ObjectStorage extends \SplObjectStorage implements StorageInterface
         return new StorageInfo(array(
         ));
     }
-
 }

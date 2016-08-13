@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\ServiceStorage;
@@ -7,11 +8,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ServiceStorageProvider implements StorageProviderInterface
 {
-
     /**
      * @var array
-     *      key = servicename
-     *      value = array of methods
+     *            key = servicename
+     *            value = array of methods
      */
     private $services;
 
@@ -27,7 +27,8 @@ class ServiceStorageProvider implements StorageProviderInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
      */
     public function storage(StorageSelection $selection)
@@ -39,20 +40,21 @@ class ServiceStorageProvider implements StorageProviderInterface
             $arguments = $callable['arguments'];
             unset($callable['arguments']);
         } elseif (!is_callable($callable)) {
-            throw new \InvalidArgumentException("StorageSelection must contain a callable or an extended callable (with arguments) as impl");
+            throw new \InvalidArgumentException('StorageSelection must contain a callable or an extended callable (with arguments) as impl');
         }
 
         return new ServiceStorage($callable, $arguments);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
      */
     public function select($id = null)
     {
         if (!is_array($id) || !isset($id['service']) || !isset($id['method']) || empty($id['service']) || empty($id['method'])) {
-            throw new \InvalidArgumentException("Invalid id argument. Must be array and containing at least service and method property.");
+            throw new \InvalidArgumentException('Invalid id argument. Must be array and containing at least service and method property.');
         }
 
         $serviceName = $id['service'];
@@ -66,9 +68,8 @@ class ServiceStorageProvider implements StorageProviderInterface
         }
 
         $service = $this->container->get($serviceName);
-        $callable_with_arguments = array($service, $method, isset($id['arguments'])?$id['arguments']:null);
+        $callable_with_arguments = array($service, $method, isset($id['arguments']) ? $id['arguments'] : null);
 
         return new StorageSelection($callable_with_arguments);
     }
-
 }

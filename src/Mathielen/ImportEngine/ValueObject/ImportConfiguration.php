@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\ValueObject;
 
 class ImportConfiguration
 {
-
     private $importerId = null;
 
     /**
@@ -11,7 +11,7 @@ class ImportConfiguration
      */
     private $sourceStorageSelection;
 
-    public function __construct(StorageSelection $sourceStorageSelection=null, $importerId=null)
+    public function __construct(StorageSelection $sourceStorageSelection = null, $importerId = null)
     {
         if ($importerId) {
             $this->setImporterId($importerId);
@@ -45,7 +45,7 @@ class ImportConfiguration
     public function setImporterId($importerId)
     {
         if (empty($importerId)) {
-            throw new \InvalidArgumentException("importerId must be given");
+            throw new \InvalidArgumentException('importerId must be given');
         }
 
         $this->importerId = $importerId;
@@ -62,19 +62,18 @@ class ImportConfiguration
     {
         return array(
             'importerid' => $this->importerId,
-            'sourcestorageselection' => $this->sourceStorageSelection?array(
+            'sourcestorageselection' => $this->sourceStorageSelection ? array(
                 'name' => $this->sourceStorageSelection->getName(),
-                'id' => $this->sourceStorageSelection->getId()
-            ):null
+                'id' => $this->sourceStorageSelection->getId(),
+            ) : null,
         );
     }
 
     /**
      * @return ImportRun
      */
-    public function toRun($createdBy=null)
+    public function toRun($createdBy = null)
     {
         return new ImportRun($this, $createdBy);
     }
-
 }

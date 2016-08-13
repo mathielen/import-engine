@@ -1,17 +1,17 @@
 <?php
+
 namespace Mathielen\DataImport\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
 class ImportProcessEvent extends Event
 {
-
     const AFTER_PREPARE = 'data-import.prepare';
     const AFTER_FINISH = 'data-import.finish';
 
     private $context;
 
-    public function __construct($context=null)
+    public function __construct($context = null)
     {
         if ($context) {
             $this->setContext($context);
@@ -38,5 +38,4 @@ class ImportProcessEvent extends Event
 
         return $event;
     }
-
 }

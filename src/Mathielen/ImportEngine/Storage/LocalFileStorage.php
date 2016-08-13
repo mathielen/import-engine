@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\ArrayReader;
@@ -20,7 +21,6 @@ use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInterface
 {
-
     /**
      * @var \SplFileInfo
      */
@@ -75,7 +75,7 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
             'excel',
             'xml',
             'json',
-            'zlib'
+            'zlib',
         );
     }
 
@@ -111,26 +111,21 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
                 $reader->setHeaderRowNumber(0, CsvReader::DUPLICATE_HEADERS_MERGE);
                 $reader->setColumnHeaders(array_map('trim', $reader->getColumnHeaders())); //TODO some header-collaborator?
             }
-
         } elseif ($format instanceof ExcelFormat) {
-            $headerRowNumber = $format->isHeaderInFirstRow()?0:null;
+            $headerRowNumber = $format->isHeaderInFirstRow() ? 0 : null;
             $reader = new ExcelReader($file->openFile(), $headerRowNumber, $format->getActivesheet());
             if ($format->isHeaderInFirstRow()) {
                 $reader->setColumnHeaders(array_map('trim', $reader->getColumnHeaders())); //TODO some header-collaborator?
             }
-
         } elseif ($format instanceof JsonFormat) {
             $array = json_decode(file_get_contents($file), true);
             $reader = new ArrayReader($array);
-
         } elseif ($format instanceof XmlFormat) {
             $reader = new XmlReader($file->openFile(), $format->getXpath());
-
         } elseif ($format instanceof CompressedFormat && $format->getSubFormat()) {
             $reader = $this->formatToReader($format->getSubFormat(), $format->getInsideStream($file));
-
         } else {
-            throw new InvalidConfigurationException("Cannot build reader. Unknown format: ".$format);
+            throw new InvalidConfigurationException('Cannot build reader. Unknown format: '.$format);
         }
 
         return $reader;
@@ -139,7 +134,7 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
     public function getFields()
     {
         if (!$this->isReadable()) {
-            throw new InvalidConfigurationException("Cannot read from file ".$this->file);
+            throw new InvalidConfigurationException('Cannot read from file '.$this->file);
         }
 
         return $this->reader()->getFields();
@@ -148,7 +143,7 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
     public function getHash()
     {
         if (!$this->isReadable()) {
-            throw new InvalidConfigurationException("Cannot read from file ".$this->file);
+            throw new InvalidConfigurationException('Cannot read from file '.$this->file);
         }
 
         return md5_file($this->file->getRealPath());
@@ -171,18 +166,14 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
     {
         if ($format instanceof CsvFormat) {
             $writer = new CsvWriter($format->getDelimiter(), $format->getEnclosure(), fopen($file, 'a'), false, $format->isHeaderInFirstRow());
-
         } elseif ($format instanceof ExcelFormat) {
             $writer = new ExcelWriter($file->openFile('a'), $format->getActivesheet(), $format->getExceltype(), $format->isHeaderInFirstRow());
-
         } elseif ($format instanceof XmlFormat) {
             $writer = new XMLWriter($file->openFile('a'));
-
         } elseif ($format instanceof CompressedFormat) {
-            throw new \LogicException("Not implemented!");
-
+            throw new \LogicException('Not implemented!');
         } else {
-            throw new InvalidConfigurationException("Cannot build writer. Unknown format: ".$format);
+            throw new InvalidConfigurationException('Cannot build writer. Unknown format: '.$format);
         }
 
         return $writer;
@@ -193,14 +184,13 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
         if (!isset($this->info)) {
             $this->info = new StorageInfo(array(
                 'name' => $this->file->getFilename(),
-                'hash' => $this->isReadable()?$this->getHash():null,
+                'hash' => $this->isReadable() ? $this->getHash() : null,
                 'format' => $this->getFormat(),
-                'size' => $this->isReadable()?$this->file->getSize():0,
-                'count' => $this->isReadable()?count($this->reader()):0
+                'size' => $this->isReadable() ? $this->file->getSize() : 0,
+                'count' => $this->isReadable() ? count($this->reader()) : 0,
             ));
         }
 
         return $this->info;
     }
-
 }

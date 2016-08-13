@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format\Discovery;
 
 use Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface;
 
 abstract class AbstractDiscoverStrategy implements FormatDiscoverStrategyInterface
 {
-
     /**
      * @var FormatFactoryInterface[]
      */
@@ -20,5 +20,4 @@ abstract class AbstractDiscoverStrategy implements FormatDiscoverStrategyInterfa
     {
         $this->formatFactories[$id] = $factory;
     }
-
 }

@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\ImportEngine\Validation;
 
 use Ddeboer\DataImport\Workflow;
 
 interface ValidationInterface
 {
-
     /**
      * @return ValidationInterface
      */
@@ -15,5 +15,4 @@ interface ValidationInterface
      * @return array
      */
     public function getViolations();
-
 }

@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\ImportEngine\Exception;
 
 use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class ImportRunException extends ImportException
 {
-
     /**
      * @var ImportRun
      */
@@ -24,5 +24,4 @@ class ImportRunException extends ImportException
     {
         return $this->importRun;
     }
-
 }

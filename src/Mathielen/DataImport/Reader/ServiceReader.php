@@ -1,14 +1,14 @@
 <?php
+
 namespace Mathielen\DataImport\Reader;
 
 use Ddeboer\DataImport\Reader\CountableReaderInterface;
 
 /**
- * Reads data from a given service
+ * Reads data from a given service.
  */
 class ServiceReader implements CountableReaderInterface
 {
-
     /**
      * @var \Iterator
      */
@@ -24,10 +24,10 @@ class ServiceReader implements CountableReaderInterface
      */
     private $arguments;
 
-    public function __construct(callable $callable, array $arguments=array())
+    public function __construct(callable $callable, array $arguments = array())
     {
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Given callable is not a callable");
+            throw new \InvalidArgumentException('Given callable is not a callable');
         }
 
         $this->callable = $callable;
@@ -106,5 +106,4 @@ class ServiceReader implements CountableReaderInterface
     {
         return call_user_func_array($this->callable, $this->arguments);
     }
-
 }

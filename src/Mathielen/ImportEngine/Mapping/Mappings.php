@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Mapping;
 
 use Ddeboer\DataImport\ValueConverter\ValueConverterInterface;
@@ -10,7 +11,6 @@ use Mathielen\ImportEngine\Mapping\Converter\Provider\ConverterProviderInterface
 
 class Mappings extends \ArrayObject
 {
-
     public function getTargetFields()
     {
         $fields = array();
@@ -24,7 +24,7 @@ class Mappings extends \ArrayObject
     /**
      * @return Mappings
      */
-    public function add($from, $to, $converter=null)
+    public function add($from, $to, $converter = null)
     {
         $this->getOrCreateMapping($from)->to = $to;
 
@@ -35,10 +35,10 @@ class Mappings extends \ArrayObject
         return $this;
     }
 
-    public function setConverter($converter, $from=null)
+    public function setConverter($converter, $from = null)
     {
         if (!(is_string($converter) || $converter instanceof ValueConverterInterface || $converter instanceof ItemConverterInterface)) {
-            throw new \InvalidArgumentException("Converter must be an id (string) or of type ValueConverterInterface or ItemConverterInterface");
+            throw new \InvalidArgumentException('Converter must be an id (string) or of type ValueConverterInterface or ItemConverterInterface');
         }
 
         if ($from) {
@@ -63,7 +63,7 @@ class Mappings extends \ArrayObject
     public function get($from)
     {
         if (!isset($this[$from])) {
-            return null;
+            return;
         }
 
         return $this[$from];
@@ -100,7 +100,7 @@ class Mappings extends \ArrayObject
                 }
 
                 if ($converter instanceof ValueConverterInterface) {
-                    $targetField = empty($to)?$from:$to;
+                    $targetField = empty($to) ? $from : $to;
 
                     if (empty($targetField)) {
                         throw new InvalidConfigurationException('Cannot use ValueConverter '.get_class($converter).' without target-field.');
@@ -110,7 +110,7 @@ class Mappings extends \ArrayObject
                 } elseif ($converter instanceof ItemConverterInterface) {
                     $workflow->addItemConverter($converter);
                 } else {
-                    throw new \LogicException("Invalid converter supplied: ".get_class($converter));
+                    throw new \LogicException('Invalid converter supplied: '.get_class($converter));
                 }
             }
         }
@@ -119,5 +119,4 @@ class Mappings extends \ArrayObject
             $workflow->addItemConverter(new MappingItemConverter($fieldMapping));
         }
     }
-
 }

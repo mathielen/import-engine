@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport;
 
 use Ddeboer\DataImport\Result;
@@ -10,7 +11,6 @@ use Ddeboer\DataImport\Exception\ExceptionInterface;
 
 class EventDispatchableWorkflow extends OriginalWorkflow
 {
-
     /**
      * @var EventDispatcherInterface
      */
@@ -28,9 +28,9 @@ class EventDispatchableWorkflow extends OriginalWorkflow
             return parent::process();
         }
 
-        $count      = 0;
+        $count = 0;
         $exceptions = array();
-        $startTime  = new \DateTime;
+        $startTime = new \DateTime();
         $importProcessEvent = new ImportProcessEvent();
 
         //Prepare
@@ -60,7 +60,6 @@ class EventDispatchableWorkflow extends OriginalWorkflow
                 }
 
                 $this->processWrite($convertedItem, $item, $event);
-
             } catch (ExceptionInterface $e) {
                 if ($this->skipItemOnFailure) {
                     $exceptions[] = $e;
@@ -76,7 +75,7 @@ class EventDispatchableWorkflow extends OriginalWorkflow
         //Finish
         $this->finish($importProcessEvent);
 
-        return new Result($this->name, $startTime, new \DateTime, $count, $exceptions);
+        return new Result($this->name, $startTime, new \DateTime(), $count, $exceptions);
     }
 
     private function prepare(ImportProcessEvent $importProcessEvent)
@@ -141,5 +140,4 @@ class EventDispatchableWorkflow extends OriginalWorkflow
 
         $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_WRITE, $event);
     }
-
 }

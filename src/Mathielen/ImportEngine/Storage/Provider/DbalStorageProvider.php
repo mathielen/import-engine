@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\DbalStorage;
@@ -7,7 +8,6 @@ use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class DbalStorageProvider implements StorageProviderInterface
 {
-
     /**
      * @var ConnectionFactoryInterface
      */
@@ -40,10 +40,9 @@ class DbalStorageProvider implements StorageProviderInterface
     public function select($id = null)
     {
         if (!$id) {
-            throw new \InvalidArgumentException("id must not be empty");
+            throw new \InvalidArgumentException('id must not be empty');
         }
 
         return new StorageSelection($this->queries[$id], $id, $id);
     }
-
 }

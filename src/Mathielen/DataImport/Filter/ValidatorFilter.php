@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport\Filter;
 
 use Symfony\Component\Validator\ValidatorInterface;
@@ -13,7 +14,6 @@ use Mathielen\DataImport\Event\ImportItemEvent;
  */
 class ValidatorFilter extends OriginalValidatorFilter
 {
-
     /**
      * @var ValidatorInterface
      */
@@ -38,7 +38,7 @@ class ValidatorFilter extends OriginalValidatorFilter
     public function __construct(
         ValidatorInterface $validator,
         $collectionConstraintOptions = array(),
-        EventDispatcherInterface $eventDispatcher=null)
+        EventDispatcherInterface $eventDispatcher = null)
     {
         $this->validator = $validator;
         $this->collectionConstraintOptions = $collectionConstraintOptions;
@@ -126,7 +126,7 @@ class ValidatorFilter extends OriginalValidatorFilter
         $validationResult = 0 === count($list);
 
         if ($this->eventDispatcher) {
-            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult?$item:false));
+            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult ? $item : false));
         }
 
         return !$this->skipOnViolation || $validationResult;

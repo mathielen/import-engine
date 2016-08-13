@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
@@ -7,13 +8,12 @@ use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class FinderFileStorageProvider extends FileStorageProvider implements \IteratorAggregate
 {
-
     /**
      * @var Finder
      */
     private $finder;
 
-    public function __construct(Finder $finder, StorageFactoryInterface $storageFactory=null)
+    public function __construct(Finder $finder, StorageFactoryInterface $storageFactory = null)
     {
         parent::__construct($storageFactory);
 
@@ -30,5 +30,4 @@ class FinderFileStorageProvider extends FileStorageProvider implements \Iterator
 
         return new \ArrayIterator($files);
     }
-
 }

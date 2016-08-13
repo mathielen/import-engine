@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface;
@@ -7,10 +8,9 @@ use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class UploadFileStorageProvider extends FileStorageProvider
 {
-
     private $targetDirectory;
 
-    public function __construct($targetDirectory, StorageFactoryInterface $storageFactory=null)
+    public function __construct($targetDirectory, StorageFactoryInterface $storageFactory = null)
     {
         parent::__construct($storageFactory);
 
@@ -22,21 +22,22 @@ class UploadFileStorageProvider extends FileStorageProvider
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
      */
     public function select($id = null)
     {
         if ($id instanceof UploadedFile) {
             if (!$id->isValid()) {
-                throw new \InvalidArgumentException("Upload was not successful");
+                throw new \InvalidArgumentException('Upload was not successful');
             }
 
             $newFile = $id->move($this->targetDirectory, $this->generateTargetFilename($id));
 
             $selection = new StorageSelection(
                 new \SplFileInfo($newFile),
-                $this->targetDirectory.  '/' . $newFile->getFilename(),
+                $this->targetDirectory.'/'.$newFile->getFilename(),
                 $id->getClientOriginalName());
 
             return $selection;
@@ -47,7 +48,6 @@ class UploadFileStorageProvider extends FileStorageProvider
 
     private function generateTargetFilename(UploadedFile $file)
     {
-        return uniqid() . '_' . $file->getClientOriginalName();
+        return uniqid().'_'.$file->getClientOriginalName();
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Filter;
 
 use Ddeboer\DataImport\Filter\FilterInterface;
@@ -6,7 +7,6 @@ use Ddeboer\DataImport\Workflow;
 
 class Filters extends \ArrayObject
 {
-
     /**
      * @return \Mathielen\ImportEngine\Filter\Filters
      */
@@ -23,5 +23,4 @@ class Filters extends \ArrayObject
             $workflow->addFilter($filter);
         }
     }
-
 }

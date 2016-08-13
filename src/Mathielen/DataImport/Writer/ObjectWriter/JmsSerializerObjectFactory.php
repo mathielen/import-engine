@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\DataImport\Writer\ObjectWriter;
 
 use JMS\Serializer\SerializerInterface;
 
 class JmsSerializerObjectFactory implements ObjectFactoryInterface
 {
-
     private $classname;
 
     /**

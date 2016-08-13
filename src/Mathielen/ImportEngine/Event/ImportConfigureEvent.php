@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Event;
 
 use Symfony\Component\EventDispatcher\Event;
@@ -6,7 +7,6 @@ use Mathielen\ImportEngine\Import\Import;
 
 class ImportConfigureEvent extends Event
 {
-
     const AFTER_BUILD = 'import-engine.build';
 
     /**
@@ -26,5 +26,4 @@ class ImportConfigureEvent extends Event
     {
         return $this->import;
     }
-
 }

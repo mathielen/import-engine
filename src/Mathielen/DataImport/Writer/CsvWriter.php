@@ -1,10 +1,11 @@
 <?php
 
 namespace Mathielen\DataImport\Writer;
+
 use Ddeboer\DataImport\Writer\AbstractStreamWriter;
 
 /**
- * Writes to a CSV file
+ * Writes to a CSV file.
  *
  * @author David de Boer <david@ddeboer.nl>
  */
@@ -21,13 +22,13 @@ class CsvWriter extends AbstractStreamWriter
     private $enclosure = '"';
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $utf8Encoding = false;
     private $row = 1;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $prependHeaderRow;
 
@@ -35,7 +36,7 @@ class CsvWriter extends AbstractStreamWriter
      * @param string   $delimiter    The delimiter
      * @param string   $enclosure    The enclosure
      * @param resource $stream
-     * @param boolean  $utf8Encoding
+     * @param bool     $utf8Encoding
      */
     public function __construct($delimiter = ';', $enclosure = '"', $stream = null, $utf8Encoding = false, $prependHeaderRow = false)
     {
@@ -54,7 +55,7 @@ class CsvWriter extends AbstractStreamWriter
     public function prepare()
     {
         if ($this->utf8Encoding) {
-            fprintf($this->getStream(), chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fprintf($this->getStream(), chr(0xEF).chr(0xBB).chr(0xBF));
         }
     }
 

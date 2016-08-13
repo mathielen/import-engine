@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport\Writer;
 
 use Ddeboer\DataImport\Writer\WriterInterface;
@@ -6,11 +7,10 @@ use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
 use Mathielen\DataImport\Writer\ObjectWriter\DefaultObjectFactory;
 
 /**
- * Writes data to a given SplObjectStorage
+ * Writes data to a given SplObjectStorage.
  */
 class ObjectWriter implements WriterInterface
 {
-
     /**
      * @var ObjectFactoryInterface
      */
@@ -21,7 +21,7 @@ class ObjectWriter implements WriterInterface
      */
     private $objectStorage;
 
-    public function __construct(\SplObjectStorage $objectStorage, $classOrObjectFactory=null)
+    public function __construct(\SplObjectStorage $objectStorage, $classOrObjectFactory = null)
     {
         $this->objectStorage = $objectStorage;
 
@@ -37,14 +37,14 @@ class ObjectWriter implements WriterInterface
         } elseif (is_string($classOrObjectFactory)) {
             $objectFactory = new DefaultObjectFactory($classOrObjectFactory);
         } else {
-            throw new \InvalidArgumentException("classOrObjectFactory must not be empty");
+            throw new \InvalidArgumentException('classOrObjectFactory must not be empty');
         }
 
         $this->objectFactory = $objectFactory;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function prepare()
     {
@@ -52,7 +52,8 @@ class ObjectWriter implements WriterInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Ddeboer\DataImport\Writer\WriterInterface::writeItem()
      */
     public function writeItem(array $item)
@@ -84,7 +85,7 @@ class ObjectWriter implements WriterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function finish()
     {

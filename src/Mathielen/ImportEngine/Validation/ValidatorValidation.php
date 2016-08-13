@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Validation;
 
 use Ddeboer\DataImport\Workflow;
@@ -8,7 +9,6 @@ use Mathielen\DataImport\Filter\ValidatorFilter;
 
 class ValidatorValidation implements ValidationInterface
 {
-
     /**
      * @var ValidatorInterface
      */
@@ -109,7 +109,7 @@ class ValidatorValidation implements ValidationInterface
      */
     public function getViolations()
     {
-        $violations = array('source'=>array(), 'target'=>array());
+        $violations = array('source' => array(), 'target' => array());
         if ($this->sourceValidatorFilter) {
             $violations['source'] = $this->sourceValidatorFilter->getViolations();
         }
@@ -119,5 +119,4 @@ class ValidatorValidation implements ValidationInterface
 
         return $violations;
     }
-
 }

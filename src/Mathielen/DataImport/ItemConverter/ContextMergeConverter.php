@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport\ItemConverter;
 
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
@@ -9,7 +10,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ContextMergeConverter implements ItemConverterInterface, EventSubscriberInterface
 {
-
     private $currentContext;
 
     public static function getSubscribedEvents()
@@ -43,7 +43,7 @@ class ContextMergeConverter implements ItemConverterInterface, EventSubscriberIn
         }
 
         $converted = array_merge($this->currentContext, $input);
+
         return $converted;
     }
-
 }

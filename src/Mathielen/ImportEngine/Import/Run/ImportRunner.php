@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Import\Run;
 
 use Ddeboer\DataImport\Workflow;
@@ -13,7 +14,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportRunner
 {
-
     /**
      * @var WorkflowFactoryInterface
      */
@@ -58,13 +58,13 @@ class ImportRunner
         }
 
         if ($e && $importRun->getConfiguration()) {
-            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE . '.' . $importRun->getConfiguration()->getImporterId(), $e);
+            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_PREPARE.'.'.$importRun->getConfiguration()->getImporterId(), $e);
         }
 
         $workflow->process();
 
         if ($e && $importRun->getConfiguration()) {
-            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH . '.' . $importRun->getConfiguration()->getImporterId(), $e);
+            $this->eventDispatcher->dispatch(ImportProcessEvent::AFTER_FINISH.'.'.$importRun->getConfiguration()->getImporterId(), $e);
         }
     }
 
@@ -120,5 +120,4 @@ class ImportRunner
 
         return $importRun;
     }
-
 }

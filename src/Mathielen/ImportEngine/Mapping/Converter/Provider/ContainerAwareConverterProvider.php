@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\ImportEngine\Mapping\Converter\Provider;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ContainerAwareConverterProvider extends DefaultConverterProvider implements ConverterProviderInterface
 {
-
     /**
      * @var ContainerInterface
      */
@@ -32,5 +32,4 @@ class ContainerAwareConverterProvider extends DefaultConverterProvider implement
     {
         return parent::has($id) || $this->container->has($id);
     }
-
 }

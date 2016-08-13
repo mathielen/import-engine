@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Writer\DoctrineWriter;
@@ -9,7 +10,6 @@ use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class DoctrineStorage implements StorageInterface
 {
-
     /**
      * @var EntityManagerInterface
      */
@@ -22,7 +22,7 @@ class DoctrineStorage implements StorageInterface
 
     private $entityName;
 
-    public function __construct(EntityManagerInterface $entityManager, $entityName=null, Query $query=null)
+    public function __construct(EntityManagerInterface $entityManager, $entityName = null, Query $query = null)
     {
         $this->entityManager = $entityManager;
         $this->entityName = $entityName;
@@ -58,12 +58,12 @@ class DoctrineStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer().
      */
     public function writer()
     {
         if (empty($this->entityName)) {
-            throw new InvalidConfigurationException("Can only use doctrine for writing if entityName is given.");
+            throw new InvalidConfigurationException('Can only use doctrine for writing if entityName is given.');
         }
 
         $writer = new DoctrineWriter($this->entityManager, $this->entityName);
@@ -73,7 +73,7 @@ class DoctrineStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::info()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::info().
      */
     public function info()
     {
@@ -82,12 +82,12 @@ class DoctrineStorage implements StorageInterface
         return new StorageInfo(array(
             'name' => $this->query->getDQL(),
             'type' => 'DQL Query',
-            'count' => $count
+            'count' => $count,
         ));
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::reader()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::reader().
      */
     public function reader()
     {
@@ -95,7 +95,7 @@ class DoctrineStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::getFields()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::getFields().
      */
     public function getFields()
     {

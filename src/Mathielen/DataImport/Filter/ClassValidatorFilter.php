@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport\Filter;
 
 use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
@@ -7,7 +8,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ClassValidatorFilter extends ValidatorFilter
 {
-
     /**
      * @var ObjectFactoryInterface
      */
@@ -16,14 +16,15 @@ class ClassValidatorFilter extends ValidatorFilter
     public function __construct(
         ValidatorInterface $validator,
         ObjectFactoryInterface $objectFactory,
-        EventDispatcherInterface $eventDispatcher=null)
+        EventDispatcherInterface $eventDispatcher = null)
     {
         parent::__construct($validator, array(), $eventDispatcher);
         $this->objectFactory = $objectFactory;
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\DataImport\Filter\ValidatorFilter::validate()
      */
     protected function validate(array $item)
@@ -33,5 +34,4 @@ class ClassValidatorFilter extends ValidatorFilter
 
         return $list;
     }
-
 }

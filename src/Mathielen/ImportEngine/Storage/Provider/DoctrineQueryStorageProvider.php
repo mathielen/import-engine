@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,9 +11,7 @@ use Mathielen\ImportEngine\Storage\DoctrineStorage;
 
 class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProviderInterface
 {
-
     /**
-     *
      * @var ConnectionFactoryInterface
      */
     private $connectionFactory;
@@ -30,8 +29,8 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
 
     private function resolveQueries($classNamesOrQueries)
     {
-        if ( !is_array( $classNamesOrQueries ) && !$classNamesOrQueries instanceof \Traversable ) {
-            throw new \InvalidArgumentException("classNamesOrQueries must be an array or Traversable");
+        if (!is_array($classNamesOrQueries) && !$classNamesOrQueries instanceof \Traversable) {
+            throw new \InvalidArgumentException('classNamesOrQueries must be an array or Traversable');
         }
 
         //TODO what about different entity providers ?
@@ -39,23 +38,20 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
         $entityManager = $this->connectionFactory->getConnection();
 
         $this->queries = array();
-        foreach ($classNamesOrQueries as $k=>$classNameOrQuery) {
+        foreach ($classNamesOrQueries as $k => $classNameOrQuery) {
             if (is_string($classNameOrQuery) && class_exists($classNameOrQuery)) {
                 $query = $entityManager->createQueryBuilder()
                     ->select('o')
                     ->from($classNameOrQuery, 'o')
                     ->getQuery();
                 $selection = new StorageSelection($query, $classNameOrQuery, $classNameOrQuery);
-
             } elseif (is_string($classNameOrQuery)) {
                 $query = $entityManager->createQuery($classNameOrQuery);
                 $selection = new StorageSelection($query, $query->getDQL(), $query->getDQL());
-
             } elseif ($classNameOrQuery instanceof Query) {
                 $selection = new StorageSelection($classNameOrQuery, $classNameOrQuery->getDQL(), $classNameOrQuery->getDQL());
-
             } else {
-                throw new \InvalidArgumentException("Only strings or QueryBuilder are allowed!");
+                throw new \InvalidArgumentException('Only strings or QueryBuilder are allowed!');
             }
 
             $this->queries[$k] = $selection;
@@ -68,7 +64,8 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::storage()
      */
     public function storage(StorageSelection $selection)
@@ -79,7 +76,8 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Provider\StorageProviderInterface::select()
      */
     public function select($id = null)
@@ -90,5 +88,4 @@ class DoctrineQueryStorageProvider implements \IteratorAggregate, StorageProvide
             return $this->queries[$id];
         }
     }
-
 }

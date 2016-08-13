@@ -1,14 +1,14 @@
 <?php
+
 namespace Mathielen\DataImport\Writer;
 
 use Ddeboer\DataImport\Writer\WriterInterface;
 
 /**
- * Writes data to a xml file
+ * Writes data to a xml file.
  */
 class XmlWriter implements WriterInterface
 {
-
     /**
      * @var \DOMDocument
      */
@@ -23,7 +23,7 @@ class XmlWriter implements WriterInterface
     private $rowNodeName;
     private $rootNodeName;
 
-    public function __construct(\SplFileObject $file, $rowNodeName='node', $rootNodeName = 'root')
+    public function __construct(\SplFileObject $file, $rowNodeName = 'node', $rootNodeName = 'root')
     {
         $this->filename = $file->getRealPath();
         $this->rowNodeName = $rowNodeName;
@@ -31,7 +31,7 @@ class XmlWriter implements WriterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function prepare()
     {
@@ -43,7 +43,8 @@ class XmlWriter implements WriterInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Ddeboer\DataImport\Writer\WriterInterface::writeItem()
      */
     public function writeItem(array $item)
@@ -67,13 +68,13 @@ class XmlWriter implements WriterInterface
             $newNode->appendChild($node);
         }
 
-        $this->rootNode->appendChild( $newNode );
+        $this->rootNode->appendChild($newNode);
 
         return $this;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function finish()
     {

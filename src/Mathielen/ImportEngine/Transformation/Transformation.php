@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Transformation;
 
 use Mathielen\ImportEngine\Mapping\Converter\Provider\DefaultConverterProvider;
@@ -9,7 +10,6 @@ use Ddeboer\DataImport\Reader\ReaderInterface;
 
 class Transformation
 {
-
     /**
      * @var ConverterProviderInterface
      */
@@ -61,5 +61,4 @@ class Transformation
     {
         return $this->mappingFactory->factor($reader);
     }
-
 }

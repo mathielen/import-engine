@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format\Discovery\Mime;
 
 class MimeTypeDiscoverer
 {
-
     const MIME_PPTX = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     const MIME_DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     const MIME_XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -109,7 +109,7 @@ class MimeTypeDiscoverer
     private function getMimetypeFromMultifileZip(\ZipArchive $zip)
     {
         //check for ms office xml filetypes
-        for ($i=0; $i<$zip->numFiles; ++$i) {
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
             $stat = $zip->statIndex($i);
             $fileName = $stat['name'];
 
@@ -143,5 +143,4 @@ class MimeTypeDiscoverer
 
         return 'application/zip '.$mimeType.'@'.$stat['name'];
     }
-
 }

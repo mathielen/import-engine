@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format\Discovery;
 
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
@@ -12,7 +13,6 @@ use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
 {
-
     /**
      * @var MimeTypeDiscoverer
      */
@@ -29,7 +29,8 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface::getFormat()
      */
     public function getFormat(StorageSelection $selection)
@@ -42,7 +43,7 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
         return $type;
     }
 
-    private function mimeTypeToFormat($mimeType, $uri=null , $subInformation=null)
+    private function mimeTypeToFormat($mimeType, $uri = null, $subInformation = null)
     {
         if (isset($this->formatFactories[$mimeType])) {
             return $this->formatFactories[$mimeType]->factor($uri);
@@ -72,5 +73,4 @@ class MimeTypeDiscoverStrategy extends AbstractDiscoverStrategy
                 throw new InvalidConfigurationException("Unknown mime-type: '$mimeType'. No registered factory nor any default for '$uri''");
         }
     }
-
 }

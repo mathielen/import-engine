@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\ReaderInterface;
@@ -6,7 +7,6 @@ use Ddeboer\DataImport\Writer\WriterInterface;
 
 interface StorageInterface
 {
-
     /**
      * @return ReaderInterface
      */
@@ -23,5 +23,4 @@ interface StorageInterface
     public function info();
 
     public function getFields();
-
 }

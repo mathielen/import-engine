@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Mathielen\DataImport\Reader\ServiceReader;
@@ -6,7 +7,6 @@ use Mathielen\DataImport\Writer\ServiceWriter;
 
 class ServiceStorage implements StorageInterface
 {
-
     /**
      * @var callable
      */
@@ -84,9 +84,9 @@ class ServiceStorage implements StorageInterface
     public function info()
     {
         return new StorageInfo(array(
-            'name' => get_class($this->callable[0]) . '->' . $this->callable[1],
+            'name' => get_class($this->callable[0]).'->'.$this->callable[1],
             'format' => 'Service method',
-            'count' => count($this->reader())
+            'count' => count($this->reader()),
         ));
     }
 

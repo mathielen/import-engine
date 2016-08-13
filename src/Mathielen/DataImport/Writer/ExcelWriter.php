@@ -7,7 +7,7 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 
 /**
- * Writes to an Excel file
+ * Writes to an Excel file.
  *
  * @author David de Boer <david@ddeboer.nl>
  */
@@ -29,7 +29,7 @@ class ExcelWriter extends AbstractWriter
     protected $type;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $prependHeaderRow;
 
@@ -39,7 +39,7 @@ class ExcelWriter extends AbstractWriter
     protected $excel;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $row = 1;
 
@@ -47,7 +47,7 @@ class ExcelWriter extends AbstractWriter
      * @param \SplFileObject $file             File
      * @param string         $sheet            Sheet title (optional)
      * @param string         $type             Excel file type (defaults to Excel2007)
-     * @param boolean        $prependHeaderRow
+     * @param bool           $prependHeaderRow
      */
     public function __construct(\SplFileObject $file, $sheet = null, $type = 'Excel2007', $prependHeaderRow = false)
     {
@@ -87,19 +87,19 @@ class ExcelWriter extends AbstractWriter
         if ($this->prependHeaderRow && 1 == $this->row) {
             $headers = array_keys($item);
 
-            for ($i = 0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; ++$i) {
                 $this->excel->getActiveSheet()->setCellValueByColumnAndRow($i, $this->row, $headers[$i]);
             }
-            $this->row++;
+            ++$this->row;
         }
 
         $values = array_values($item);
 
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $this->excel->getActiveSheet()->setCellValueByColumnAndRow($i, $this->row, $values[$i]);
         }
 
-        $this->row++;
+        ++$this->row;
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
+
 namespace Mathielen\ImportEngine\ValueObject;
 
 class StorageSelection
 {
-
     protected $providerId = 'defaultProvider';
     protected $id;
     protected $name;
     protected $impl;
     protected $metadata = array();
 
-    public function __construct($impl, $id=null, $name=null, array $metadata=array())
+    public function __construct($impl, $id = null, $name = null, array $metadata = array())
     {
         $this->impl = $impl;
         $this->id = $id;
@@ -31,7 +31,7 @@ class StorageSelection
     public function getMetadata($key)
     {
         if (!isset($this->metadata[$key])) {
-            return null;
+            return;
         }
 
         return $this->metadata[$key];
@@ -68,7 +68,7 @@ class StorageSelection
         if (is_array($this->impl) && isset($this->impl['class'])) {
             $reflectionClass = new \ReflectionClass($this->impl['class']);
 
-            return $reflectionClass->newInstanceArgs(isset($this->impl['args'])?$this->impl['args']:null);
+            return $reflectionClass->newInstanceArgs(isset($this->impl['args']) ? $this->impl['args'] : null);
         }
 
         return $this->impl;
@@ -80,8 +80,8 @@ class StorageSelection
 
             //TODO some sort of serializable wrapper?
             $this->impl = array(
-                'class'=>get_class($this->impl),
-                'args'=>array($this->impl->getRealPath())
+                'class' => get_class($this->impl),
+                'args' => array($this->impl->getRealPath()),
             );
         }
     }
@@ -93,7 +93,6 @@ class StorageSelection
 
     public function __toString()
     {
-        return http_build_query ($this->toArray());
+        return http_build_query($this->toArray());
     }
-
 }

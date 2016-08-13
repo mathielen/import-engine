@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\DataImport\Writer\ObjectWriter;
 
 /**
@@ -10,7 +11,6 @@ namespace Mathielen\DataImport\Writer\ObjectWriter;
  */
 class DefaultObjectFactory implements ObjectFactoryInterface
 {
-
     private $classname;
 
     public function __construct($classname)

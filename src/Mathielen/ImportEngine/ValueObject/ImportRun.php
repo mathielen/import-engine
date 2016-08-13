@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\ValueObject;
 
 class ImportRun
 {
-
     const STATE_REVOKED = 'revoked';
     const STATE_FINISHED = 'finished';
     const STATE_CREATED = 'created';
@@ -43,11 +43,11 @@ class ImportRun
     protected $info = array();
 
     /**
-     * arbitrary data
+     * arbitrary data.
      */
     protected $context;
 
-    public function __construct(ImportConfiguration $configuration=null, $createdBy = null)
+    public function __construct(ImportConfiguration $configuration = null, $createdBy = null)
     {
         $this->id = uniqid();
         $this->createdAt = new \DateTime();
@@ -58,7 +58,7 @@ class ImportRun
     /**
      * @return ImportRun
      */
-    public static function create(ImportConfiguration $configuration=null, $createdBy = null)
+    public static function create(ImportConfiguration $configuration = null, $createdBy = null)
     {
         return new self($configuration, $createdBy);
     }
@@ -141,9 +141,9 @@ class ImportRun
     /**
      * @return ImportRun
      */
-    public function validated(array $validationMessages=null)
+    public function validated(array $validationMessages = null)
     {
-        $this->validatedAt = empty($this->validatedAt)?new \DateTime():$this->validatedAt;
+        $this->validatedAt = empty($this->validatedAt) ? new \DateTime() : $this->validatedAt;
         $this->validationMessages = $validationMessages;
 
         return $this;
@@ -226,15 +226,14 @@ class ImportRun
     {
         return array(
             'id' => $this->id,
-            'configuration' => $this->configuration?$this->configuration->toArray():null,
+            'configuration' => $this->configuration ? $this->configuration->toArray() : null,
             'statistics' => $this->statistics,
             'created_by' => $this->createdBy,
             'created_at' => $this->createdAt->getTimestamp(),
             'revoked_by' => $this->revokedBy,
-            'revoked_at' => $this->revokedAt?$this->revokedAt->getTimestamp():null,
-            'finished_at' => $this->finishedAt?$this->finishedAt->getTimestamp():null,
-            'state' => $this->getState()
+            'revoked_at' => $this->revokedAt ? $this->revokedAt->getTimestamp() : null,
+            'finished_at' => $this->finishedAt ? $this->finishedAt->getTimestamp() : null,
+            'state' => $this->getState(),
         );
     }
-
 }

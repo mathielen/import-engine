@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Import\Workflow;
 
 use Mathielen\DataImport\EventDispatchableWorkflow;
@@ -13,13 +14,12 @@ use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class DefaultWorkflowFactory implements WorkflowFactoryInterface
 {
-
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher=null)
+    public function __construct(EventDispatcherInterface $eventDispatcher = null)
     {
         if (!$eventDispatcher) {
             $eventDispatcher = new EventDispatcher();
@@ -44,7 +44,8 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface::buildPreviewWorkflow()
      */
     public function buildPreviewWorkflow(Import $import, array &$previewResult, $offset = 0)
@@ -54,13 +55,13 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
 
         //callback filter for getting the source-data
         $workflow->addFilter(new PriorityCallbackFilter(function (array $item) use (&$previewResult) {
-            $previewResult["from"] = $item;
+            $previewResult['from'] = $item;
 
             return true;
         }, 96)); //before validation (64) but after offset (128)
 
         //output
-        $workflow->addWriter(new ArrayWriter($previewResult["to"]));
+        $workflow->addWriter(new ArrayWriter($previewResult['to']));
 
         //preview offset
         $workflow->addFilter(new OffsetFilter($offset, 1));
@@ -69,10 +70,11 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface::buildRunWorkflow()
      */
-    public function buildRunWorkflow(Import $import, ImportRun $importRun=null)
+    public function buildRunWorkflow(Import $import, ImportRun $importRun = null)
     {
         //build basics
         $workflow = $this->buildBaseWorkflow($import);
@@ -88,10 +90,11 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Import\Workflow\WorkflowFactoryInterface::buildDryrunWorkflow()
      */
-    public function buildDryrunWorkflow(Import $import, ImportRun $importRun=null)
+    public function buildDryrunWorkflow(Import $import, ImportRun $importRun = null)
     {
         //build basics
         $workflow = $this->buildBaseWorkflow($import);
@@ -102,5 +105,4 @@ class DefaultWorkflowFactory implements WorkflowFactoryInterface
 
         return $workflow;
     }
-
 }

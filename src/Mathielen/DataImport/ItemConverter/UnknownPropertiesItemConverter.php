@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\DataImport\ItemConverter;
 
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
 class UnknownPropertiesItemConverter implements ItemConverterInterface
 {
-
     private $knownProperties;
 
     private $targetProperty;
@@ -14,7 +14,7 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
     public function __construct(array $knownProperties, $targetProperty = 'ATTRIBUTES', $skipEmptyKey = true)
     {
-        $this->knownProperties = array_map("strtoupper", $knownProperties);
+        $this->knownProperties = array_map('strtoupper', $knownProperties);
         $this->targetProperty = $targetProperty;
         $this->skipEmptyKey = $skipEmptyKey;
 
@@ -60,5 +60,4 @@ class UnknownPropertiesItemConverter implements ItemConverterInterface
 
         return $input;
     }
-
 }

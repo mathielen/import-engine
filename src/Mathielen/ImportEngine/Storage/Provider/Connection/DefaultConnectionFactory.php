@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Provider\Connection;
 
 use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class DefaultConnectionFactory implements ConnectionFactoryInterface
 {
-
     /**
      * @var array
      */

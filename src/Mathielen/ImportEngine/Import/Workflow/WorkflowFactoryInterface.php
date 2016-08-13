@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Import\Workflow;
 
 use Mathielen\ImportEngine\Import\Import;
@@ -7,7 +8,6 @@ use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 interface WorkflowFactoryInterface
 {
-
     /**
      * @return Workflow
      */
@@ -22,5 +22,4 @@ interface WorkflowFactoryInterface
      * @return Workflow
      */
     public function buildRunWorkflow(Import $import, ImportRun $importRun);
-
 }

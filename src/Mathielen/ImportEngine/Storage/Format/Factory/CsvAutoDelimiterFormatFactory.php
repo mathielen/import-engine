@@ -1,11 +1,11 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format\Factory;
 
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
 
 class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
 {
-
     /**
      * @return \Mathielen\ImportEngine\Storage\Format\Format
      */
@@ -24,7 +24,7 @@ class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
         $charStats = count_chars($specialCharString, 1);
 
         if (empty($charStats)) {
-            throw new \LogicException("Could not discover CSV-delimiter!");
+            throw new \LogicException('Could not discover CSV-delimiter!');
         }
 
         arsort($charStats);
@@ -32,5 +32,4 @@ class CsvAutoDelimiterFormatFactory implements FormatFactoryInterface
 
         return $delimiter;
     }
-
 }

@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format;
 
 class Format
 {
-
     protected $id = null;
     protected $name = 'Unknown';
 
@@ -21,5 +21,4 @@ class Format
     {
         return get_object_vars($this);
     }
-
 }

@@ -1,13 +1,14 @@
 <?php
+
 namespace Mathielen\DataImport\Reader;
+
 use Ddeboer\DataImport\Reader\CountableReaderInterface;
 
 /**
- * Reads data from a xml file
+ * Reads data from a xml file.
  */
 class XmlReader implements CountableReaderInterface
 {
-
     /**
      * @var \Iterator
      */
@@ -16,12 +17,12 @@ class XmlReader implements CountableReaderInterface
     private $filename;
     private $xpath;
 
-    public function __construct(\SplFileObject $file, $xpath=null)
+    public function __construct(\SplFileObject $file, $xpath = null)
     {
         $this->filename = $file->getPathname();
 
         if (!is_null($xpath) && !is_string($xpath)) {
-            throw new \InvalidArgumentException("xpath must be null or a string");
+            throw new \InvalidArgumentException('xpath must be null or a string');
         }
 
         $this->xpath = $xpath;
@@ -98,5 +99,4 @@ class XmlReader implements CountableReaderInterface
 
         return count($this->iterableResult);
     }
-
 }

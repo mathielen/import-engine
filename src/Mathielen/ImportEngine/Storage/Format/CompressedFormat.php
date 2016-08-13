@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format;
 
 class CompressedFormat extends Format
 {
-
     /**
      * @var Format
      */
@@ -15,13 +15,13 @@ class CompressedFormat extends Format
     protected $name = 'Compressed File';
     protected $id = 'compress';
 
-    public function __construct($uriInsideArchive=null, $wrapper='zip', Format $subFormat=null)
+    public function __construct($uriInsideArchive = null, $wrapper = 'zip', Format $subFormat = null)
     {
         if (!is_string($wrapper)) {
-            throw new \InvalidArgumentException("wrapper argument must be a string");
+            throw new \InvalidArgumentException('wrapper argument must be a string');
         }
         if (!is_null($uriInsideArchive) && !is_string($uriInsideArchive)) {
-            throw new \InvalidArgumentException("uriInsideArchive argument must be a string");
+            throw new \InvalidArgumentException('uriInsideArchive argument must be a string');
         }
 
         $this->uriInsideArchive = $uriInsideArchive;
@@ -37,10 +37,10 @@ class CompressedFormat extends Format
     public function getInsideStream(\SplFileInfo $file)
     {
         if (is_null($this->uriInsideArchive)) {
-            throw new \LogicException("This compressed archive has multiple files in it. Cannot create a single stream.");
+            throw new \LogicException('This compressed archive has multiple files in it. Cannot create a single stream.');
         }
 
-        $streamUri = $this->wrapper . '://' . $file . '#' . $this->uriInsideArchive;
+        $streamUri = $this->wrapper.'://'.$file.'#'.$this->uriInsideArchive;
         $uncompressedUri = tempnam('/tmp', 'compressed');
         file_put_contents($uncompressedUri, file_get_contents($streamUri));
 
@@ -49,7 +49,6 @@ class CompressedFormat extends Format
 
     public function __toString()
     {
-        return $this->name . ' with sub-format: '.$this->subFormat;
+        return $this->name.' with sub-format: '.$this->subFormat;
     }
-
 }

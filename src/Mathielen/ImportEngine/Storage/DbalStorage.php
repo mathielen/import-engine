@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage;
 
 use Ddeboer\DataImport\Reader\DbalReader;
@@ -7,7 +8,6 @@ use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
 class DbalStorage implements StorageInterface
 {
-
     /**
      * @var Connection
      */
@@ -19,7 +19,7 @@ class DbalStorage implements StorageInterface
 
     private $info;
 
-    public function __construct(Connection $connection, $tableName=null, $query=null)
+    public function __construct(Connection $connection, $tableName = null, $query = null)
     {
         $this->connection = $connection;
         $this->tableName = $tableName;
@@ -27,7 +27,6 @@ class DbalStorage implements StorageInterface
     }
 
     /**
-     * @return null
      */
     public function getQuery()
     {
@@ -43,7 +42,6 @@ class DbalStorage implements StorageInterface
     }
 
     /**
-     * @return null
      */
     public function getTableName()
     {
@@ -59,12 +57,12 @@ class DbalStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::writer().
      */
     public function writer()
     {
         if (empty($this->tableName)) {
-            throw new InvalidConfigurationException("Can only use pdo for writing if tableName is given.");
+            throw new InvalidConfigurationException('Can only use pdo for writing if tableName is given.');
         }
 
         //TODO implement me
@@ -73,7 +71,7 @@ class DbalStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::info()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::info().
      */
     public function info()
     {
@@ -81,7 +79,7 @@ class DbalStorage implements StorageInterface
             $this->info = new StorageInfo(array(
                 'name' => $this->query,
                 'type' => 'SQL Query',
-                'count' => count($this->reader())
+                'count' => count($this->reader()),
             ));
         }
 
@@ -89,7 +87,7 @@ class DbalStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::reader()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::reader().
      */
     public function reader()
     {
@@ -97,7 +95,7 @@ class DbalStorage implements StorageInterface
     }
 
     /**
-     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::getFields()
+     * (non-PHPdoc) @see \Mathielen\ImportEngine\Storage\StorageInterface::getFields().
      */
     public function getFields()
     {

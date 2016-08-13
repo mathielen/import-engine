@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Import;
 
 use Mathielen\ImportEngine\Importer\Importer;
@@ -10,7 +11,6 @@ use Mathielen\ImportEngine\ValueObject\ImportRun;
 
 class Import
 {
-
     /**
      * @var ImporterInterface
      */
@@ -39,12 +39,12 @@ class Import
     /**
      * @return Import
      */
-    public static function build(ImporterInterface $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
+    public static function build(ImporterInterface $importer, StorageInterface $sourceStorage, ImportRun $importRun = null)
     {
         return new self($importer, $sourceStorage, $importRun);
     }
 
-    public function __construct(ImporterInterface $importer, StorageInterface $sourceStorage, ImportRun $importRun=null)
+    public function __construct(ImporterInterface $importer, StorageInterface $sourceStorage, ImportRun $importRun = null)
     {
         if (!$importRun) {
             $importRun = new ImportRun();
@@ -99,5 +99,4 @@ class Import
     {
         return $this->importRun;
     }
-
 }

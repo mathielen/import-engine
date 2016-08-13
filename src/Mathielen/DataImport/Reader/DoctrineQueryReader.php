@@ -1,15 +1,15 @@
 <?php
+
 namespace Mathielen\DataImport\Reader;
 
 use Ddeboer\DataImport\Reader\DoctrineReader;
 use Doctrine\ORM\Query;
 
 /**
- * Reads entities through the Doctrine ORM via a definied query
+ * Reads entities through the Doctrine ORM via a definied query.
  */
 class DoctrineQueryReader extends DoctrineReader
 {
-
     /**
      * @var Query
      */
@@ -55,5 +55,4 @@ class DoctrineQueryReader extends DoctrineReader
 
         return $totalRows;
     }
-
 }

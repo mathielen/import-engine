@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Importer;
 
 use Mathielen\ImportEngine\Storage\StorageInterface;
@@ -9,7 +10,6 @@ use Psr\Log\LoggerInterface;
 
 class ImporterPrecondition
 {
-
     private $filenames = array();
     private $formats = array();
     private $fieldcount = null;
@@ -37,7 +37,7 @@ class ImporterPrecondition
     }
 
     /**
-     * Fieldset must have this number of fields
+     * Fieldset must have this number of fields.
      *
      * @return ImporterPrecondition
      */
@@ -49,7 +49,7 @@ class ImporterPrecondition
     }
 
     /**
-     * Fieldset must have field with this name, anywhere in fieldset
+     * Fieldset must have field with this name, anywhere in fieldset.
      *
      * @return ImporterPrecondition
      */
@@ -61,7 +61,7 @@ class ImporterPrecondition
     }
 
     /**
-     * Add required fields, must exist in the given order
+     * Add required fields, must exist in the given order.
      *
      * @return ImporterPrecondition
      */
@@ -75,7 +75,7 @@ class ImporterPrecondition
     public function isSatisfiedBy(StorageInterface $storage, LoggerInterface $logger = null)
     {
         if (!($storage instanceof StorageFormatInterface) && !empty($this->formats)) {
-            throw new InvalidConfigurationException("Cannot check format when storage does not implement StorageFormatInterface");
+            throw new InvalidConfigurationException('Cannot check format when storage does not implement StorageFormatInterface');
         }
 
         if (!$this->isSatisfiedFilename($storage->info()['name'], $logger)) {
@@ -114,7 +114,7 @@ class ImporterPrecondition
         }
 
         if ($logger) {
-            $logger->debug("Storage does not meet Preconditions due to filename restriction. Was $filename, should be one of " . join(',', $this->filenames));
+            $logger->debug("Storage does not meet Preconditions due to filename restriction. Was $filename, should be one of ".implode(',', $this->filenames));
         }
 
         return false;
@@ -133,7 +133,7 @@ class ImporterPrecondition
         }
 
         if ($logger) {
-            $logger->debug("Storage does not meet Preconditions due to format restriction. Was $format, should be one of " . join(',', $this->formats));
+            $logger->debug("Storage does not meet Preconditions due to format restriction. Was $format, should be one of ".implode(',', $this->formats));
         }
 
         return false;
@@ -150,7 +150,7 @@ class ImporterPrecondition
         }
 
         if ($logger) {
-            $logger->debug("Storage does not meet Preconditions due to fieldcount restriction. Was $fieldCount, should be " . $this->fieldcount);
+            $logger->debug("Storage does not meet Preconditions due to fieldcount restriction. Was $fieldCount, should be ".$this->fieldcount);
         }
 
         return false;
@@ -166,13 +166,13 @@ class ImporterPrecondition
         $fields = array_map('trim', $fields);
 
         foreach ($this->anyfields as $anyField) {
-           if (!in_array($anyField, $fields)) {
-               if ($logger) {
-                   $logger->debug("Storage does not meet Preconditions due to fields restriction. Missing field: '$anyField'");
-               }
+            if (!in_array($anyField, $fields)) {
+                if ($logger) {
+                    $logger->debug("Storage does not meet Preconditions due to fields restriction. Missing field: '$anyField'");
+                }
 
-               return false;
-           }
+                return false;
+            }
         }
 
         return true;
@@ -189,10 +189,9 @@ class ImporterPrecondition
         }
 
         if ($logger) {
-            $logger->debug("Storage does not meet Preconditions due to fieldset restriction. Was ".join(',', $fieldset).", should be " . join(',', $this->fieldset));
+            $logger->debug('Storage does not meet Preconditions due to fieldset restriction. Was '.implode(',', $fieldset).', should be '.implode(',', $this->fieldset));
         }
 
         return false;
     }
-
 }

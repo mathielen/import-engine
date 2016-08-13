@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Markus
  * Date: 03.06.2015
- * Time: 18:46
+ * Time: 18:46.
  */
 namespace Mathielen\ImportEngine\Importer;
 

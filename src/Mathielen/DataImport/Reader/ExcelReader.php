@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\DataImport\Reader;
 
 class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
 {
-
     private $activeSheet;
     private $file;
 
@@ -25,7 +25,7 @@ class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
         if (!is_null($headerRowNumber)) {
             $this->headerRowNumber = $headerRowNumber;
             $headerReader = clone $this->reader;
-            $headerReader->setReadFilter(new ReadFilter($headerRowNumber+1));
+            $headerReader->setReadFilter(new ReadFilter($headerRowNumber + 1));
 
             /** @var \PHPExcel $excel */
             $excel = $headerReader->load($file->getPathname());
@@ -39,7 +39,7 @@ class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
 
             //set max col from header length if not already given
             if (is_null($maxCol)) {
-                $maxCol = \PHPExcel_Cell::stringFromColumnIndex(count($this->columnHeaders)-1);
+                $maxCol = \PHPExcel_Cell::stringFromColumnIndex(count($this->columnHeaders) - 1);
             }
         }
 
@@ -79,7 +79,7 @@ class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
             $this->count = $maxRowMaxCol['row'];
 
             if (null !== $this->headerRowNumber) {
-                $this->count--;
+                --$this->count;
             }
         }
 
@@ -103,19 +103,17 @@ class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
 
         parent::rewind();
     }
-
 }
 
 class ReadFilter implements \PHPExcel_Reader_IReadFilter
 {
-
     private $maxRows;
     private $maxColIdx;
 
     public function __construct($maxRows = null, $maxCol = null)
     {
         $this->maxRows = $maxRows;
-        $this->maxColIdx = $maxCol?\PHPExcel_Cell::columnIndexFromString($maxCol):null;
+        $this->maxColIdx = $maxCol ? \PHPExcel_Cell::columnIndexFromString($maxCol) : null;
     }
 
     public function readCell($column, $row, $worksheetName = '')
@@ -129,5 +127,4 @@ class ReadFilter implements \PHPExcel_Reader_IReadFilter
 
         return true;
     }
-
 }

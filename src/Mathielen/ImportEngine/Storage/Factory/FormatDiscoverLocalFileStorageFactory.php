@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Factory;
 
 use Mathielen\ImportEngine\Storage\LocalFileStorage;
@@ -9,7 +10,6 @@ use Psr\Log\LoggerInterface;
 
 class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
 {
-
     /**
      * @var FormatDiscoverStrategyInterface
      */
@@ -20,14 +20,15 @@ class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
      */
     private $logger;
 
-    public function __construct(FormatDiscoverStrategyInterface $formatDiscoverStrategyInterface, LoggerInterface $logger=null)
+    public function __construct(FormatDiscoverStrategyInterface $formatDiscoverStrategyInterface, LoggerInterface $logger = null)
     {
         $this->formatDiscoverStrategyInterface = $formatDiscoverStrategyInterface;
         $this->logger = $logger;
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Factory\StorageFactoryInterface::factor()
      */
     public function factor(StorageSelection $selection)
@@ -35,21 +36,21 @@ class FormatDiscoverLocalFileStorageFactory implements StorageFactoryInterface
         $file = $selection->getImpl();
 
         if (!($file instanceof \SplFileInfo)) {
-            throw new InvalidConfigurationException("StorageSelection does not contain a SplFileInfo as impl property but this is mandatory for a LocalFileStorage.");
+            throw new InvalidConfigurationException('StorageSelection does not contain a SplFileInfo as impl property but this is mandatory for a LocalFileStorage.');
         }
         if (!$file->isFile() || !$file->isReadable()) {
-            throw new InvalidConfigurationException("StorageSelection references a File that does not exists or is not readable.");
+            throw new InvalidConfigurationException('StorageSelection references a File that does not exists or is not readable.');
         }
 
         $format = $selection->getMetadata('format');
         if (!$format) {
             $format = $this->formatDiscoverStrategyInterface->getFormat($selection);
             if (!$format) {
-                throw new InvalidConfigurationException("Could not discover format!");
+                throw new InvalidConfigurationException('Could not discover format!');
             }
 
             if ($this->logger) {
-                $this->logger->info("File $file was discovered as format '$format'", ['selection'=>$selection->toArray()]);
+                $this->logger->info("File $file was discovered as format '$format'", ['selection' => $selection->toArray()]);
             }
         }
 

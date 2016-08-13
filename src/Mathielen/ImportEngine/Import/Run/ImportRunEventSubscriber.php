@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Import\Run;
 
 use Mathielen\DataImport\Event\ImportProcessEvent;
@@ -9,7 +10,6 @@ use Mathielen\DataImport\Event\ImportItemEvent;
 
 class ImportRunEventSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var Import
      */
@@ -27,7 +27,7 @@ class ImportRunEventSubscriber implements EventSubscriberInterface
             'processed' => 0,
             'written' => 0,
             'skipped' => 0,
-            'invalid' => 0
+            'invalid' => 0,
         );
     }
 

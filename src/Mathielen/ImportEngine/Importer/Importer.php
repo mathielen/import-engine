@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Importer;
 
 use Mathielen\ImportEngine\Filter\Filters;
@@ -9,7 +10,6 @@ use Mathielen\ImportEngine\Validation\DummyValidation;
 
 class Importer implements ImporterInterface
 {
-
     /**
      * @var StorageInterface
      */
@@ -125,5 +125,4 @@ class Importer implements ImporterInterface
 
         return $this;
     }
-
 }

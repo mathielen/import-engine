@@ -1,9 +1,9 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format;
 
 class CsvFormat extends Format
 {
-
     private $delimiter = ';';
     private $enclosure = '"';
     private $escape = '\\';
@@ -42,7 +42,6 @@ class CsvFormat extends Format
 
     public function __toString()
     {
-        return parent::__toString() . ' (Separator = '.$this->delimiter.')';
+        return parent::__toString().' (Separator = '.$this->delimiter.')';
     }
-
 }

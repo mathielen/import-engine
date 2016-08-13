@@ -1,21 +1,21 @@
 <?php
+
 namespace Mathielen\ImportEngine\ValueObject;
 
 class ImportRequest
 {
-
     private $sourceId;
     private $sourceProviderId = 'default';
     private $importerId = null;
     private $createdBy = null;
     private $context;
 
-    public static function createWithoutSource($importerId, $createdBy=null)
+    public static function createWithoutSource($importerId, $createdBy = null)
     {
         return new self(null, 'default', $importerId, $createdBy);
     }
 
-    public function __construct($sourceId=null, $sourceProviderId='default', $importerId=null, $createdBy=null, $context=null)
+    public function __construct($sourceId = null, $sourceProviderId = 'default', $importerId = null, $createdBy = null, $context = null)
     {
         $this->sourceId = $sourceId;
         $this->sourceProviderId = $sourceProviderId;
@@ -80,5 +80,4 @@ class ImportRequest
     {
         return $this->context;
     }
-
 }

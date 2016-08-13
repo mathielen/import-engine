@@ -1,4 +1,5 @@
 <?php
+
 namespace Mathielen\ImportEngine\Storage\Format\Discovery;
 
 use Mathielen\ImportEngine\Storage\Format\CsvFormat;
@@ -10,9 +11,9 @@ use Mathielen\ImportEngine\ValueObject\StorageSelection;
 
 class FileExtensionDiscoverStrategy extends AbstractDiscoverStrategy
 {
-
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Mathielen\ImportEngine\Storage\Format\Discovery\FormatDiscoverStrategyInterface::getFormat()
      */
     public function getFormat(StorageSelection $selection)
@@ -58,5 +59,4 @@ class FileExtensionDiscoverStrategy extends AbstractDiscoverStrategy
                 throw new InvalidConfigurationException("Unknown file-extension: '$ext'.");
         }
     }
-
 }
