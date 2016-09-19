@@ -2,7 +2,7 @@
 
 namespace Mathielen\ImportEngine\Storage;
 
-use Ddeboer\DataImport\Reader\DbalReader;
+namespace Mathielen\DataImport\Reader\DbalReader;
 use Doctrine\DBAL\Connection;
 use Mathielen\ImportEngine\Exception\InvalidConfigurationException;
 
