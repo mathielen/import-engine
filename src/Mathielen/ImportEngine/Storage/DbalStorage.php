@@ -26,6 +26,11 @@ class DbalStorage implements StorageInterface
         $this->query = $query;
     }
 
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
     /**
      */
     public function getQuery()
