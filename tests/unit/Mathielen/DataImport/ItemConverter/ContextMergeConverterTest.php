@@ -58,8 +58,8 @@ class ContextMergeConverterTest extends \PHPUnit_Framework_TestCase
     {
         return new ImportProcessEvent(
             new Import(
-                $this->getMock('Mathielen\ImportEngine\Importer\ImporterInterface'),
-                $this->getMock('Mathielen\ImportEngine\Storage\StorageInterface'),
+                $this->createMock('Mathielen\ImportEngine\Importer\ImporterInterface'),
+                $this->createMock('Mathielen\ImportEngine\Storage\StorageInterface'),
                 $importRun
             )
         );

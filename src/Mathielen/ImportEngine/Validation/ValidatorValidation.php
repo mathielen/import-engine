@@ -3,7 +3,7 @@
 namespace Mathielen\ImportEngine\Validation;
 
 use Ddeboer\DataImport\Workflow;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Mathielen\DataImport\Filter\ValidatorFilter;
 

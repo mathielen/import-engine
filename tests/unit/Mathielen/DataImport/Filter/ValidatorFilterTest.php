@@ -19,8 +19,8 @@ class ValidatorFilterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->validatorMock = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
-        $this->eventDispatcherMock = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->validatorMock = $this->createMock('Symfony\Component\Validator\Validator\ValidatorInterface');
+        $this->eventDispatcherMock = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
 
         $this->validatorFilter = new ValidatorFilter(
             $this->validatorMock,
@@ -45,7 +45,7 @@ class ValidatorFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->validatorMock
             ->expects($this->once())
-            ->method('validateValue')
+            ->method('validate')
             ->with($item, $constraints);
 
         $this->validatorFilter->filter($item);
@@ -62,7 +62,7 @@ class ValidatorFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->validatorMock
             ->expects($this->once())
-            ->method('validateValue')
+            ->method('validate')
             ->with($item)
             ->will($this->returnValue($violations));
 
@@ -89,7 +89,7 @@ class ValidatorFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->validatorMock
             ->expects($this->once())
-            ->method('validateValue')
+            ->method('validate')
             ->with($item)
             ->will($this->returnValue($violations));
 

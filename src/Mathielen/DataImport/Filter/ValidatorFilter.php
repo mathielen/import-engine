@@ -2,7 +2,7 @@
 
 namespace Mathielen\DataImport\Filter;
 
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints;
 use Ddeboer\DataImport\Filter\ValidatorFilter as OriginalValidatorFilter;
@@ -138,7 +138,7 @@ class ValidatorFilter extends OriginalValidatorFilter
     protected function validate(array $item)
     {
         $constraints = new Constraints\Collection($this->collectionConstraintOptions);
-        $list = $this->validator->validateValue($item, $constraints);
+        $list = $this->validator->validate($item, $constraints);
 
         return $list;
     }

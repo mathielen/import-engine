@@ -30,16 +30,16 @@
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "phpunit/phpunit": "*",
-    "symfony/finder": "*",
-    "symfony/http-foundation": "*",
+    "symfony/console": "~2.8|~3.0",
+    "symfony/dependency-injection": "~2.8|~3.0",
+    "symfony/validator": "~2.8|~3.0",
+    "symfony/finder": "~2.8|~3.0",
+    "symfony/http-foundation": "~2.8|~3.0",
     "jms/serializer": "*",
     "ext-iconv": "*",
     "ext-mbstring": "*",
     "symfony/property-access": "*",
     "doctrine/orm": "*",
-    "symfony/console": ">=2.2",
-    "symfony/dependency-injection": ">=2.2",
-    "symfony/validator": "~2.3.0",
     "phpoffice/phpexcel": "*"
   },
   "autoload": {

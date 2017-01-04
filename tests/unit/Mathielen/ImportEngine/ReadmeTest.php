@@ -72,14 +72,14 @@ class ReadmeTest extends \PHPUnit_Framework_TestCase
     private function getBuildValidatorCode()
     {
         return '
-            $validator = $this->getMock("Symfony\Component\Validator\ValidatorInterface");
+            $validator = $this->createMock("Symfony\Component\Validator\Validator\ValidatorInterface");
         ';
     }
 
     private function getBuildJmsSerializerCode()
     {
         return '
-            $jms_serializer = $this->getMock("JMS\Serializer\Serializer", array(), array(), "", false);
+            $jms_serializer = $this->createMock("JMS\Serializer\Serializer", array(), array(), "", false);
         ';
     }
 

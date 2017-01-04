@@ -14,7 +14,7 @@ class ServiceStorageProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $containerMock = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $containerMock = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $containerMock
             ->expects($this->any())
             ->method('get')

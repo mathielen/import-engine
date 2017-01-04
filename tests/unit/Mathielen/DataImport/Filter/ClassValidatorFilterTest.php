@@ -6,8 +6,8 @@ class ClassValidatorFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testValidate()
     {
-        $validatorMock = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
-        $objectFactoryMock = $this->getMock('Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface');
+        $validatorMock = $this->createMock('Symfony\Component\Validator\Validator\ValidatorInterface');
+        $objectFactoryMock = $this->createMock('Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface');
 
         $classValidatorFilter = new ClassValidatorFilter(
             $validatorMock,

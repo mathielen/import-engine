@@ -16,7 +16,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->mimeTypeDiscovererMock = $this->getMock('Mathielen\ImportEngine\Storage\Format\Discovery\Mime\MimeTypeDiscoverer');
+        $this->mimeTypeDiscovererMock = $this->createMock('Mathielen\ImportEngine\Storage\Format\Discovery\Mime\MimeTypeDiscoverer');
 
         $this->discoverStrategy = new MimeTypeDiscoverStrategy(
             array(),
@@ -64,7 +64,7 @@ class MimeTypeDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testMimeFormatFactories()
     {
-        $formatFactory = $this->getMock('Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface');
+        $formatFactory = $this->createMock('Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface');
         $formatFactory
             ->expects($this->once())
             ->method('factor')

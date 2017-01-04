@@ -6,7 +6,7 @@ class JmsSerializerObjectFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function test()
     {
-        $serializerMock = $this->getMock('JMS\Serializer\SerializerInterface');
+        $serializerMock = $this->createMock('JMS\Serializer\SerializerInterface');
 
         $className = 'TestEntities\Dummy';
         $of = new JmsSerializerObjectFactory($className, $serializerMock);

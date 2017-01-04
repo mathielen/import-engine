@@ -3,7 +3,7 @@
 namespace Mathielen\DataImport\Filter;
 
 use Mathielen\DataImport\Writer\ObjectWriter\ObjectFactoryInterface;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ClassValidatorFilter extends ValidatorFilter

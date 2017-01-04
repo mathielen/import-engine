@@ -15,7 +15,7 @@ class ImporterPreconditionTest extends \PHPUnit_Framework_TestCase
             'format' => new CsvFormat()
         );
 
-        $this->storage = $this->getMock('Mathielen\ImportEngine\Storage\StorageFormatInterface');
+        $this->storage = $this->createMock('Mathielen\ImportEngine\Storage\StorageFormatInterface');
         $this->storage
             ->expects($this->any())
             ->method('info')
@@ -70,7 +70,7 @@ class ImporterPreconditionTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormatException()
     {
-        $storage = $this->getMock('Mathielen\ImportEngine\Storage\StorageInterface');
+        $storage = $this->createMock('Mathielen\ImportEngine\Storage\StorageInterface');
 
         $preCondition = new ImporterPrecondition();
         $preCondition

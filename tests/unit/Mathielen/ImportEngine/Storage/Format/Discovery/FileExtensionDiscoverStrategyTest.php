@@ -52,7 +52,7 @@ class FileExtensionDiscoverStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testExtFormatFactories()
     {
-        $formatFactory = $this->getMock('Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface');
+        $formatFactory = $this->createMock('Mathielen\ImportEngine\Storage\Format\Factory\FormatFactoryInterface');
         $formatFactory
             ->expects($this->once())
             ->method('factor')
