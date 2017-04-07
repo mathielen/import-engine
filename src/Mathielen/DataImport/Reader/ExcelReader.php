@@ -103,6 +103,12 @@ class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
 
         parent::rewind();
     }
+
+    public function valid()
+    {
+        return parent::valid() && $this->pointer <= $this->count();
+    }
+
 }
 
 class ReadFilter implements \PHPExcel_Reader_IReadFilter
