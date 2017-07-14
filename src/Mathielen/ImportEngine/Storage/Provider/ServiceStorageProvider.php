@@ -68,7 +68,10 @@ class ServiceStorageProvider implements StorageProviderInterface
         }
 
         $service = $this->container->get($serviceName);
-        $callable_with_arguments = array($service, $method, isset($id['arguments']) ? $id['arguments'] : null);
+        $callable_with_arguments = array($service, $method);
+        if(isset($id['arguments'])){
+            $callable_with_arguments['arguments'] = $id['arguments'];
+        }
 
         return new StorageSelection($callable_with_arguments);
     }
