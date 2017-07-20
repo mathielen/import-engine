@@ -66,15 +66,28 @@ class XmlWriter implements WriterInterface
         }
 
         //values
-        foreach ($item as $key => $value) {
-            $node = $this->xml->createElement($key);
-            $node->nodeValue = $value;
-            $newNode->appendChild($node);
-        }
+        $this->writeChild($newNode, $item);
 
         $this->rootNode->appendChild($newNode);
 
         return $this;
+    }
+
+    /**
+     * @param \DOMElement $newNode
+     * @param array $item
+     */
+    protected function writeChild(\DOMElement $newNode, array $item)
+    {
+        foreach ($item as $key => $value) {
+            $node = $this->xml->createElement($key);
+            if(is_array($value)){
+                $this->writeChild($node, $value);
+            } else {
+                $node->nodeValue = $value;
+            }
+            $newNode->appendChild($node);
+        }
     }
 
     /**
