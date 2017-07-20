@@ -22,12 +22,16 @@ class XmlWriter implements WriterInterface
 
     private $rowNodeName;
     private $rootNodeName;
+    private $encoding;
+    private $version;
 
-    public function __construct(\SplFileObject $file, $rowNodeName = 'node', $rootNodeName = 'root')
+    public function __construct(\SplFileObject $file, $rowNodeName = 'node', $rootNodeName = 'root', $encoding = null, $version = '1.0')
     {
         $this->filename = $file->getRealPath();
         $this->rowNodeName = $rowNodeName;
         $this->rootNodeName = $rootNodeName;
+        $this->encoding = $encoding;
+        $this->version = $version;
     }
 
     /**
@@ -35,7 +39,7 @@ class XmlWriter implements WriterInterface
      */
     public function prepare()
     {
-        $this->xml = new \DOMDocument();
+        $this->xml = (!empty($this->encoding)) ? new \DOMDocument($this->version, $this->encoding) : new \DOMDocument();
         $this->rootNode = $this->xml->createElement($this->rootNodeName);
         $this->xml->appendChild($this->rootNode);
 

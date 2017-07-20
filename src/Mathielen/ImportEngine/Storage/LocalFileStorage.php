@@ -169,7 +169,7 @@ class LocalFileStorage implements StorageFormatInterface, RecognizableStorageInt
         } elseif ($format instanceof ExcelFormat) {
             $writer = new ExcelWriter($file->openFile('a'), $format->getActivesheet(), $format->getExceltype(), $format->isHeaderInFirstRow());
         } elseif ($format instanceof XmlFormat) {
-            $writer = new XMLWriter($file->openFile('a'));
+            $writer = new XMLWriter($file->openFile('a'), $format->getRowNodeName(), $format->getRootNodeName(), $format->getEncoding(), $format->getVersion());
         } elseif ($format instanceof CompressedFormat) {
             throw new \LogicException('Not implemented!');
         } else {
