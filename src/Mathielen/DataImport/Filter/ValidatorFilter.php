@@ -117,19 +117,22 @@ class ValidatorFilter extends OriginalValidatorFilter
     {
         $list = $this->validate($item);
 
-        if (count($list) > 0) {
-            $this->violations[$this->line] = $list;
-        }
-
-        ++$this->line;
-
-        $validationResult = 0 === count($list);
-
         if ($this->eventDispatcher) {
-            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult ? $item : false));
+        	$event = new ImportItemEvent($item);
+        	$event->setContext($list);
+
+            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, $event);
         }
 
-        return !$this->skipOnViolation || $validationResult;
+		if (count($list) > 0) {
+			$this->violations[$this->line] = $list;
+		}
+
+		++$this->line;
+
+		$validationResult = 0 === count($list);
+
+		return !$this->skipOnViolation || $validationResult;
     }
 
     /**
