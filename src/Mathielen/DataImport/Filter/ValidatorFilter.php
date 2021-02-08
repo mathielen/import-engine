@@ -113,16 +113,9 @@ class ValidatorFilter extends OriginalValidatorFilter
         return $this->violations;
     }
 
-    public function filter(array $item)
-    {
-        $list = $this->validate($item);
-
-        if ($this->eventDispatcher) {
-        	$event = new ImportItemEvent($item);
-        	$event->setContext($list);
-
-            $this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, $event);
-        }
+	public function filter(array $item)
+	{
+		$list = $this->validate($item);
 
 		if (count($list) > 0) {
 			$this->violations[$this->line] = $list;
@@ -132,8 +125,12 @@ class ValidatorFilter extends OriginalValidatorFilter
 
 		$validationResult = 0 === count($list);
 
+		if ($this->eventDispatcher) {
+			$this->eventDispatcher->dispatch(ImportItemEvent::AFTER_VALIDATION, new ImportItemEvent($validationResult ? $item : false));
+		}
+
 		return !$this->skipOnViolation || $validationResult;
-    }
+	}
 
     /**
      * @return \Symfony\Component\Validator\ConstraintViolationListInterface
